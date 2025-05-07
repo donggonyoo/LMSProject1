@@ -15,7 +15,7 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>공지사항</title>
+    <title>문의게시판</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -426,157 +426,100 @@
       <!--begin::App Main-->
       <main class="app-main">
         
-    <!-- 게시판 시작 -->
-	
-	<h2>공지사항</h2>
-	<form action="list?boardid=${boardid}" method="post" name="sf">
-		<input type="hidden" name="pageNum" value="1">
-		<select class="w3-select" name="column">
-			<option value="">선택하시오</option>
-			<option value="writer">작성자</option>
-			<option value="title">제목</option>
-			<option value="content">내용</option>
-			<option value="title,writer">제목 + 작성자</option>
-			<option value="title,content">제목 + 내용</option>
-			<option value="writer,content">작성자 + 내용</option>
-			<option value="title,writer,content">제목 + 작성자 + 내용</option>
-		</select>
-		<script type="text/javascript">
-			document.sf.column.value='${param.column}'
-		</script>
-		<input class="form-control" type="text" placeholder="Search" name="find" value="${param.find}">
-		<button class="btn btn-primary" type="submit">Search</button>
-	</form>
-
-<table class="table">
-	<c:if test="${boardcount == 0}">
+        <!-- 게시판 시작 -->
+<form action="write" method="post" enctype="multipart/form-data" name="f">
+	<h2 class="text-center">게시판 글쓰기</h2>
+	<table class="table">
 		<tr>
-			<td colspan="5">등록된 게시글이 없습니다.</td>
-		</tr>
-	</c:if>
-	
-	<c:if test="${boardcount > 0}">
-		<tr>
-			<td colspan="5" style="text-align:right">글 개수: ${boardcount}</td>
+			<td>글쓴이</td>
+			<td><input type="text" name="writer" class="form-control"></td>
 		</tr>
 		
 		<tr>
-			<th width="8%">번호</th>
-			<th width="50%">제목</th>
-			<th width="14%">작성자</th>
-			<th width="17%">등록일</th>
-			<th width="11%">조회수</th>
+			<td>비밀번호</td>
+			<td><input type="password" name="pass" class="form-control"></td>
 		</tr>
-	<c:forEach var="b" items="${list}" varStatus = "status">
+		
 		<tr>
-			<td>
-				${boardNum}
-			</td>
-	<c:set var="boardNum" value="${boardNum -1}"></c:set>
-			<td style="text-align: left">
-				<c:if test="${!empty b.file1}">
-						<a href="../upload/board/${b.file1}" style="color:green;">@</a>
-				</c:if>
-				<c:if test="${empty b.file1}">&nbsp;&nbsp;&nbsp;</c:if>
-				
-				<%--
-					답글인 경우 level 만큼 공백 생성
-				 --%>
-				 <c:if test="${b.grplevel > 0}">
-				 	<c:forEach var="i" begin="2" end="${b.grplevel}">
-				 		&nbsp;
-				 	</c:forEach>└ <%-- ㅂ 한자 --%>
-				 </c:if>
-				<a href="info?num=${b.num}">${b.title}</a>
-			</td>
-			<td>${b.writer}</td>
-			<%--
-				오늘등록된글은 시간만 표시
-			 --%>
-			 <fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd" var="rdate"/>
-			 <fmt:formatDate value="${today}" pattern="yyyy-MM-dd" var="tdate"/>
-			 
-			 
-			<td>
-			<c:if test="${rdate == tdate}">
-			 	<fmt:formatDate value="${b.regdate}" pattern="HH:mm:ss"/>
-			 </c:if>
-			 <c:if test="${rdate != tdate}">
-			 	<fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd HH:mm:ss"/>
-			 </c:if>
-			</td>
-			<td>${b.readcnt}</td>			
-	</c:forEach>
-<%-- 페이지 처리하기 --%>
+			<td>제목</td>
+			<td><input type="text" name="title" class="form-control"></td>
+		</tr>
+		
 		<tr>
-			<td colspan="5" align="center">
-			<c:if test="${pageNum <= 1}">
-			[이전]
-			</c:if>
-			<c:if test="${pageNum > 1}">
-				<a href="javascript:listsubmit(${pageNum-1})">[이전]</a>
-			</c:if>
-			
-			<c:forEach var="a" begin="${startpage}" end="${endpage}">
-				<c:if test="${a == pageNum}">
-					[${a}]
-				</c:if>
-				<c:if test="${a != pageNum}">
-					<a href="javascript:listsubmit(${a})">[${a}]</a>
-				</c:if>
-			</c:forEach>
-			<c:if test="${pageNum >= maxpage}">
-				[다음]
-			</c:if>
-			<c:if test="${pageNum < maxpage}">
-				<a href="javascript:listsubmit(${pageNum+1})">[다음]</a>
-			</c:if>
+			<td>내용</td>
+			<td><textarea rows="15" name="content" class="form-control" id="summernote"></textarea></td>
+		</tr>
+		
+		<tr>
+			<td>첨부파일</td>
+			<td><input type="file" name="file1"></td>
+		</tr>
+		
+		<tr>
+			<td colspan="2">
+				<a href="javascript:inputcheck()" class="btn btn-primary">[게시물 등록]</a>
 			</td>
 		</tr>
-	</c:if>
-<%-- 공지사항 게시판인 경우 관리자 로그인한 경우만 글쓰기 출력 --%>
-	<c:if test="${ boardid != 1 || sessionScope.login == 'admin'}">
-		<tr>
-			<th>번호</th>
-			<th>제목</th>
-			<th>작성자</th>			
-			<th>등록일</th>			
-			<th>조회수</th>			
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>[안내] 수강신청 관련 공지사항</td>
-			<td>DONGGONYOO</td>
-			<td>10:40</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>[안내] 학과 관련 공지사항</td>
-			<td>DONGGONYOO</td>
-			<td>10:32</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>[안내] LMS 관련 공지사항</td>
-			<td>DONGGONYOO</td>
-			<td>10:30</td>
-			<td>10</td>
-		</tr>
-		<tr>
-			<td colspan="3"style="text-align:center;">[이전][1][다음]</td>
-			<td colspan="3" style="text-align:right;">
-			<p align="right"><a href="writeForm.jsp">[글쓰기]</a></p>
-			</td>
-		</tr>
-	</c:if>
-</table>
+		
+	</table>
+
+</form>
 <script>
-	function listsubmit(page) {
-		f = document.sf;
-		f.pageNum.value = page;
-		f.submit();
+	function inputcheck() {
+		f = document.f;
+		if(f.writer.value=="") {
+			alert("글쓴이를 입력하세요");
+			f.writer.focus();
+			return;
+		}
+		if(f.pass.value=="") {
+			alert("비밀번호를 입력하세요");
+			f.pass.focus();
+			return;
+		}
+		if(f.title.value=="") {
+			alert("제목 입력하세요");
+			f.title.focus();
+			return;
+		}
+		f.submit(); // submit 발생 =>form의 action 페이지로 요청
+	}
+</script>
+
+<%-- summernote 관련 구현 --%>
+<script type="text/javascript">
+	$(function() {
+		$("#summernote").summernote({
+			height : 300,
+			callbacks : {
+				// onImageUpload : 이미지 업로드 이벤트 발생
+				// files : 한개이상의 이미지가 업로드 가능 
+				onImageUpload : function(files) {
+					for(let i=0;i < files.length;i++) {
+						sendFile(files[i]); // 하나씩 ajax 이용하여 서버로 파일 전송
+					}
+				}
+			}
+		})
+	})
+	function sendFile(file) {
+		let data = new FormData(); // 폼데이터를 수집하고 전송 가능한 객체. 파일 업로드에 사용됨.
+		data.append("file",file); // file : 이미지 파일 내용
+		$.ajax({
+			url : "${path}/board/uploadImage",
+			type : "POST",
+			data : data,
+			processData : false,
+			contentType : false,
+			success : function(url) {
+				// url : 업로드된 이미지의 접근 url 정보 
+				$('#summernote').summernote('insertImage', url);
+			// <img src ="url"> 변경
+			},
+			error : function(e) {
+				alert("이미지 업로드 실패 : " +e.status);
+			}
+		})
 	}
 </script>
 <!-- 게시판 끝 -->

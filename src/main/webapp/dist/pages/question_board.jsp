@@ -565,8 +565,9 @@
 			<td>20</td>
 		</tr>
 		<tr>
-			<td colspan="5" style="text-align:right;">
-			<p align="right"><a href="writeForm">[글쓰기]</a></p>
+			<td colspan="3" style="text-align:center">[이전][1][다음]</td>
+			<td colspan="3" style="text-align:right;">
+			<p align="right"><a href="writeForm.jsp">[글쓰기]</a></p>
 			</td>
 		</tr>
 	</c:if>
