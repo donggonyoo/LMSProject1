@@ -1,9 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <!doctype html>
 <html lang="en">
   <!--begin::Head-->
   <head>
+  	<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  	
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>AdminLTE v4 | Dashboard</title>
     <!--begin::Primary Meta Tags-->
@@ -278,7 +287,7 @@
             />
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">LDB사이버대학</span>
+            <span class="brand-text fw-light">LDB 학사관리시스템</span>
             <!--end::Brand Text-->
           </a>
           <!--end::Brand Link-->
@@ -298,7 +307,7 @@
                 <a href="#" class="nav-link active">
                   <i class="nav-icon bi bi-speedometer"></i>
                   <p>
-                    Dashboard
+                    MyPage
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -306,34 +315,34 @@
                   <li class="nav-item">
                     <a href="./index.jsp" class="nav-link active">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v1</p>
+                      <p>개인정보</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./index2.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v2</p>
+                      <p>성적확인</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./index3.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Dashboard v3</p>
+                      <p>시간표조회</p>
                     </a>
                   </li>
                 </ul>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a href="./generate/theme.html" class="nav-link">
                   <i class="nav-icon bi bi-palette"></i>
                   <p>Theme Generate</p>
                 </a>
-              </li>
+              </li> -->
               <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-box-seam-fill"></i>
                   <p>
-                    Widgets
+                    학습지원
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -341,19 +350,19 @@
                   <li class="nav-item">
                     <a href="./widgets/small-box.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Small Box</p>
+                      <p>수강신청</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./widgets/info-box.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>info Box</p>
+                      <p>수강신청 현황</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./widgets/cards.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Cards</p>
+                      <p>미정</p>
                     </a>
                   </li>
                 </ul>
@@ -362,7 +371,7 @@
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-clipboard-fill"></i>
                   <p>
-                    Layout Options
+                    교수지원
                     <span class="nav-badge badge text-bg-secondary me-3">6</span>
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
@@ -371,28 +380,28 @@
                   <li class="nav-item">
                     <a href="./layout/unfixed-sidebar.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Default Sidebar</p>
+                      <p>강의등록</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./layout/fixed-sidebar.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Fixed Sidebar</p>
+                      <p>강의관리</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./layout/layout-custom-area.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Layout <small>+ Custom Area </small></p>
+                      <p>성적관리</p>
                     </a>
                   </li>
                   <li class="nav-item">
                     <a href="./layout/sidebar-mini.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
-                      <p>Sidebar Mini</p>
+                      <p>출석관리</p>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                     <a href="./layout/collapsed-sidebar.html" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Sidebar Mini <small>+ Collapsed</small></p>
@@ -409,14 +418,26 @@
                       <i class="nav-icon bi bi-circle"></i>
                       <p>Layout RTL</p>
                     </a>
-                  </li>
+                  </li> -->
                 </ul>
               </li>
               <li class="nav-item">
+                <a href="./notice_board.jsp" class="nav-link">
+                  <i class="nav-icon bi bi-tree-fill"></i>
+                  <p>공지사항</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="./question_board.jsp" class="nav-link">
+                  <i class="nav-icon bi bi-pencil-square"></i>
+                  <p>문의게시판</p>
+                </a>
+              </li>
+              <!-- <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-tree-fill"></i>
                   <p>
-                    UI Elements
+                    공지사항
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -445,7 +466,7 @@
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-pencil-square"></i>
                   <p>
-                    Forms
+                    문의게시판
                     <i class="nav-arrow bi bi-chevron-right"></i>
                   </p>
                 </a>
@@ -457,8 +478,8 @@
                     </a>
                   </li>
                 </ul>
-              </li>
-              <li class="nav-item">
+              </li> -->
+              <!-- <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="nav-icon bi bi-table"></i>
                   <p>
@@ -705,7 +726,7 @@
                   <i class="nav-icon bi bi-circle text-info"></i>
                   <p>Informational</p>
                 </a>
-              </li>
+              </li> -->
             </ul>
             <!--end::Sidebar Menu-->
           </nav>
