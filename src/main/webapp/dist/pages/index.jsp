@@ -324,13 +324,13 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./index2.html" class="nav-link">
+                    <a href="./index2.jsp" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>성적확인</p>
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./index3.html" class="nav-link">
+                    <a href="./index3.jsp" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>시간표조회</p>
                     </a>
