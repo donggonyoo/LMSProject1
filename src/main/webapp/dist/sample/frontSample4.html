@@ -51,15 +51,19 @@
                 </div>
             </div>
             <div class="row mb-3">
-                <label class="col-sm-3 col-form-label">전공여부</label>
+                <label class="col-sm-3 col-form-label">이수구분</label>
                 <div class="col-sm-9">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="major" id="majorYes" value="yes" checked>
-                        <label class="form-check-label" for="majorYes">Y</label>
+                        <input class="form-check-input" type="radio" name="major" id="major1" value="major1" checked>
+                        <label class="form-check-label" for="major1">전공필수</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="major" id="majorNo" value="no">
-                        <label class="form-check-label" for="majorNo">N</label>
+                        <input class="form-check-input" type="radio" name="major" id="major2" value="major2">
+                        <label class="form-check-label" for="major2">전공선택</label>
+                    </div>
+                     <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="major" id="major3" value="major3">
+                        <label class="form-check-label" for="major3">교양</label>
                     </div>
                 </div>
             </div>
@@ -73,8 +77,8 @@
                 <label class="col-sm-3 col-form-label">학점</label>
                 <div class="col-sm-9">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="credits">
-                        <label class="form-check-label" for="credits">1~3의 학점 변경가능</label>
+                        <input class="form-control" type="number" id="credits">
+                       
                     </div>
                 </div>
             </div>
