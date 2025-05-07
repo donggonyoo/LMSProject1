@@ -537,8 +537,37 @@
 <%-- 공지사항 게시판인 경우 관리자 로그인한 경우만 글쓰기 출력 --%>
 	<c:if test="${ boardid != 1 || sessionScope.login == 'admin'}">
 		<tr>
-			<td colspan="5" style="text-align:right;">
-			<p align="right"><a href="notice_writeForm.jsp">[글쓰기]</a></p>
+			<th>번호</th>
+			<th>제목</th>
+			<th>작성자</th>			
+			<th>등록일</th>			
+			<th>조회수</th>			
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>[안내] 수강신청 관련 공지사항</td>
+			<td>DONGGONYOO</td>
+			<td>10:40</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>[안내] 학과 관련 공지사항</td>
+			<td>DONGGONYOO</td>
+			<td>10:32</td>
+			<td>0</td>
+		</tr>
+		<tr>
+			<td>1</td>
+			<td>[안내] LMS 관련 공지사항</td>
+			<td>DONGGONYOO</td>
+			<td>10:30</td>
+			<td>10</td>
+		</tr>
+		<tr>
+			<td colspan="3"style="text-align:center;">[이전][1][다음]</td>
+			<td colspan="3" style="text-align:right;">
+			<p align="right"><a href="writeForm.jsp">[글쓰기]</a></p>
 			</td>
 		</tr>
 	</c:if>
