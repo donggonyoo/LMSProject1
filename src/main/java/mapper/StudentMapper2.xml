@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- sql문장 설정 -->
+
+<mapper namespace="student2" >
+	<select id="select1" resultType="Student" parameterType="map">
+		select * from student
+		<where>
+		<if test="grade != null">grade=#{grade}</if>
+		<if test="studno != null">studno=#{studno}</if>
+		<if test="height != null">height >= #{height}</if>
+		</where>
+	</select>
+<!--동적태그
+1.map = null
+	select * from student실행
+	
+2.map=("grade",1)
+	select * from student
+		where grade=1
+		
+3.map=("studno",220111)
+	select * from student
+		where studno=220111
+		
+4.map=("height",180)
+	select * from student
+		where height>=180
+		
+5.map=("height":180,"grade":1)
+	select * from student
+		where height>=180 grade=1(오류)	
+-->
+
+<select id="select2" resultType="Student" parameterType="map">
+		select * from student
+		<choose>
+		<when test="grade != null">
+		where grade=#{grade} and height>=#{height}</when>
+		<when test="grade != null">where grade=#{grade}</when>
+		<when test="studno != null">where studno=#{studno}</when>
+		<when test="height != null">where height >= #{height}</when>
+		</choose>
+	</select><!-- 비효율적임 -->
+	
+<select id="select3" resultType="Student" parameterType="map">
+		select * from student
+	<trim prefix="where" prefixOverrides="AND || OR">
+		<if test="grade != null">and grade=#{grade}</if>
+		<if test="studno != null">and studno=#{studno}</if>
+		<if test="height != null">and height >= #{height}</if>
+	</trim>
+</select>
+<!-- 
+prefixOverrides="AND || OR"
+첫번쨰조건문앞에 and나OR가있다면 없앤다
+ -->
+ 
+ 
+ <select id="select4" resultType="Student" parameterType="map">
+		select * from student
+	<if test="datas!=null">
+		where ${column} in
+		<foreach collection="datas" item="d" separator="," open="("  close= ")">#{d}</foreach>
+		<!-- (data[0],...,...) -->
+	</if>
+</select>
+ 
+ <!--
+map:{"column":"major1","datas":[101,201,301]}
+ 	select * from student
+ 	where major1 in (101,201,301)
+ 	
+map:{"column":"weight","datas":[75,80]}
+ 	select * from student
+ 	where weight in (75,80)	
+ 	
+map:{"column":"height","datas":[170 ,175 ,180, 185]}
+ 	select * from student
+ 	where height in (170 ,175 ,180, 185)	 	
+ 	
+ 	
+  -->
+
+</mapper>
