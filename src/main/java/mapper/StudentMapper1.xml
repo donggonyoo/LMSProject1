@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  /mybatisstudy/src/mapper/MemberMapper1.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- sql문장 설정 -->
+
+<mapper namespace="student" >
+	<insert id="insert" parameterType="Student">
+	<!-- Student : main.Student클래스 -->
+	<!-- config에서 Alias설정을 해야 Student와같이 별명으로사용가능! -->
+		insert into student(studno,name,id,jumin,grade,major1)
+		values(#{studno},#{name},#{id},#{jumin},#{grade},#{major1})
+	</insert>
+	<!-- #{xxx} : Student.getxxx()호출 (get프로퍼티)
+		Student클래스에서 getter를구현하지않으면 사용불가능함
+	 -->
+
+	<select id="selectNo" resultType="Student" parameterType="int">
+		select * from student where studno=#{value}
+	</select>
+<!-- 
+	resultType(반환값) : "클래스명" 
+	조회된결과의 컬럼명과 클래스의 setxx 프로퍼티를 호출 
+	컬럼명 studno => Student.setStudno(컬럼studno)
+ -->
+ 
+ 	<update id="update" parameterType="Student">
+ 	update student 
+ 	set grade=#{grade},weight=#{weight},height=#{height},profno=#{profno}
+ 	where id=#{id}
+ 	</update>
+ 	<!-- Student의 getter들  = #{xx}-->
+ 	<!-- where문에 기본키를 넣지않는다면 테이블의모든정보가업데이트될것이다 -->
+ 	
+ 	<delete id="delete" parameterType="int">
+ 		delete from student where studno=#{value}
+ 	</delete>
+ 	
+ 	
+<!-- ========== test1에서 사용되는 부분들 ============= -->
+ 	<select id="countAll" resultType="int">
+ 		select count(*) from student order by grade
+ 	</select>
+ 	
+ 	<select id="selectAll" resultType="Student">
+ 		<!-- 한번더 말하겠지만 Student는 config.xml에서 typeAlias을설정해줘야함 
+ 			설정안할 시 (패키지.클래스명)main.Student로 사용해야함
+ 		-->
+ 	select * from student 
+ 	</select>
+ 	
+ 	<select id="selectGrade1" resultType="Student" parameterType="int">
+ 	select * from student where grade=#{val}  
+ 	</select>
+	
+	<select id="selectNameKim" resultType="Student" parameterType="String">
+	select * from student where name like'%${val}%'
+	</select>
+	
+	<select id="selectjumin" resultType="Student" parameterType="map">
+		select * from student where grade=#{grade} and
+		substr(jumin,7,1) in(#{jumin1},#{jumin2})
+	</select>
+</mapper>
