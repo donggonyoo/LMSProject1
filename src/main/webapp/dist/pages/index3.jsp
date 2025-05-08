@@ -15,7 +15,7 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>공지사항</title>
+    <title>시간표 조회</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -280,7 +280,7 @@
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
           <!--begin::Brand Link-->
-          <a href="./index.html" class="brand-link">
+          <a href="./index.jsp" class="brand-link">
             <!--begin::Brand Image-->
             <img
               src="../../dist/assets/img/AdminLTELogo.png"
@@ -320,7 +320,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./index2.html" class="nav-link">
+                    <a href="./index2.jsp" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>성적확인</p>
                     </a>

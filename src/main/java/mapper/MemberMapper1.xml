@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  /mybatisstudy/src/mapper/MemberMapper1.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- sql문장 설정 -->
+
+<mapper namespace="member">
+	<!-- member.count : namespace.id명(id값) -->
+	<select id="count" resultType="int"> 
+		select count(*) from member
+	</select>
+	<select id="list" resultType="Member" >
+	<!-- 클래스를 타입으로쓰려면 앞에 package명 붙여라
+	(config에서 alias설정해서 별명을설정하는 방법도있음 -->
+		select * from member
+	</select>
+	
+	<!--session.selectxxx("id값","value")를 처리하는방법 -->
+	<select id="selectId" parameterType="string" resultType="Member">
+	select * from member where id=#{value}	 
+	</select>
+	
+	<select id="selectName" parameterType="string" resultType="Member">
+		select * from member where name like #{value}	 
+	</select>
+	<!-- value값 설정을 애초에 "%value%" 로 해주고보내야함 -->
+	
+	<select id="selectName2" parameterType="string" resultType="Member">
+		select * from member where name like '%${value}%'	 
+	</select>
+<!--  
+#{value} : value값+자료형인식
+	where name like %#{value}% : 오류발생		
+	where name like %'value'% 의 형식으로인식함
+${value} : value값인식
+	value의 값이 가 라고가정 할 떄
+	where name like '%{value}'
+	where name like '%가%'	
+-->
+	<select id="selectNameGender" parameterType="map" resultType="Member">
+		select * from member 
+		where name like '%${name}%' and gender=#{gender}	 
+	</select>
+<!-- 
+	${name} : map객체중 key값이 name인 객체의값 리턴
+	#{gender} : map객체중 key값이 gender인 객체값 리턴
+ -->	
+
+</mapper>
