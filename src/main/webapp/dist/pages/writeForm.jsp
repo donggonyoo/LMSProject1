@@ -190,7 +190,7 @@
       </nav>
       <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
         <div class="sidebar-brand">
-          <a href="./index.html" class="brand-link">
+          <a href="./index.jsp" class="brand-link">
             <img src="../../dist/assets/img/AdminLTELogo.png" class="brand-image opacity-75 shadow" />
             <span class="brand-text fw-light">LDB 학사관리시스템</span>
           </a>
