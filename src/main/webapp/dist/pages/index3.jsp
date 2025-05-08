@@ -320,7 +320,7 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="./index2.html" class="nav-link">
+                    <a href="./index2.jsp" class="nav-link">
                       <i class="nav-icon bi bi-circle"></i>
                       <p>성적확인</p>
                     </a>
