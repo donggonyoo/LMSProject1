@@ -14,7 +14,7 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   	
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AdminLTE v4 | Dashboard</title>
+    <title>개인정보</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -331,7 +331,7 @@
                   </li>
                   <li class="nav-item">
                     <a href="./index3.jsp" class="nav-link">
-                      <i class="nav-icon bi bi-circle"></i>
+  AdminLTE | Dashboard v2                    <i class="nav-icon bi bi-circle"></i>
                       <p>시간표조회</p>
                     </a>
                   </li>
