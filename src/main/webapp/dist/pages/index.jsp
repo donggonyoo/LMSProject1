@@ -331,7 +331,7 @@
                   </li>
                   <li class="nav-item">
                     <a href="./index3.jsp" class="nav-link">
-  AdminLTE | Dashboard v2                    <i class="nav-icon bi bi-circle"></i>
+                   <i class="nav-icon bi bi-circle"></i>
                       <p>시간표조회</p>
                     </a>
                   </li>
