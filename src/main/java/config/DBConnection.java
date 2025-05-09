@@ -1,4 +1,4 @@
-package model;
+package config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +13,7 @@ public class DBConnection {
 		try {
 			Class.forName("org.mariadb.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mariadb://localhost:3306/gdjdb","gduser","1234");
+					"jdbc:mariadb://kdt.goodee.co.kr:10001/lms","root","1234");
 		}
 		catch(Exception e) {
 			e.printStackTrace();
