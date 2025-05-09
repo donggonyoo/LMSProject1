@@ -405,9 +405,9 @@ ul.timeline::before {
 								<div class="card-body">
 									<div class="d-flex flex-wrap">
 										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
-										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> <a
-											href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> <a
-											href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
+										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> 
+										<a href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> 
+										<a href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
 									</div>
 								</div>
 							</div>
