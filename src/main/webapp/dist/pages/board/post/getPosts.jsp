@@ -411,7 +411,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./question_board.jsp" class="nav-link">
+                <a href="./getPosts.jsp" class="nav-link">
                   <i class="nav-icon bi bi-pencil-square"></i>
                   <p>문의게시판</p>
                 </a>
@@ -534,43 +534,12 @@
 			</td>
 		</tr>
 	</c:if>
-<%-- 공지사항 게시판인 경우 관리자 로그인한 경우만 글쓰기 출력 --%>
-	<c:if test="${ boardid != 1 || sessionScope.login == 'admin'}">
-		<tr>
-			<th>번호</th>
-			<th>제목</th>
-			<th>작성자</th>			
-			<th>등록일</th>			
-			<th>조회수</th>			
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>수강신청조회 질문</td>
-			<td>김석범</td>
-			<td>10:40</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>└[RE] 수강신청조회 질문</td>
-			<td>유동곤</td>
-			<td>10:45</td>
-			<td>0</td>
-		</tr>
-		<tr>
-			<td>1</td>
-			<td>성적조회 질문</td>
-			<td>김석범</td>
-			<td>10:38</td>
-			<td>20</td>
-		</tr>
 		<tr>
 			<td colspan="3" style="text-align:center">[이전][1][다음]</td>
 			<td colspan="3" style="text-align:right;">
-			<p align="right"><a href="writeForm.jsp">[글쓰기]</a></p>
+			<p align="right"><a href="createPost">[글쓰기]</a></p>
 			</td>
 		</tr>
-	</c:if>
 </table>
 <script>
 	function listsubmit(page) {

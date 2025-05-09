@@ -29,7 +29,7 @@
   <!--  sql 구문을 가진 파일 목록 -->
   <mappers>
   	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
-  	<mapper resource="mapper/board/PostMapper.xml"/>
+  	<mapper resource="mapper/board/PostMapper.xml"/> 
   	<mapper resource="mapper/board/NoticeMapper.xml"/>
   	<package name="mapper"/>
   	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
