@@ -15,7 +15,7 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>공지사항</title>
+    <title>문의게시판</title>
     <!--begin::Primary Meta Tags-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -411,7 +411,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="./question_board.jsp" class="nav-link">
+                <a href="./getPosts.jsp" class="nav-link">
                   <i class="nav-icon bi bi-pencil-square"></i>
                   <p>문의게시판</p>
                 </a>
@@ -426,58 +426,128 @@
       <!--begin::App Main-->
       <main class="app-main">
         
-    <!-- 게시판 시작 -->
-<h2 class="">${boardName}</h2>
-<table class="table">
-<tr><th width="20%">글쓴이</th> <!-- Controller에서 b속성(boarder객체)를 넘겼음 -->
-<td width="80%" style="text-align:left">${b.writer}</td></tr>
-<%-- ${b.xxx} : b(board)에 getxx프로퍼티 --%>
-<tr><th>제목</th><td style="text-align:left">${b.title}</td></tr>
-<tr><th>내용</th><td><table style="width:100%; height:250px;">
-<tr><td style="border-width:0px; vertical-align:top; text-align:left; margin:0px; padding:0px;">
-${b.content}</td></tr></table></td></tr>
-<tr><th>첨부파일</th>
-	<td><c:if test="${empty b.file1}">&nbsp;</c:if>
-	<c:if test="${!empty b.file1}">
-		<a href="../upload/board/${b.file1}">${b.file1}</a>
-	</c:if></td></tr>
-<tr><td colspan="2" class="w3-center">
-	<a href="replyForm?num=${b.num}">[답변]</a>
-	<a href="updateForm?num=${b.num}">[수정]</a>
-	<a href="deleteForm?num=${b.num}">[삭제]</a>
-	<a href="list?boardid=${b.boardid}">[목록]</a>
-</td></tr></table>
-
-
-<%--댓글 등록,조회ㅡ삭제 --%>
-<span id="comment"></span>
-<form action="comment" method="post">
-<input type="hidden" name="num" value="${b.num}"><%--게시물번호 --%>
-<div class="col-4 text-center">
-<p>작성자: <input type="text" name="writer" class="form-control"></p>
-</div>
-<div class="col-7 text-center">
-<p>내용: <input type="text" name="content" class="form-control"></p>
-</div>
-<div class="col-2 text-center">
-<p><button type="submit" class="btn btn-primary">댓글등록</button></p>
-</div>
+        <!-- 게시판 시작 -->
+	
+	<h2>문의게시판</h2>
+	<form action="list?boardid=${boardid}" method="post" name="sf">
+		<input type="hidden" name="pageNum" value="1">
+		<select class="w3-select" name="column">
+			<option value="">선택하시오</option>
+			<option value="writer">작성자</option>
+			<option value="title">제목</option>
+			<option value="content">내용</option>
+			<option value="title,writer">제목 + 작성자</option>
+			<option value="title,content">제목 + 내용</option>
+			<option value="writer,content">작성자 + 내용</option>
+			<option value="title,writer,content">제목 + 작성자 + 내용</option>
+		</select>
+		<script type="text/javascript">
+			document.sf.column.value='${param.column}'
+		</script>
+		<input class="form-control" type="text" placeholder="Search" name="find" value="${param.find}">
+		<button class="btn btn-primary" type="submit">Search</button>
 </form>
-<div class="contatiner">
+
 <table class="table">
-<c:forEach var="c" items="${commlist}">
-<tr><td>${c.seq}</td><td>${c.writer}</td>
-<td>${c.content}</td>
-<td>
-<fmt:formatDate value="${c.regdate}" type="both" var="rdate"/>
-${rdate}
-</td>
-<td align="right">
-<a class="btn btn-danger" href="commdel?num=${param.num}&seq=${c.seq}">삭제</a>
-</td></tr>
-</c:forEach>
+	<c:if test="${boardcount == 0}">
+		<tr>
+			<td colspan="5">등록된 게시글이 없습니다.</td>
+		</tr>
+	</c:if>
+	
+	<c:if test="${boardcount > 0}">
+		<tr>
+			<td colspan="5" style="text-align:right">글 개수: ${boardcount}</td>
+		</tr>
+		
+		<tr>
+			<th width="8%">번호</th>
+			<th width="50%">제목</th>
+			<th width="14%">작성자</th>
+			<th width="17%">등록일</th>
+			<th width="11%">조회수</th>
+		</tr>
+	<c:forEach var="b" items="${list}" varStatus = "status">
+		<tr>
+			<td>
+				${boardNum}
+			</td>
+	<c:set var="boardNum" value="${boardNum -1}"></c:set>
+			<td style="text-align: left">
+				<c:if test="${!empty b.file1}">
+						<a href="../upload/board/${b.file1}" style="color:green;">@</a>
+				</c:if>
+				<c:if test="${empty b.file1}">&nbsp;&nbsp;&nbsp;</c:if>
+				
+				<%--
+					답글인 경우 level 만큼 공백 생성
+				 --%>
+				 <c:if test="${b.grplevel > 0}">
+				 	<c:forEach var="i" begin="2" end="${b.grplevel}">
+				 		&nbsp;
+				 	</c:forEach>└ <%-- ㅂ 한자 --%>
+				 </c:if>
+				<a href="info?num=${b.num}">${b.title}</a>
+			</td>
+			<td>${b.writer}</td>
+			<%--
+				오늘등록된글은 시간만 표시
+			 --%>
+			 <fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd" var="rdate"/>
+			 <fmt:formatDate value="${today}" pattern="yyyy-MM-dd" var="tdate"/>
+			 
+			 
+			<td>
+			<c:if test="${rdate == tdate}">
+			 	<fmt:formatDate value="${b.regdate}" pattern="HH:mm:ss"/>
+			 </c:if>
+			 <c:if test="${rdate != tdate}">
+			 	<fmt:formatDate value="${b.regdate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+			 </c:if>
+			</td>
+			<td>${b.readcnt}</td>			
+	</c:forEach>
+<%-- 페이지 처리하기 --%>
+		<tr>
+			<td colspan="5" align="center">
+			<c:if test="${pageNum <= 1}">
+			[이전]
+			</c:if>
+			<c:if test="${pageNum > 1}">
+				<a href="javascript:listsubmit(${pageNum-1})">[이전]</a>
+			</c:if>
+			
+			<c:forEach var="a" begin="${startpage}" end="${endpage}">
+				<c:if test="${a == pageNum}">
+					[${a}]
+				</c:if>
+				<c:if test="${a != pageNum}">
+					<a href="javascript:listsubmit(${a})">[${a}]</a>
+				</c:if>
+			</c:forEach>
+			<c:if test="${pageNum >= maxpage}">
+				[다음]
+			</c:if>
+			<c:if test="${pageNum < maxpage}">
+				<a href="javascript:listsubmit(${pageNum+1})">[다음]</a>
+			</c:if>
+			</td>
+		</tr>
+	</c:if>
+		<tr>
+			<td colspan="3" style="text-align:center">[이전][1][다음]</td>
+			<td colspan="3" style="text-align:right;">
+			<p align="right"><a href="createPost">[글쓰기]</a></p>
+			</td>
+		</tr>
 </table>
-</div>
+<script>
+	function listsubmit(page) {
+		f = document.sf;
+		f.pageNum.value = page;
+		f.submit();
+	}
+</script>
 <!-- 게시판 끝 -->
         
         
