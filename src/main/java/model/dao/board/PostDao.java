@@ -30,4 +30,9 @@ public class PostDao {
 			System.out.println(p);
 		}
 	}
+	public int boardCount(String column, String find) {
+		SqlSession session = MyBatisConnection.getConnection();
+		
+		return 0;
+	}
 }
