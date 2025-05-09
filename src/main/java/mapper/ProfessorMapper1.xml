@@ -9,7 +9,7 @@
 	select count(*) from professor
 	</select>
 	
-	<select id="selectAll" resultType="Professor">
+	<!--  <select id="selectAll" resultType="Professor">
 		select * from professor
 	</select>
 	
@@ -19,5 +19,5 @@
 	
 	<select id="selectTimeKim" parameterType="map" resultType="Professor">
 	select * from professor where name like'%${name}%' and position=#{position}
-	</select>
+	</select> -->
 </mapper>
