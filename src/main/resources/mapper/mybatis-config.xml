@@ -8,6 +8,8 @@
   <!-- 별명들 -->
   <typeAliases>
   	<typeAlias type="domain.Professor" alias="Professor" />
+  	<typeAlias type="domain.Post" alias="Post" />
+  	<typeAlias type="domain.Notice" alias="Notice" />  	
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -27,6 +29,8 @@
   <!--  sql 구문을 가진 파일 목록 -->
   <mappers>
   	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
+  	<mapper resource="mapper/board/PostMapper.xml"/>
+  	<mapper resource="mapper/board/NoticeMapper.xml"/>
   	<package name="mapper"/>
   	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
   </mappers>
