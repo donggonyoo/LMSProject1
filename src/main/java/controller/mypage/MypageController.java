@@ -20,10 +20,10 @@ public class MypageController  extends MskimRequestMapping{
 		String name  = request.getParameter("name");
 		String birth = request.getParameter("birth");
 		String pass = request.getParameter("password");
-		String hashpw = BCrypt.hashpw(pass, BCrypt.gensalt());
+		String hashpw = BCrypt.hashpw(pass, BCrypt.gensalt());//hashPassword : 암호화 (복호화는불가능)
 		System.out.println("pass: "+pass);
 		System.out.println("hashpass: "+hashpw);
-		System.out.println(birth);
+		System.out.println("birthday"+birth);
 		System.out.println("name="+ name);
 		return "mypage/doLogin";
 	}
