@@ -93,17 +93,18 @@
         </div>
         <div class="mb-3">
             <label for="confirmPassword" class="form-label">비밀번호 확인</label>
-            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인">
+            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인" onkeyup="cpChk(this)">
+            <font id="pEqulasCp"></font>
            
         </div>
         <div class="mb-3">
             <label for="phone" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel" placeholder="전화번호 입력" onkeyup="tChk(this)">
+            <input type="text" class="form-control" id="tel" name="tel" placeholder="전화번호 입력" onkeyup="tChk(this)">
             <font id='telValid'></font>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">이메일</label>
-            <input type="email" class="form-control" id="email" placeholder="이메일 입력" onkeyup="eChk(this)">
+            <input type="email" class="form-control" id="email" name="email" placeholder="이메일 입력" onkeyup="eChk(this)">
             <font id='emailValid'></font>
         </div>
         <button class="btn btn-custom w-100 mb-3">가입</button>
@@ -134,6 +135,19 @@
     		passVal.style.color='green';
     	}
     }
+    
+    function cpChk(cp){ //비밀번호와 재입력한비밀번호가 같은지?
+		let  p = document.querySelector("#password").value;
+		let  pEqulasCp = document.querySelector("#pEqulasCp");
+		if(!(p===cp.value)){
+			pEqulasCp.innerHTML = '비밀번호가 일치하지않아요';
+		}
+		else{
+			pEqulasCp.innerHTML = '';
+		}
+
+    }
+    
     function tChk(t){
     	const telVal = document.querySelector("#telValid");
     	if(!valid(t.value,'tel')){
