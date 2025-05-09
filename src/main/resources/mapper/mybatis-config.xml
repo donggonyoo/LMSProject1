@@ -7,9 +7,7 @@
   
   <!-- 별명들 -->
   <typeAliases>
-  	<typeAlias type="main.Member" alias="Member" />
-  	<typeAlias type="main.Student" alias="Student" />
-  	<typeAlias type="main.Professor" alias="Professor" />
+  	<typeAlias type="domain.Professor" alias="Professor" />
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -28,10 +26,7 @@
   
   <!--  sql 구문을 가진 파일 목록 -->
   <mappers>
-  	<mapper resource="mapper/MemberMapper1.xml"/>
-  	<mapper resource="mapper/StudentMapper1.xml"/>
-  	<mapper resource="mapper/StudentMapper2.xml"/>
-  	<mapper resource="mapper/professorMapper1.xml"/>
+  	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
   	<package name="mapper"/>
   	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
   </mappers>
