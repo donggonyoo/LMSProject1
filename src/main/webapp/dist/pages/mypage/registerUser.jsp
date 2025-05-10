@@ -47,7 +47,7 @@
 <body>
     <div class="card">
         <h4 class="text-center mb-4">회원가입</h4>
-        <form action="registerUserChk" name="f" method="post" onsubmit="return input_chk(this)">
+        <form action="registerUserChk" name="f" method="post" onsubmit="return input_check(this)">
                 <input type="hidden" name="picture" value=""><!-- 업로드된 이미지의 이름이 들어갈태그 -->
         <div class="mb-3">
             <img src="" width="100" height="120"  id="pic"><br>
@@ -78,8 +78,8 @@
         </div>
         <div class="mb-3">
             <label for="major" class="form-label">전공 선택</label>
-            <select class="form-select" id="major">
-                <option selected>전공</option>
+            <select class="form-select" id="major" name="major">
+                <option selected value="none">전공</option>
                 <option value="computer">컴퓨터공학과</option>
                 <option value="electronics">전자공학과</option>
                 <option value="business">경영학과</option>
@@ -119,7 +119,7 @@
     <script type="text/javascript">
     function win_upload(){
     	let op = "width=500,height=500 ,top=50 ,left=150";
-    	open("registerImg.jsp","",op);
+    	open("registerImg","",op);
     	//pictureForm.jsp를 연다
     }
     
@@ -191,8 +191,49 @@
     	}
     }
     
+    //폼검증
     function input_check(f){
-    	return true;
+    	//f : <form...>
+    	//f.pass : <input name="id">name이 pass인태그
+    	if(f.password.value.trim() == ""){ 
+    		alert("비밀번호입력")
+    		f.password.focus();
+    		return false; 
+    	}
+    	if(f.confirmPassword.value.trim() == ""){ 
+    		alert("비밀번호재입력")
+    		f.confirmPassword.focus();
+    		return false; 
+    	}
+    	if(f.name.value.trim() == ""){ 
+    		alert("이름입력")
+    		f.name.focus();
+    		return false; 
+    	}
+    	if(f.major.value.trim() == "none"){ 
+    		alert("전공선택")
+    		f.major.focus();
+    		return false; 
+    	}
+
+    	if(f.tel.value.trim() == ""){ 
+    		alert("전화번호입력바람")
+    		f.tel.focus();
+    		return false; 
+    	}
+    	if(f.email.value.trim() == ""){ 
+    		alert("email입력바람")
+    		f.email.focus();
+    		return false; 
+    	}
+    	if(!(valid(f.password.value.trim(),'pass') 
+    		&& valid(f.email.value.trim(),'email')
+    		&& valid(f.tel.value.trim(),'tel'))){ //3개중 한개라도 유효성검사를 실패했다면 실행
+    	alert("형식을준수해주세요")
+    	return false;
+    	}
+    	
+    	return true;//아이디비번이름이 입력됐다면 true
     }
     
     </script>
