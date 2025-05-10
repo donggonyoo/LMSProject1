@@ -8,6 +8,15 @@
   <!-- 별명들 -->
   <typeAliases>
   	<typeAlias type="domain.Professor" alias="Professor" />
+  	<typeAlias type="domain.Post" alias="Post" />
+  	<typeAlias type="domain.Notice" alias="Notice" />
+  	<typeAlias type="domain.Course" alias="Course" />
+  	<typeAlias type="domain.CourseTime" alias="CourseTime" />
+  	<typeAlias type="domain.Dept" alias="Dept" />
+  	<typeAlias type="domain.Score" alias="Score" />
+  	<typeAlias type="domain.Student" alias="Student" />
+  	<typeAlias type="domain.Registration" alias="Registration" />
+  	<typeAlias type="domain.Attendance" alias="Attendance" />  	
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -27,6 +36,9 @@
   <!--  sql 구문을 가진 파일 목록 -->
   <mappers>
   	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
+  	<mapper resource="mapper/board/PostMapper.xml"/> 
+  	<mapper resource="mapper/board/NoticeMapper.xml"/>
+  	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
   	<package name="mapper"/>
   	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
   </mappers>

@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -49,28 +51,25 @@
     </style>
 </head>
 <body>
-<form action="login" method="post" name="f" onsubmit="return input_check(this)">
-   <div class="card">
+    <div class="card">
         <h4 class="text-center mb-4">로그인</h4>
         <div class="mb-3">
             <label for="id" class="form-label">아이디</label>
-            <input type="text" class="form-control" id="id" placeholder="아이디 입력">
+            <input type="text" class="form-control" id="id" placeholder="아이디 입력" >
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" placeholder="비밀번호 입력">
+            <input type="password" class="form-control" id="password" placeholder="비밀번호 입력" >
         </div>
 
-        <button class="btn btn-primary" ><span class="ldb-text">LDB</span> 로그인</button>
+        <button class="btn btn-primary"><span class="ldb-text">LDB</span> 로그인</button>
         <br>
         <div class="d-flex justify-content-between">
-            <a href="FindID.html" class="btn-link-custom">아이디 찾기</a>
-            <a href="FindPassword.html" class="btn-link-custom">비밀번호 찾기</a>
-            <a href="SignUp.html" class="btn-link-custom">회원가입</a>
+            <a href="findId" class="btn-link-custom">아이디 찾기</a>
+            <a href="findPw" class="btn-link-custom">비밀번호 찾기</a>
+            <a href="registerUser" class="btn-link-custom">회원가입</a>
         </div>
     </div>
-</form>
- 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

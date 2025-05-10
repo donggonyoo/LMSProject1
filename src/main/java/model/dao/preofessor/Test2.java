@@ -20,24 +20,12 @@ import config.MyBatisConnection;
 4. 교수중 성이 김씨인 시간강사 정보를 출력하기 
 */
 public class Test2 {
-	private final static SqlSessionFactory sqlMap;
-	
-	static {
-		InputStream input = null;
-		try {
-			input = Resources.getResourceAsStream("mapper/mybatis-config.xml");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		sqlMap = new SqlSessionFactoryBuilder().build(input);
-	}
 	
 	public static void main(String[] args) {
 		SqlSession session = MyBatisConnection.getConnection();
 		int num = session.selectOne("professor.selectCount");
 		System.out.println(num);
 		
-
 	}
 }
 
