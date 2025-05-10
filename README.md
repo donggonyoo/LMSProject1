@@ -14,20 +14,9 @@
 
 > 아래는 실제 시스템 UI의 예시입니다.
 
-<table>
-  <tr>
-    <th>로그인 화면</th>
-    <th>수강 신청 화면</th>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="./screenshots/courseapply.jpg" alt="로그인 화면" width="300"/>
-    </td>
-    <td align="center">
-      <img src="./screenshots/courseapply.jpg" alt="수강 신청 화면" width="300"/>
-    </td>
-  </tr>
-</table>
+| 로그인 화면 | 수강 신청 화면 |
+|-------------|----------------|
+| ![login](./screenshots/login.png) | ![enroll](./screenshots/enroll.png) |
 
 ---
 
