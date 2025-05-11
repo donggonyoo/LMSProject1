@@ -1,38 +1,53 @@
 package model.dao.board;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.ibatis.io.Resources;
+import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
 import config.MyBatisConnection;
 import domain.Post;
 
 public class PostDao {
-	private final static SqlSessionFactory sqlMap;
-	static {
-		InputStream input = null;
-		try {
-			input = Resources.getResourceAsStream("mapper/mybatis-config.xml");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		sqlMap = new SqlSessionFactoryBuilder().build(input);
-	}
-	public static void main(String[] args) {
-		SqlSession session = MyBatisConnection.getConnection();
-		List<Post> list = session.selectList("post.selectname","PO001");
-		for(Post p : list) {
-			System.out.println(p);
-		}
-	}
-	public int boardCount(String column, String find) {
-		SqlSession session = MyBatisConnection.getConnection();
-		
-		return 0;
-	}
+    public int boardCount(String column, String find) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("column", column);
+            map.put("find", find);
+            int count = session.selectOne("post.count", map);
+            System.out.println("DAO boardCount - column: " + column + ", find: " + find + ", count: " + count);
+            return count;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public List<Post> list(int pageNum, int limit, String column, String find) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("startRow", (pageNum - 1) * limit);
+            map.put("pageSize", limit);
+            map.put("column", column);
+            map.put("find", find);
+            System.out.println("DAO list - startRow: " + map.get("startRow") + ", pageSize: " + map.get("pageSize") + 
+                               ", column: " + column + ", find: " + find);
+            List<Post> result = session.selectList("post.selectList", map);
+            System.out.println("DAO list - result size: " + (result != null ? result.size() : "null"));
+            return result;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public Post selectOne(String post_id) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            Post post = session.selectOne("post.selectOne", post_id);
+            System.out.println("DAO selectOne - post_id: " + post_id + ", result: " + post);
+            return post;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
 }

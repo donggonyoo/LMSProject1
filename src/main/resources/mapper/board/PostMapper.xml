@@ -1,8 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="post">
-	<select id="selectname" resultType="post" parameterType="String">
-	select * from post where post_id = #{value}
-	</select>
+
+    <select id="count" resultType="int" parameterType="map">
+        SELECT COUNT(*) FROM post
+        <if test="column != null and find != null">
+            WHERE
+            <choose>
+                <when test="column == 'author_id'">
+                    author_id LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_title'">
+                    post_title LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_content'">
+                    post_content LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_title,author_id'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'post_title,post_content'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'author_id,post_content'">
+                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'post_title,author_id,post_content'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+            </choose>
+        </if>
+    </select>
+
+    <select id="selectList" resultType="domain.Post" parameterType="map">
+        SELECT
+            post_id,
+            author_id,
+            post_title,
+            post_content,
+            post_created_at,
+            post_group,
+            post_group_level,
+            post_group_step,
+            post_file,
+            post_read_count
+        FROM post
+        <if test="column != null and find != null">
+            WHERE
+            <choose>
+                <when test="column == 'author_id'">
+                    author_id LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_title'">
+                    post_title LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_content'">
+                    post_content LIKE CONCAT('%', #{find}, '%')
+                </when>
+                <when test="column == 'post_title,author_id'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'post_title,post_content'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'author_id,post_content'">
+                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+                <when test="column == 'post_title,author_id,post_content'">
+                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
+                </when>
+            </choose>
+        </if>
+        ORDER BY post_id DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+
+    <select id="selectOne" resultType="domain.Post" parameterType="string">
+        SELECT
+            post_id,
+            author_id,
+            post_title,
+            post_content,
+            post_created_at,
+            post_group,
+            post_group_level,
+            post_group_step,
+            post_file,
+            post_read_count
+        FROM post
+        WHERE post_id = #{post_id}
+    </select>
+
+    <update id="incrementReadCount" parameterType="string">
+        UPDATE post
+        SET post_read_count = post_read_count + 1
+        WHERE post_id = #{post_id}
+    </update>
+
+    <insert id="insert" parameterType="domain.Post">
+        INSERT INTO post (
+            post_id,
+            author_id,
+            post_title,
+            post_content,
+            post_created_at,
+            post_group,
+            post_group_level,
+            post_group_step,
+            post_file,
+            post_read_count
+        ) VALUES (
+            #{post_id},
+            #{author_id},
+            #{post_title},
+            #{post_content},
+            #{post_created_at},
+            #{post_group},
+            #{post_group_level},
+            #{post_group_step},
+            #{post_file},
+            #{post_read_count}
+        )
+    </insert>
 </mapper>
