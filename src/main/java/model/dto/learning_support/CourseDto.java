@@ -6,10 +6,10 @@ public class CourseDto {
     private String professorId;
     private String professorName;
     private String courseName;
-    private String creditCategory;
+    private String creditCategory;// 전공필수여부
     private Integer courseScore;
     private String coursePlan;
-    private String timeSlot; // course_time에서 계산된 값 (예: "09:00-10:50")
+    private String timeSlot; // 시간
 
     // Getters and Setters
     public String getCourseId() { return courseId; }
@@ -30,4 +30,14 @@ public class CourseDto {
     public void setCoursePlan(String coursePlan) { this.coursePlan = coursePlan; }
     public String getTimeSlot() { return timeSlot; }
     public void setTimeSlot(String timeSlot) { this.timeSlot = timeSlot; }
+    
+	@Override
+	public String toString() {
+		return "CourseDto [courseId=" + courseId + ", deptId=" + deptId + ", professorId=" + professorId
+				+ ", professorName=" + professorName + ", courseName=" + courseName + ", creditCategory="
+				+ creditCategory + ", courseScore=" + courseScore + ", coursePlan=" + coursePlan + ", timeSlot="
+				+ timeSlot + "]";
+	}
+    
+    
 }

@@ -5,6 +5,11 @@
 <!-- config파일에서 사용되는 환경변수 설정 -->
   <properties resource="mapper/mybatis.properties" />
   
+	<!-- 설정 추가 -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+  
   <!-- 별명들 -->
   <typeAliases>
   	<typeAlias type="domain.Professor" alias="Professor" />
@@ -16,7 +21,9 @@
   	<typeAlias type="domain.Score" alias="Score" />
   	<typeAlias type="domain.Student" alias="Student" />
   	<typeAlias type="domain.Registration" alias="Registration" />
-  	<typeAlias type="domain.Attendance" alias="Attendance" />  	
+  	<typeAlias type="domain.Attendance" alias="Attendance" />
+  	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
+  	<typeAlias type="model.dto.learning_support.SearchDto" alias="SearchDto" />  	
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -39,8 +46,7 @@
   	<mapper resource="mapper/board/PostMapper.xml"/> 
   	<mapper resource="mapper/board/NoticeMapper.xml"/>
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
-  	<package name="mapper"/>
-  	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
+  	
   </mappers>
 
 </configuration>

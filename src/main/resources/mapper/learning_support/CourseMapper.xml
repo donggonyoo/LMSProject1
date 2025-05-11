@@ -10,5 +10,34 @@
 	    WHERE college IS NOT NULL
 	    ORDER BY college
 	</select>
+	
+	<select id="selectDepartments" resultType="java.util.Map">
+	    select dept_id, dept_name
+		from dept
+		where college = #{college};
+	</select>
+	
+	<select id="searchCourse" resultType="CourseDto">
+	    SELECT 
+	        c.course_id, c.dept_id, c.professor_id, p.professor_name, 
+	        c.course_name, c.credit_category, c.course_score, c.course_plan,
+	        (SELECT CONCAT(ct.course_time_yoil, ', ', ct.course_time_start, ' - ', ct.course_time_end)
+	         FROM course_time ct
+	         WHERE ct.course_id = c.course_id
+	         LIMIT 1) AS time_slot
+	    FROM course c
+	    JOIN professor p ON c.professor_id = p.professor_id
+	    JOIN dept d ON c.dept_id = d.dept_id
+	    WHERE c.course_status = 'OPEN'
+	    <if test="deptId != null and deptId != ''">
+	        AND c.dept_id = #{deptId}
+	    </if>
+	    <if test="courseId != null and courseId != ''">
+	        AND c.course_id = #{courseId}
+	    </if>
+	    <if test="courseName != null and courseName != ''">
+	        AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
+	    </if>
+</select>
 
 </mapper>

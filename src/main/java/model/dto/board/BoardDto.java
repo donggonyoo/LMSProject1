@@ -88,8 +88,8 @@ public class BoardDto {
 	@Override
 	public String toString() {
 		return "Board [num=" + num + ", writer=" + writer + ", pass=" + pass + ", title=" + title + ", content="
-				+ content + ", file1=" + file1 + ", boardid=" + boardid + ", regdate=" + regdate + ", readcnt="
-				+ ", grp=" + grp + ", grplevel=" + grplevel + ", grpstep=" + grpstep + "]";
+				+ content + ", file1=" + file1 + ", boardid=" + boardid + ", regdate=" + regdate + 
+				", grp=" + grp + ", grplevel=" + grplevel + ", grpstep=" + grpstep + "]";
 	}
 	
 }
