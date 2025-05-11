@@ -6,10 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <title>게시물 등록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
@@ -44,27 +45,11 @@
         </table>
     </form>
     <script>
-        function inputcheck() {
-            let f = document.f;
-            if (f.author_id.value == "") {
-                alert("글쓴이를 입력하세요");
-                f.author_id.focus();
+        $(document).ready(function() {
+            if (typeof $.fn.summernote === 'undefined') {
+                console.error("Summernote is not loaded!");
                 return;
             }
-            if (f.pass.value == "") {
-                alert("비밀번호를 입력하세요");
-                f.pass.focus();
-                return;
-            }
-            if (f.post_title.value == "") {
-                alert("제목을 입력하세요");
-                f.post_title.focus();
-                return;
-            }
-            f.submit();
-        }
-
-        $(function() {
             $("#summernote").summernote({
                 height: 300,
                 callbacks: {
@@ -96,6 +81,26 @@
                     alert("이미지 업로드 실패: " + e.status);
                 }
             });
+        }
+
+        function inputcheck() {
+            let f = document.f;
+            if (f.author_id.value == "") {
+                alert("글쓴이를 입력하세요");
+                f.author_id.focus();
+                return;
+            }
+            if (f.pass.value == "") {
+                alert("비밀번호를 입력하세요");
+                f.pass.focus();
+                return;
+            }
+            if (f.post_title.value == "") {
+                alert("제목을 입력하세요");
+                f.post_title.focus();
+                return;
+            }
+            f.submit();
         }
     </script>
 </body>

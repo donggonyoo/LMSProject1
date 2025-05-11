@@ -34,7 +34,7 @@
             <th>첨부파일</th>
             <td>
                 <c:if test="${!empty post.post_file}">
-                    <a href="../upload/board/${post.post_file}">${post.post_file}</a>
+                    <a href="${pageContext.request.contextPath}/upload/board/${post.post_file}">${post.post_file}</a>
                 </c:if>
                 <c:if test="${empty post.post_file}">
                     없음

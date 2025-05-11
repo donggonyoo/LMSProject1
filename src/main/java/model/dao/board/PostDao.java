@@ -14,9 +14,7 @@ public class PostDao {
             Map<String, Object> map = new HashMap<>();
             map.put("column", column);
             map.put("find", find);
-            int count = session.selectOne("post.count", map);
-            System.out.println("DAO boardCount - column: " + column + ", find: " + find + ", count: " + count);
-            return count;
+            return session.selectOne("post.count", map);
         } finally {
             MyBatisConnection.close(session);
         }
@@ -30,11 +28,7 @@ public class PostDao {
             map.put("pageSize", limit);
             map.put("column", column);
             map.put("find", find);
-            System.out.println("DAO list - startRow: " + map.get("startRow") + ", pageSize: " + map.get("pageSize") + 
-                               ", column: " + column + ", find: " + find);
-            List<Post> result = session.selectList("post.selectList", map);
-            System.out.println("DAO list - result size: " + (result != null ? result.size() : "null"));
-            return result;
+            return session.selectList("post.selectList", map);
         } finally {
             MyBatisConnection.close(session);
         }
@@ -43,9 +37,27 @@ public class PostDao {
     public Post selectOne(String post_id) {
         SqlSession session = MyBatisConnection.getConnection();
         try {
-            Post post = session.selectOne("post.selectOne", post_id);
-            System.out.println("DAO selectOne - post_id: " + post_id + ", result: " + post);
-            return post;
+            return session.selectOne("post.selectOne", post_id);
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public void incrementReadCount(String post_id) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            session.update("post.incrementReadCount", post_id);
+            session.commit();
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public void insert(Post post) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            session.insert("post.insert", post);
+            session.commit();
         } finally {
             MyBatisConnection.close(session);
         }
