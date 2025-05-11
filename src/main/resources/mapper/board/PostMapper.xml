@@ -97,9 +97,8 @@
         WHERE post_id = #{post_id}
     </update>
 
-    <insert id="insert" parameterType="domain.Post">
+    <insert id="insert" parameterType="domain.Post" useGeneratedKeys="true" keyProperty="post_id">
         INSERT INTO post (
-            post_id,
             author_id,
             post_title,
             post_content,
@@ -110,7 +109,6 @@
             post_file,
             post_read_count
         ) VALUES (
-            #{post_id},
             #{author_id},
             #{post_title},
             #{post_content},

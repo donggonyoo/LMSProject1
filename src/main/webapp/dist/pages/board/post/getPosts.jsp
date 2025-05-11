@@ -74,7 +74,7 @@
                                  
                             </c:forEach>└
                         </c:if>
-                        <a href="${pageContext.request.contextPath}/post/info?post_id=${b.post_id}">
+                        <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${b.post_id}">
                             ${b.post_title}
                         </a>
                     </td>
