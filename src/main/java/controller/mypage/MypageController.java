@@ -253,8 +253,9 @@ public class MypageController  extends MskimRequestMapping{
 				if(pass.equals(stu.getStudentPassword())){//로그인성공
 					System.out.println("학생로그인");
 					session.setAttribute("login", id);
-					request.setAttribute("msg", stu.getStudentName()+"님이 로그인 하셨습니다");
-					request.setAttribute("url","index");
+					/*request.setAttribute("msg", stu.getStudentName()+"님이 로그인 하셨습니다");
+					request.setAttribute("url","index");*/
+					return "index";
 
 				}
 				else{
