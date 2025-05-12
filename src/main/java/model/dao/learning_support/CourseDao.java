@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
 
 
@@ -59,5 +60,61 @@ public class CourseDao {
 		
 		return result;
 	}
+
+	public int addCourse(Map<String, Object> map) {
+		
+		SqlSession session = MyBatisConnection.getConnection(); 
+		int result = 0;
+		long maxId = -1;
+		
+		maxId = session.selectOne("getMaxRegistrationIdNumber");
+		String registrationId = "R" + (++maxId);
+		map.put("registrationId", registrationId);
+		
+		try {
+			result = session.insert("course.addCourse", map);
+		} catch (Exception e) {	
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		
+		return result;
+	}
+
+	public List<RegistrationDto> searchRegistrationCourses(String studentId) {
+		
+		SqlSession session = MyBatisConnection.getConnection(); 
+		List<RegistrationDto> result = null;
+		
+		try {
+			 result = session.selectList("course.searchRegistrationCourses", studentId);
+		} catch (Exception e) {	
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		
+		return result;
+	}
+
+	public int deleteCourse(String registrationId) {
+		
+		SqlSession session = MyBatisConnection.getConnection(); 
+		int num = 0;
+		
+		try {
+			num = session.delete("course.deleteCourse", registrationId);
+		} catch (Exception e) {	
+			e.printStackTrace();
+		} finally {
+			MyBatisConnection.close(session);
+		}
+		
+		return num;
+		
+	}
+
+	
 
 }

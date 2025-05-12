@@ -29,6 +29,9 @@
 	    JOIN professor p ON c.professor_id = p.professor_id
 	    JOIN dept d ON c.dept_id = d.dept_id
 	    WHERE c.course_status = 'OPEN'
+	    <if test="college != null and college != ''">
+	        AND d.college = #{college}
+	    </if>
 	    <if test="deptId != null and deptId != ''">
 	        AND c.dept_id = #{deptId}
 	    </if>
@@ -38,6 +41,55 @@
 	    <if test="courseName != null and courseName != ''">
 	        AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
 	    </if>
-</select>
-
+	</select>
+	
+	<insert id="addCourse" parameterType="java.util.Map">
+        INSERT INTO registration (
+            registration_id,
+            student_id,
+            course_id,
+            professor_id,
+            registration_status,
+            registration_create,
+            registration_update
+        ) VALUES (
+            #{registrationId},
+            #{studentId},
+            #{courseId},
+            #{professorId},
+            'Pendinig',
+            now(),
+            now()
+        )
+    </insert>
+    
+    <!-- 최대 registration_id의 숫자 부분 조회 -->
+    <select id="getMaxRegistrationIdNumber" resultType="long">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(registration_id, 2) AS UNSIGNED)), 0) AS max_number
+        FROM registration
+    </select>
+	
+	
+	<select id="searchRegistrationCourses" resultType="RegistrationDto">
+	    SELECT r.registration_id, c.credit_category, c.course_id, c.course_name, c.course_score, p.professor_name,
+			(SELECT CONCAT(ct.course_time_yoil, ', ', ct.course_time_start, ' - ', ct.course_time_end) 
+			FROM course_time ct
+			WHERE ct.course_id = c.course_id
+			) AS time_slot
+		FROM registration r,
+			  course c,
+			  professor p
+		WHERE r.student_id = #{studentId}
+		AND  r.course_id = c.course_id
+		AND c.professor_id = p.professor_id
+	</select>
+	
+    <delete id="deleteCourse" parameterType="string">
+        DELETE FROM registration
+        WHERE registration_id = #{registrationId}
+    </delete>
+	
+	
+	
+	
 </mapper>
