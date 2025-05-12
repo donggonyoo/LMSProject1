@@ -7,57 +7,44 @@
         <if test="column != null and find != null">
             WHERE
             <choose>
-                <when test="column == 'authorId'">
-                    author_id LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postTitle'">
-                    post_title LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postContent'">
-                    post_content LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postTitle,authorId'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'postTitle,postContent'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'authorId,postContent'">
-                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'postTitle,authorId,postContent'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
+                <when test="column == 'authorId'">author_id LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postTitle'">post_title LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postContent'">post_content LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postTitle,authorId'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'authorId,postContent'">(author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,authorId,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
             </choose>
         </if>
     </select>
 
+    <select id="selectNotices" resultType="Post">
+        SELECT
+            post_id, author_id, post_password, post_title, post_content,
+            post_created_at, post_updated_at, post_group, post_group_level,
+            post_group_step, post_file, post_read_count, post_notice
+        FROM post
+        WHERE post_notice = 1
+        ORDER BY post_group DESC, post_group_step DESC
+    </select>
+
     <select id="selectList" resultType="Post" parameterType="map">
-        SELECT * FROM post
+        SELECT
+            post_id, author_id, post_password, post_title, post_content,
+            post_created_at, post_updated_at, post_group, post_group_level,
+            post_group_step, post_file, post_read_count, post_notice
+        FROM post
+        WHERE post_notice = 0
         <if test="column != null and find != null">
-            WHERE
+            AND
             <choose>
-                <when test="column == 'authorId'">
-                    author_id LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postTitle'">
-                    post_title LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postContent'">
-                    post_content LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'postTitle,authorId'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'postTitle,postContent'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'authorId,postContent'">
-                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'postTitle,authorId,postContent'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
+                <when test="column == 'authorId'">author_id LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postTitle'">post_title LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postContent'">post_content LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postTitle,authorId'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'authorId,postContent'">(author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,authorId,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
             </choose>
         </if>
         ORDER BY post_group DESC, post_group_step DESC
@@ -65,14 +52,15 @@
     </select>
 
     <select id="selectOne" resultType="Post" parameterType="string">
-        SELECT * FROM post
-        WHERE post_id = #{postId}
+        SELECT
+            post_id, author_id, post_password, post_title, post_content,
+            post_created_at, post_updated_at, post_group, post_group_level,
+            post_group_step, post_file, post_read_count, post_notice
+        FROM post WHERE post_id = #{postId}
     </select>
 
     <update id="incrementReadCount" parameterType="string">
-        UPDATE post
-        SET post_read_count = post_read_count + 1
-        WHERE post_id = #{postId}
+        UPDATE post SET post_read_count = post_read_count + 1 WHERE post_id = #{postId}
     </update>
 
     <select id="getMaxPostId" resultType="string">
@@ -84,56 +72,54 @@
     </select>
 
     <update id="updateGroupStep" parameterType="map">
-        UPDATE post
-        SET post_group_step = post_group_step + 1
+        UPDATE post SET post_group_step = post_group_step + 1
         WHERE post_group = #{group} AND post_group_step > #{step}
     </update>
 
     <insert id="insert" parameterType="Post">
         INSERT INTO post (
-            post_id,
-            author_id,
-            post_password,
-            post_title,
-            post_content,
-            post_created_at,
-            post_group,
-            post_group_level,
-            post_group_step,
-            post_file,
-            post_read_count
+            post_id, author_id, post_password, post_title, post_content,
+            post_created_at, post_updated_at, post_group, post_group_level,
+            post_group_step, post_file, post_read_count, post_notice
         ) VALUES (
-            #{postId},
-            #{authorId},
-            #{postPassword},
-            #{postTitle},
-            #{postContent},
-            #{postCreatedAt},
-            #{postGroup},
-            #{postGroupLevel},
-            #{postGroupStep},
-            #{postFile},
-            #{postReadCount}
+            #{postId}, #{authorId}, #{postPassword}, #{postTitle}, #{postContent},
+            #{postCreatedAt}, #{postUpdatedAt}, #{postGroup}, #{postGroupLevel},
+            #{postGroupStep}, #{postFile}, #{postReadCount}, #{postNotice}
         )
     </insert>
-    
-<update id="update" parameterType="Post">
-        UPDATE post
-        SET
-            author_id = #{authorId},
-            post_password = #{postPassword},
-            post_title = #{postTitle},
-            post_content = #{postContent},
-            post_file = #{postFile},
-            post_created_at = #{postCreatedAt},
-            post_group = #{postGroup},
-            post_group_level = #{postGroupLevel},
-            post_group_step = #{postGroupStep},
-            post_read_count = #{postReadCount}
+
+    <update id="update" parameterType="Post">
+        UPDATE post SET
+            author_id = #{authorId}, post_password = #{postPassword}, post_title = #{postTitle},
+            post_content = #{postContent}, post_file = #{postFile}, post_updated_at = #{postUpdatedAt},
+            post_notice = #{postNotice}
         WHERE post_id = #{postId}
     </update>
-    
+
     <delete id="delete" parameterType="string">
         DELETE FROM post WHERE post_id = #{postId}
     </delete>
+
+    <insert id="insertComment" parameterType="PostComment">
+        INSERT INTO post_comment (
+            comment_id, post_id, writer_id, comment_content, parent_comment_id,
+            created_at, updated_at
+        ) VALUES (
+            #{commentId}, #{postId}, #{writerId}, #{commentContent}, #{parentCommentId},
+            #{createdAt}, #{updatedAt}
+        )
+    </insert>
+
+    <select id="selectCommentList" resultType="PostComment" parameterType="string">
+        SELECT
+            comment_id, post_id, writer_id, comment_content, parent_comment_id,
+            created_at, updated_at
+        FROM post_comment
+        WHERE post_id = #{postId}
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="getMaxCommentId" resultType="string">
+        SELECT MAX(comment_id) FROM post_comment
+    </select>
 </mapper>

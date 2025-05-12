@@ -38,6 +38,13 @@
                 <td><input type="file" name="post_file"></td>
             </tr>
             <tr>
+                <td>공지 설정</td>
+                <td>
+                    <input type="checkbox" name="post_notice" value="1" id="post_notice">
+                    <label for="post_notice">공지로 설정</label>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2">
                     <a href="javascript:inputcheck()" class="btn btn-primary">[게시물 등록]</a>                       
                 </td>

@@ -34,10 +34,10 @@ public class PostComment {
 	public void setCommentContent(String commentContent) {
 		this.commentContent = commentContent;
 	}
-	public String getParentCommentAd() {
+	public String getParentCommentId() {
 		return parentCommentId;
 	}
-	public void setParentCommentAd(String parentCommentAd) {
+	public void setParentCommentId(String parentCommentAd) {
 		this.parentCommentId = parentCommentAd;
 	}
 	public Date getCreatedAt() {
