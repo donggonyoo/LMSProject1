@@ -10,6 +10,7 @@
   	<typeAlias type="domain.Professor" alias="Professor" />
   	<typeAlias type="domain.Post" alias="Post" />
   	<typeAlias type="domain.Notice" alias="Notice" />  	
+  	<typeAlias type="domain.Student" alias="Student" />  	
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -31,6 +32,7 @@
   	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
   	<mapper resource="mapper/board/PostMapper.xml"/> 
   	<mapper resource="mapper/board/NoticeMapper.xml"/>
+  	<mapper resource="mapper/student/StudentMapper.xml"/>
   	<package name="mapper"/>
   	<!-- mapper패키지의 인터페이스를 sql구문으로등록 -->
   </mappers>
