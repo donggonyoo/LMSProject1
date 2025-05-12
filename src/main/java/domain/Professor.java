@@ -3,91 +3,64 @@ package domain;
 import java.util.Date;
 
 public class Professor {
-	
-	private int no;
-	private String name;
-	private String id;
-	private String position;
-	private int salary;
-	private Date hiredate;
-	private int bonus;
-	private int deptno;
-	private String email;
-	private String url;
-	private int profno;
-	
-	public int getNo() {
-		return no;
+	private String professor_Id;
+    private String professor_name;
+    private String professor_email;
+    private Date  professor_birthday;
+    private String professor_phone;
+    private String professor_major;
+    private String professor_img;
+    private String professor_password;
+    
+    
+	public String getProfessor_Id() {
+		return professor_Id;
 	}
-	public void setNo(int no) {
-		this.no = no;
+	public void setProfessor_Id(String professor_Id) {
+		this.professor_Id = professor_Id;
 	}
-	public String getName() {
-		return name;
+	public String getProfessor_name() {
+		return professor_name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setProfessor_name(String professor_name) {
+		this.professor_name = professor_name;
 	}
-	public String getId() {
-		return id;
+	public String getProfessor_email() {
+		return professor_email;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setProfessor_email(String professor_email) {
+		this.professor_email = professor_email;
 	}
-	public String getPosition() {
-		return position;
+	public Date getProfessor_birthday() {
+		return professor_birthday;
 	}
-	public void setPosition(String position) {
-		this.position = position;
+	public void setProfessor_birthday(Date professor_birthday) {
+		this.professor_birthday = professor_birthday;
 	}
-	public int getSalary() {
-		return salary;
+	public String getProfessor_phone() {
+		return professor_phone;
 	}
-	public void setSalary(int salary) {
-		this.salary = salary;
+	public void setProfessor_phone(String professor_phone) {
+		this.professor_phone = professor_phone;
 	}
-	public Date getHiredate() {
-		return hiredate;
+	public String getProfessor_major() {
+		return professor_major;
 	}
-	public void setHiredate(Date hiredate) {
-		this.hiredate = hiredate;
+	public void setProfessor_major(String professor_major) {
+		this.professor_major = professor_major;
 	}
-	public int getBonus() {
-		return bonus;
+	public String getProfessor_img() {
+		return professor_img;
 	}
-	public void setBonus(int bonus) {
-		this.bonus = bonus;
+	public void setProfessor_img(String professor_img) {
+		this.professor_img = professor_img;
 	}
-	public int getDeptno() {
-		return deptno;
+	public String getProfessor_password() {
+		return professor_password;
 	}
-	public void setDeptno(int deptno) {
-		this.deptno = deptno;
+	public void setProfessor_password(String professor_password) {
+		this.professor_password = professor_password;
 	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	public int getProfno() {
-		return profno;
-	}
-	public void setProfno(int profno) {
-		this.profno = profno;
-	}
+    
 
-	@Override
-	public String toString() {
-		return "Professor [no=" + no + ", name=" + name + ", id=" + id + ", position=" + position + ", salary=" + salary
-				+ ", hiredate=" + hiredate + ", bonus=" + bonus + ", deptno=" + deptno + ", email=" + email + ", url="
-				+ url + ", profno=" + profno + "]";
-	}
-	
 }
