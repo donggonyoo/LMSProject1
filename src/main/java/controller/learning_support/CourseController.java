@@ -1,28 +1,23 @@
 package controller.learning_support;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
 
 @WebServlet(urlPatterns = {"/learning_support/*"}, 
@@ -78,16 +73,96 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("searchCourse")
 	public String searchCourse (HttpServletRequest request, HttpServletResponse response) {
+//		String studentId = (String) request.getSession().getAttribute("login");
+//		테스트위한 임시 studentId 지정
+		String studentId = "S001";
 		
 		SearchDto searchDto = new SearchDto();
+		searchDto.setCollege(request.getParameter("college"));
 		searchDto.setDeptId(request.getParameter("deptId"));
 		searchDto.setCourseId(request.getParameter("courseId"));
 		searchDto.setCourseName(request.getParameter("courseName"));
 		
+		List<RegistrationDto> registrationCourses = courseDao.searchRegistrationCourses(studentId);
 		List<CourseDto> result = courseDao.searchCourse(searchDto);
-        request.setAttribute("courses", result);
 		
-        return "/pages/learning_support/registerCourse";
+		Iterator<CourseDto> iter = result.iterator();
+		while(iter.hasNext()) {
+			CourseDto c = iter.next();
+			for (RegistrationDto r : registrationCourses) {
+				if (c.getCourseId().equals(r.getCourseId())) {
+					
+					iter.remove();
+				}
+			}
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+        String json;
+        
+		try {
+			json = mapper.writeValueAsString(result);
+			request.setAttribute("json", json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+        return "/pages/learning_support/ajax_learning_support";
+	}
+	
+	@RequestMapping("addCourse")
+	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
+		
+		ObjectMapper mapper = new ObjectMapper();
+        String json;
+		//		String studentId = (String) request.getSession().getAttribute("login");
+		// 테스트위한 임시 studentId 지정
+		String studentId = "S001";
+		
+		Map<String, Object> map = new HashMap<>();
+//		map.put("studentId", request.getParameter("studentId"));
+		map.put("studentId", studentId);
+		map.put("courseId", request.getParameter("courseId"));
+		map.put("professorId", request.getParameter("professorId"));
+		
+		if (courseDao.addCourse(map) < 1) {
+			request.setAttribute("msg", "수강신청 추가 실패");
+			request.setAttribute("url", "registerCourse");
+			return "/pages/alert";
+		} else {
+			request.setAttribute("json", "강의추가 성공");
+		}
+
+        return "/pages/learning_support/ajax_learning_support";
+	}
+	
+	@RequestMapping("searchRegistrationCourses")
+	public String searchRegistrationCourses (HttpServletRequest request, HttpServletResponse response) {
+//		String studentId = (String) request.getSession().getAttribute("login");
+//		테스트위한 임시 studentId 지정
+		String studentId = "S001";
+		
+		List<RegistrationDto> result = courseDao.searchRegistrationCourses(studentId);
+		ObjectMapper mapper = new ObjectMapper();
+        String json;
+        
+		try {
+			json = mapper.writeValueAsString(result);
+			request.setAttribute("json", json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+        return "/pages/learning_support/ajax_learning_support";
+	}
+	
+	@RequestMapping("deleteCourse")
+	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
+
+		String registrationId = request.getParameter("registrationId");
+		System.out.println(registrationId);
+		int num = courseDao.deleteCourse(registrationId);
+		return "";
 	}
 	
 }
