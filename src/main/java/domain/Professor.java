@@ -29,4 +29,12 @@ public class Professor {
     public void setProfessorImg(String professorImg) { this.professorImg = professorImg; }
     public String getProfessorPassword() { return professorPassword; }
     public void setProfessorPassword(String professorPassword) { this.professorPassword = professorPassword; }
+	@Override
+	public String toString() {
+		return "Professor [professorId=" + professorId + ", professorName=" + professorName + ", professorEmail="
+				+ professorEmail + ", professorBirthday=" + professorBirthday + ", professorPhone=" + professorPhone
+				+ ", professorMajor=" + professorMajor + ", professorImg=" + professorImg + ", professorPassword="
+				+ professorPassword + "]";
+	}
+    
 }

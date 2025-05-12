@@ -1,0 +1,31 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="student">
+<select id="cnt" resultType="int" parameterType="String"> 
+		select count(*) from student where student_id=#{id}
+	</select>
+	
+<select id="list" resultType="Student">
+	select * from student
+</select>
+
+<insert id="insert" parameterType="Student">
+    INSERT INTO student (
+        student_id,student_num,dept_id,
+        student_name,student_birthday,student_email,
+        student_img,student_password,student_phone,
+        student_status
+    ) VALUES (
+        #{studentId},#{studentNum},#{deptId},
+        #{studentName},#{studentBirthday},#{studentEmail},
+        #{studentImg},#{studentPassword},#{studentPhone},
+        #{studentStatus}
+    )
+</insert>
+
+<select id="selectOne" parameterType="String" resultType="Student">
+select * from student where student_id=#{val}
+</select>
+</mapper>

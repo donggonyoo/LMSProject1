@@ -1,38 +1,27 @@
 package model.dao.mypage;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
-import domain.Student;
+import domain.Professor;
 
-public class StudentDao {
+public class ProfessorDao {
 	
 	
 	public boolean idchk(String id) {
 		SqlSession connection = MyBatisConnection.getConnection();
-		int x  = (Integer)connection.selectOne("student.cnt",id);
-		if(x!=0) {
+		int x  = (Integer)connection.selectOne("professor.cnt",id);
+		connection.close();
+		if(x!=0) {	
 			return false;
 		}
 		return true;
 	}
-	
-	public void list() {
-		SqlSession connection = MyBatisConnection.getConnection();
-		List<Student> list = connection.selectList("student.list");
-		for (Student student : list) {
-			System.out.println(student);
-		}
-	}
 
-	
-	//registerUser매핑부분에서 호출하는곳(회원가입)
-	public boolean insert(Student stu) {
+	public boolean insert(Professor pro) {
 		SqlSession connection = MyBatisConnection.getConnection();
 		try {
-			if(connection.insert("student.insert",stu)>0) {
+			if(connection.insert("professor.insert",pro)>0) {
 				return true;
 			}
 			else {
@@ -46,12 +35,14 @@ public class StudentDao {
 			MyBatisConnection.close(connection);
 		}
 		return false;
+
 	}
 
-	public Student selectOne(String id) {
+	public Professor selectOne(String id) {
 		SqlSession connection = MyBatisConnection.getConnection();
 		try {
-			return connection.selectOne("student.selectOne",id);
+			return connection.selectOne("professor.selectOne",id); //id를가진 객체반환
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -60,7 +51,7 @@ public class StudentDao {
 			MyBatisConnection.close(connection);
 		}
 		return null;
-		
+	
 	}
 
 }
