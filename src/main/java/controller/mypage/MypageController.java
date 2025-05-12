@@ -200,6 +200,7 @@ public class MypageController  extends MskimRequestMapping{
 		return "mypage/picture";
 	}
 	
+	
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession(); 
@@ -214,7 +215,7 @@ public class MypageController  extends MskimRequestMapping{
 			return "alert";
 		}
 		
-		if(id.substring(0,1).equals("p")) {
+		if(id.substring(0,1).equals("p")) {//첫번째문자가 p냐??(교수)
 			Professor pro = new ProfessorDao().selectOne(id);
 			if(pro==null){
 				request.setAttribute("msg", "교수아이디를 확인하세요");
@@ -239,7 +240,7 @@ public class MypageController  extends MskimRequestMapping{
 			
 		}
 		
-		else if(id.substring(0,1).equals("s")) {
+		else if(id.substring(0,1).equals("s")) { //첫번째문자가 s냐??(학생)
 			Student stu = new StudentDao().selectOne(id);
 			System.out.println(stu);
 			
@@ -253,9 +254,9 @@ public class MypageController  extends MskimRequestMapping{
 				if(pass.equals(stu.getStudentPassword())){//로그인성공
 					System.out.println("학생로그인");
 					session.setAttribute("login", id);
-					/*request.setAttribute("msg", stu.getStudentName()+"님이 로그인 하셨습니다");
-					request.setAttribute("url","index");*/
-					return "index";
+					request.setAttribute("msg", stu.getStudentName()+"님이 로그인 하셨습니다");
+					request.setAttribute("url","index");
+					//return "index";
 
 				}
 				else{
@@ -270,8 +271,27 @@ public class MypageController  extends MskimRequestMapping{
 			request.setAttribute("msg", "아이디를 확인하세요");
 			request.setAttribute("url","doLogin");
 		}
-	
 		return "alert";
+	}
+	
+	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
+	public String main(HttpServletRequest request , HttpServletResponse response) {
+
+		String login = (String)request.getSession().getAttribute("login");
+		if(login==null || login.trim().equals("")) {
+			request.setAttribute("msg", "로그인하세요");
+			request.setAttribute("url","doLogin");
+			return "alert";
+		}
+		return "index"; //forward 됨
+		//redirect시 다른 request영역이므로 속성이 넘어가지않음
+
+	}
+	
+	@RequestMapping("logout")
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+		request.getSession().invalidate();
+		return "redirect:doLogin"; //redirect하도록 설정(속성초기화)
 	}
 	
 }
