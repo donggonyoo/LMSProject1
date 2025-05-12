@@ -45,6 +45,7 @@
   	<mapper resource="mapper/professor/ProfessorMapper.xml"/>
   	<mapper resource="mapper/board/PostMapper.xml"/> 
   	<mapper resource="mapper/board/NoticeMapper.xml"/>
+  	<mapper resource="mapper/student/StudentMapper.xml"/>
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
   	
   </mappers>

@@ -14,6 +14,7 @@ public class Student {
     private String studentPhone;
     private String studentImg;
     
+    
 	public String getStudentId() {
 		return studentId;
 	}
@@ -74,6 +75,16 @@ public class Student {
 	public void setStudentImg(String studentImg) {
 		this.studentImg = studentImg;
 	}
+	@Override
+	public String toString() {
+		return "Student [studentId=" + studentId + ", studentName=" + studentName + ", studentNum=" + studentNum
+				+ ", deptId=" + deptId + ", studentEmail=" + studentEmail + ", studentPassword=" + studentPassword
+				+ ", studentStatus=" + studentStatus + ", studentBirthday=" + studentBirthday + ", studentPhone="
+				+ studentPhone + ", studentImg=" + studentImg + "]";
+	}
+	
+	
+	
 	
 
     

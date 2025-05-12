@@ -6,4 +6,8 @@
 <select id="cnt" resultType="int" parameterType="String"> 
 		select count(*) from student where student_id=#{id}
 	</select>
+	
+<select id="list" resultType="Student">
+	select * from student
+</select>
 </mapper>
