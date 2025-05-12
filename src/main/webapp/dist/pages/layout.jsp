@@ -1,8 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="path" value="${pageContext.request.contextPath}" scope="application"/>
 
 <!doctype html>
@@ -17,9 +16,10 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>메인화면</title>
+<title><sitemesh:write property="title"/></title>
 <!--begin::Primary Meta Tags-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -48,24 +48,63 @@
 	crossorigin="anonymous" />
 <!--end::Third Party Plugin(Bootstrap Icons)-->
 <!--begin::Required Plugin(AdminLTE)-->
-<link rel="stylesheet" href="../../dist/css/adminlte.css" />
+<link rel="stylesheet" href="/LMSProject1/dist/css/adminlte.css" />
 <!--end::Required Plugin(AdminLTE)-->
-<!-- apexcharts -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-	integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
-	crossorigin="anonymous" />
-<!-- jsvectormap -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-	integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
-	crossorigin="anonymous" />
 <style>
 ul.timeline::before {
 	content: none !important;
 }
+body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f7fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .table th, .table td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+        .table th {
+            background: #edf2f7;
+            font-weight: 600;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2b6cb0;
+        }
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
 </style>
-
+<sitemesh:write property="head"/>
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -105,7 +144,7 @@ ul.timeline::before {
 							<a href="#" class="dropdown-item"> <!--begin::Message-->
 								<div class="d-flex">
 									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user1-128x128.jpg"
+										<img src="/LMSProject1/dist/assets/img/user1-128x128.jpg"
 											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
 									</div>
 									<div class="flex-grow-1">
@@ -124,7 +163,7 @@ ul.timeline::before {
 							<a href="#" class="dropdown-item"> <!--begin::Message-->
 								<div class="d-flex">
 									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user8-128x128.jpg"
+										<img src="/LMSProject1/dist/assets/img/user8-128x128.jpg"
 											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
 									</div>
 									<div class="flex-grow-1">
@@ -144,7 +183,7 @@ ul.timeline::before {
 							<a href="#" class="dropdown-item"> <!--begin::Message-->
 								<div class="d-flex">
 									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user3-128x128.jpg"
+										<img src="/LMSProject1/dist/assets/img/user3-128x128.jpg"
 											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
 									</div>
 									<div class="flex-grow-1">
@@ -202,15 +241,15 @@ ul.timeline::before {
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <img
-							src="../../dist/assets/img/user2-160x160.jpg"
+						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown"> 
+						<img src="/LMSProject1/dist/assets/img/user2-160x160.jpg"
 							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">DONGGONYOO</span>
+							<span class="d-none d-md-inline">1</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
 							<li class="user-header text-bg-primary"><img
-								src="../../dist/assets/img/user2-160x160.jpg"
+								src="/LMSProject1/dist/assets/img/user2-160x160.jpg"
 								class="rounded-circle shadow" alt="User Image" />
 								<p>
 									Alexander Pierce - Web Developer <small>Member since
@@ -252,11 +291,10 @@ ul.timeline::before {
 			<!--begin::Sidebar Brand-->
 			<div class="sidebar-brand">
 				<!--begin::Brand Link-->
-				<a href="./index.jsp" class="brand-link"> <!--begin::Brand Image-->
-					<img src="../../dist/assets/img/AdminLTELogo.png"
+				<a href="/LMSProject1/dist/pages/index.jsp" class="brand-link"> <!--begin::Brand Image-->
+					<img src="/LMSProject1/dist/assets/img/AdminLTELogo.png"
 					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
-					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB
-						학사관리시스템</span> <!--end::Brand Text-->
+					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB학사관리시스템</span> <!--end::Brand Text-->
 				</a>
 				<!--end::Brand Link-->
 			</div>
@@ -295,7 +333,7 @@ ul.timeline::before {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/learning_support/registerCourse"
+								<li class="nav-item"><a href="/LMSProject1/dist/pages/learning_support/registerCourse.jsp"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청</p>
 								</a></li>
@@ -352,162 +390,11 @@ ul.timeline::before {
 		</aside>
 		<!--end::Sidebar-->
 		<!--begin::App Main-->
-		<!--begin::App Main-->
+		
 		<main class="app-main">
-			<!--begin::App Content Header-->
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h3 class="mb-0">LDB 학사관리시스템</h3>
-						</div>
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-							</ol>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--end::App Content Header-->
-
-			<!--begin::App Content-->
-			<div class="app-content">
-				<div class="container-fluid">
-					<!--begin::Row 1 - Welcome & Quick Actions-->
-					<div class="row">
-						<!-- Welcome Card -->
-						<div class="col-md-6">
-							<div class="card card-primary card-outline">
-								<div class="card-header">
-									<h5 class="card-title">
-										환영합니다,
-										<%-- ${user.name} --%>
-										<strong>임주한(포켓몬마스터)</strong>님!
-									</h5>
-								</div>
-								<div class="card-body">
-									<p>
-										<strong>역할:</strong> ${user.role}
-									</p>
-									<p>
-										<strong>현재 학기:</strong> 2025년 1학기
-									</p>
-									<p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
-								</div>
-							</div>
-						</div>
-						<!-- Quick Actions -->
-						<div class="col-md-6">
-							<div class="card card-info card-outline">
-								<div class="card-header">
-									<h5 class="card-title">빠른 액세스</h5>
-								</div>
-								<div class="card-body">
-									<div class="d-flex flex-wrap">
-										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
-										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> 
-										<a href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> 
-										<a href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 1-->
-
-					<!--begin::Row 2 - Notices & Schedule-->
-					<div class="row">
-						<!-- Recent Notices -->
-						<div class="col-md-6">
-							<div class="card card-warning card-outline">
-								<div class="card-header">
-									<h5 class="card-title">최신 공지사항</h5>
-									<div class="card-tools">
-										<a href="notice_board.jsp" class="btn btn-tool">전체보기</a>
-									</div>
-								</div>
-								<div class="card-body">
-									<ul class="list-group">
-										<c:forEach var="notice" items="${recentNotices}" begin="0"
-											end="4">
-											<li class="list-group-item"><a
-												href="notice_detail.jsp?id=${notice.id}">${fn:escapeXml(notice.title)}</a>
-												<span class="float-end text-muted"><fmt:formatDate
-														value="${notice.createdDate}" pattern="yyyy-MM-dd" /></span></li>
-										</c:forEach>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<!-- Academic Schedule -->
-						<div class="col-md-6">
-							<div class="card card-success card-outline">
-								<div class="card-header">
-									<h5 class="card-title">학사 일정</h5>
-								</div>
-								<div class="card-body">
-									<ul class="timeline timeline-inverse">
-										<li><i class="bi bi-calendar-event bg-primary"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-03-01</span>
-												<h3 class="timeline-header">2025년 1학기 개강</h3>
-											</div></li>
-										<li><i class="bi bi-calendar-event bg-warning"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-03-10 ~ 2025-03-15</span>
-												<h3 class="timeline-header">수강신청 기간</h3>
-											</div></li>
-										<li><i class="bi bi-calendar-event bg-danger"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-06-20 ~ 2025-06-30</span>
-												<h3 class="timeline-header">기말고사</h3>
-											</div></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 2-->
-
-					<!--begin::Row 3 - Recent Activity-->
-					<div class="row">
-						<div class="col-12">
-							<div class="card card-secondary card-outline">
-								<div class="card-header">
-									<h5 class="card-title">최근 활동</h5>
-								</div>
-								<div class="card-body">
-									<table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>활동</th>
-												<th>날짜</th>
-											</tr>
-										</thead>
-										<tbody>
-											<c:forEach var="activity" items="${recentActivities}"
-												begin="0" end="4">
-												<tr>
-													<td>${fn:escapeXml(activity.description)}</td>
-													<td><fmt:formatDate value="${activity.date}"
-															pattern="yyyy-MM-dd HH:mm" /></td>
-												</tr>
-											</c:forEach>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 3-->
-				</div>
-			</div>
-			<!--end::App Content-->
+		
+		<sitemesh:write property="body"/>
+	
 		</main>
 		<!--end::App Main-->
 		<!--begin::Footer-->
@@ -544,7 +431,7 @@ ul.timeline::before {
 		crossorigin="anonymous"></script>
 	<!--end::Required Plugin(Bootstrap 5)-->
 	<!--begin::Required Plugin(AdminLTE)-->
-	<script src="../../dist/js/adminlte.js"></script>
+	<script src="/LMSProject1/dist/js/adminlte.js"></script>
 	<!--end::Required Plugin(AdminLTE)-->
 	<!--begin::OverlayScrollbars Configure-->
 	<script>
@@ -565,7 +452,10 @@ ul.timeline::before {
             },
           });
         }
+        
+      
       });
+      
     </script>
 
 </body>

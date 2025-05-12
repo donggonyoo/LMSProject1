@@ -16,6 +16,7 @@ public class BoardDto {
 	private int grplevel; // 답글의 레벨 0:원글. 1:원글의 답글, 2:답글의 답글...
 	private int grpstep; // 그룹의 출력 순서
 	
+	
 	public int getNum() {
 		return num;
 	}
@@ -64,12 +65,7 @@ public class BoardDto {
 	public void setRegdate(Date regdate) {
 		this.regdate = regdate;
 	}
-	public int getReadcnt() {
-		return readcnt;
-	}
-	public void setReadcnt(int readcnt) {
-		this.readcnt = readcnt;
-	}
+	
 	public int getGrp() {
 		return grp;
 	}
@@ -92,8 +88,8 @@ public class BoardDto {
 	@Override
 	public String toString() {
 		return "Board [num=" + num + ", writer=" + writer + ", pass=" + pass + ", title=" + title + ", content="
-				+ content + ", file1=" + file1 + ", boardid=" + boardid + ", regdate=" + regdate + ", readcnt="
-				+ readcnt + ", grp=" + grp + ", grplevel=" + grplevel + ", grpstep=" + grpstep + "]";
+				+ content + ", file1=" + file1 + ", boardid=" + boardid + ", regdate=" + regdate + 
+				", grp=" + grp + ", grplevel=" + grplevel + ", grpstep=" + grpstep + "]";
 	}
 	
 }
