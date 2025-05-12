@@ -378,7 +378,7 @@ body {
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
 						</a></li>
-						<li class="nav-item"><a href="./question_board.jsp"
+						<li class="nav-item"><a href="${path}/post/getPosts"
 							class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
 								<p>문의게시판</p>
 						</a></li>
