@@ -3,7 +3,7 @@ package domain;
 import java.util.Date;
 
 public class Registration {
-    private String registrationId;
+    private Long registrationId;
     private String studentId;
     private String courseId;
     private String professorId;
@@ -12,8 +12,8 @@ public class Registration {
     private Date registrationUpdate;
 
     // Getters and Setters
-    public String getRegistrationId() { return registrationId; }
-    public void setRegistrationId(String registrationId) { this.registrationId = registrationId; }
+    public Long getRegistrationId() { return registrationId; }
+    public void setRegistrationId(Long registrationId) { this.registrationId = registrationId; }
     public String getStudentId() { return studentId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
     public String getCourseId() { return courseId; }

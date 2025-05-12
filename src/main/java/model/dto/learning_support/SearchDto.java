@@ -1,10 +1,17 @@
 package model.dto.learning_support;
 
 public class SearchDto {
+	private String college;
 	private String deptId;
-    private String courseId;
+	private String courseId;
     private String courseName;
     
+	public String getCollege() {
+		return college;
+	}
+	public void setCollege(String college) {
+		this.college = college;
+	}
 	public String getDeptId() {
 		return deptId;
 	}
@@ -26,9 +33,11 @@ public class SearchDto {
 	
 	@Override
 	public String toString() {
-		return "SearchDto [" + "deptId=" + deptId + ", courseId=" + courseId + ", courseName="
+		return "SearchDto [college=" + college + ", deptId=" + deptId + ", courseId=" + courseId + ", courseName="
 				+ courseName + "]";
 	}
+    
+	
 	    
     
 }

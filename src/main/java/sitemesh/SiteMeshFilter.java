@@ -24,8 +24,11 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 		// /layout/layout.jsp 페이지를 layout 페이지로 설정
 		builder.addDecoratorPath("/learning_support/*", "/dist/pages/layout.jsp")
 				.addExcludedPath("/learning_support/colleges*")
-				.addExcludedPath("/learning_support/departments*");
-		
+				.addExcludedPath("/learning_support/departments*")
+				.addExcludedPath("/learning_support/searchCourse*")
+				.addExcludedPath("/learning_support/addCourse*")
+				.addExcludedPath("/learning_support/searchRegistrationCourses*")
+				.addExcludedPath("/learning_support/deleteCourse*");
 		
 	}
 	
