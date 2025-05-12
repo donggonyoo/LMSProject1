@@ -3,10 +3,12 @@ package controller.board;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import domain.Post;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
@@ -74,7 +76,7 @@ public class PostController extends MskimRequestMapping {
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) {
         String authorId = request.getParameter("author_id");
-        String pass = request.getParameter("pass");
+        String pass = request.getParameter("post_password");
         String postTitle = request.getParameter("post_title");
         String postContent = request.getParameter("post_content");
         String postFile = request.getParameter("post_file");
@@ -88,6 +90,7 @@ public class PostController extends MskimRequestMapping {
 
         Post post = new Post();
         post.setAuthor_id(authorId);
+        post.setPost_password(pass);
         post.setPost_title(postTitle);
         post.setPost_content(postContent);
         post.setPost_file(postFile);
@@ -126,6 +129,6 @@ public class PostController extends MskimRequestMapping {
             post.setPost_read_count(post.getPost_read_count() + 1);
         }
         request.setAttribute("post", post);
-        return "post/getDetail";
+        return "post/getPostDetail";
     }
 }

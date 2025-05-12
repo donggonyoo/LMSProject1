@@ -7,6 +7,7 @@ public class Post {
     private String author_id;
     private String post_title;
     private String post_content;
+    private String post_password;
     private Date post_created_at;
     private Date post_updated_at;
     private int post_group;
@@ -15,7 +16,14 @@ public class Post {
     private String post_file;
     private int post_read_count;
 
-    public String getPost_id() {
+    
+    public String getPost_password() {
+		return post_password;
+	}
+	public void setPost_password(String post_password) {
+		this.post_password = post_password;
+	}
+	public String getPost_id() {
         return post_id;
     }
     public void setPost_id(String post_id) {
@@ -81,12 +89,13 @@ public class Post {
     public void setPost_read_count(int post_read_count) {
         this.post_read_count = post_read_count;
     }
-    @Override
-    public String toString() {
-        return "Post [post_id=" + post_id + ", author_id=" + author_id + ", post_title=" + post_title
-                + ", post_content=" + post_content + ", post_created_at=" + post_created_at + ", post_updated_at="
-                + post_updated_at + ", post_group=" + post_group + ", post_group_level=" + post_group_level
-                + ", post_group_step=" + post_group_step + ", post_file=" + post_file + ", post_read_count="
-                + post_read_count + "]";
-    }
+	@Override
+	public String toString() {
+		return "Post [post_id=" + post_id + ", author_id=" + author_id + ", post_title=" + post_title
+				+ ", post_content=" + post_content + ", post_password=" + post_password + ", post_created_at="
+				+ post_created_at + ", post_updated_at=" + post_updated_at + ", post_group=" + post_group
+				+ ", post_group_level=" + post_group_level + ", post_group_step=" + post_group_step + ", post_file="
+				+ post_file + ", post_read_count=" + post_read_count + "]";
+	}
+    
 }

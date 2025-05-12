@@ -15,7 +15,7 @@
 </head>
 <body>
     <h2 class="text-center">게시판 글쓰기</h2>
-    <form action="${pageContext.request.contextPath}/post/write" method="post" enctype="multipart/form-data" name="f">
+    <form action="write" method="post" enctype="multipart/form-data" name="f">
         <table class="table">
             <tr>
                 <td>글쓴이</td>

@@ -47,6 +47,9 @@
         </tr>
         <tr>
             <td colspan="2">
+                <a href="${pageContext.request.contextPath}/post/replyPost?post_id=${post.post_id}" class="btn btn-secondary">[답변]</a>
+                <a href="${pageContext.request.contextPath}/post/updatePost?post_id=${post.post_id}" class="btn btn-secondary">[수정]</a>
+                <a href="${pageContext.request.contextPath}/post/deletePost?post_id=${post.post_id}" class="btn btn-secondary">[삭제]</a>
                 <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">[목록]</a>
             </td>
         </tr>
