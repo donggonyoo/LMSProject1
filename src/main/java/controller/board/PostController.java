@@ -89,16 +89,16 @@ public class PostController extends MskimRequestMapping {
         }
 
         Post post = new Post();
-        post.setAuthor_id(authorId);
-        post.setPost_password(pass);
-        post.setPost_title(postTitle);
-        post.setPost_content(postContent);
-        post.setPost_file(postFile);
-        post.setPost_created_at(new Date());
-        post.setPost_read_count(0);
-        post.setPost_group(0);
-        post.setPost_group_level(0);
-        post.setPost_group_step(0);
+        post.setAuthorId(authorId);
+        post.setPostPassword(pass);
+        post.setPostTitle(postTitle);
+        post.setPostContent(postContent);
+        post.setPostFile(postFile);
+        post.setPostCreatedAt(new Date());
+        post.setPostReadCount(0);
+        post.setPostGroup(0);
+        post.setPostGroupLevel(0);
+        post.setPostGroupStep(0);
 
         try {
             dao.insert(post);
@@ -126,7 +126,7 @@ public class PostController extends MskimRequestMapping {
 
         if (readcnt == null || !readcnt.trim().equals("f")) {
             dao.incrementReadCount(postId);
-            post.setPost_read_count(post.getPost_read_count() + 1);
+            post.setPostReadCount(post.getPostReadCount() + 1);
         }
         request.setAttribute("post", post);
         return "post/getPostDetail";

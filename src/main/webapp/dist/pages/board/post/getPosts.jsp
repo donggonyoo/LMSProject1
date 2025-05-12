@@ -62,34 +62,34 @@
                     <td>${boardnum}</td>
                     <c:set var="boardnum" value="${boardnum-1}"/>
                     <td style="text-align:left">        
-                        <c:if test="${!empty b.post_file}">
-                            <a href="../upload/board/${b.post_file}">@</a>
+                        <c:if test="${!empty b.postFile}">
+                            <a href="../upload/board/${b.postFile}">@</a>
                         </c:if>
-                        <c:if test="${empty b.post_file}">
+                        <c:if test="${empty b.postFile}">
                                
                         </c:if>
                         <%-- 답글인 경우 level 만큼 공백주기 --%>
-                        <c:if test="${b.post_group_level > 0}">
-                            <c:forEach var="i" begin="1" end="${b.post_group_level}">
+                        <c:if test="${b.postGroupLevel > 0}">
+                            <c:forEach var="i" begin="1" end="${b.postGroupLevel}">
                                  
                             </c:forEach>└
                         </c:if>
-                        <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${b.post_id}">
-                            ${b.post_title}
+                        <a href="${pageContext.request.contextPath}/post/getPostDetail?postId=${b.postId}">
+                            ${b.postTitle}
                         </a>
                     </td>
-                    <td>${b.author_id}</td>
-                    <fmt:formatDate value="${b.post_created_at}" pattern="yyyy-MM-dd" var="rdate"/>    
+                    <td>${b.authorId}</td>
+                    <fmt:formatDate value="${b.postCreatedAt}" pattern="yyyy-MM-dd" var="rdate"/>    
                     <fmt:formatDate value="${today}" pattern="yyyy-MM-dd" var="tdate"/>                     
                     <td>
                         <c:if test="${rdate == tdate}">
-                            <fmt:formatDate value="${b.post_created_at}" pattern="HH:mm:ss"/>
+                            <fmt:formatDate value="${b.postCreatedAt}" pattern="HH:mm:ss"/>
                         </c:if>
                         <c:if test="${rdate != tdate}">
-                            <fmt:formatDate value="${b.post_created_at}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                            <fmt:formatDate value="${b.postCreatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
                         </c:if>
                     </td>    
-                    <td>${b.post_read_count}</td>    
+                    <td>${b.postReadCount}</td>    
                 </tr>
             </c:forEach>
             <%-- 페이지 처리하기 --%>

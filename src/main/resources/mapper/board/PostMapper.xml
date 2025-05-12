@@ -7,32 +7,32 @@
         <if test="column != null and find != null">
             WHERE
             <choose>
-                <when test="column == 'author_id'">
+                <when test="column == 'authorId'">
                     author_id LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_title'">
+                <when test="column == 'postTitle'">
                     post_title LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_content'">
+                <when test="column == 'postContent'">
                     post_content LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_title,author_id'">
+                <when test="column == 'postTitle,authorId'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'post_title,post_content'">
+                <when test="column == 'postTitle,postContent'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'author_id,post_content'">
+                <when test="column == 'authorId,postContent'">
                     (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'post_title,author_id,post_content'">
+                <when test="column == 'postTitle,authorId,postContent'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
             </choose>
         </if>
     </select>
 
-    <select id="selectList" resultType="domain.Post" parameterType="map">
+    <select id="selectList" resultType="Post" parameterType="map">
         SELECT
             post_id,
             author_id,
@@ -48,25 +48,25 @@
         <if test="column != null and find != null">
             WHERE
             <choose>
-                <when test="column == 'author_id'">
+                <when test="column == 'authorId'">
                     author_id LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_title'">
+                <when test="column == 'postTitle'">
                     post_title LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_content'">
+                <when test="column == 'postContent'">
                     post_content LIKE CONCAT('%', #{find}, '%')
                 </when>
-                <when test="column == 'post_title,author_id'">
+                <when test="column == 'postTitle,authorId'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'post_title,post_content'">
+                <when test="column == 'postTitle,postContent'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'author_id,post_content'">
+                <when test="column == 'authorId,postContent'">
                     (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
-                <when test="column == 'post_title,author_id,post_content'">
+                <when test="column == 'postTitle,authorId,postContent'">
                     (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
                 </when>
             </choose>
@@ -75,7 +75,7 @@
         LIMIT #{startRow}, #{pageSize}
     </select>
 
-    <select id="selectOne" resultType="domain.Post" parameterType="string">
+    <select id="selectOne" resultType="Post" parameterType="string">
         SELECT
             post_id,
             author_id,
@@ -97,7 +97,7 @@
         WHERE post_id = #{post_id}
     </update>
 
-    <insert id="insert" parameterType="domain.Post" useGeneratedKeys="true" keyProperty="post_id">
+    <insert id="insert" parameterType="Post" useGeneratedKeys="true" keyProperty="post_id">
         INSERT INTO post (
             author_id,
             post_title,
@@ -109,15 +109,15 @@
             post_file,
             post_read_count
         ) VALUES (
-            #{author_id},
-            #{post_title},
-            #{post_content},
-            #{post_created_at},
-            #{post_group},
-            #{post_group_level},
-            #{post_group_step},
-            #{post_file},
-            #{post_read_count}
+            #{authorId},
+            #{postTitle},
+            #{postContent},
+            #{postCreatedAt},
+            #{postGroup},
+            #{postGroupLevel},
+            #{postGroupStep},
+            #{postFile},
+            #{postReadCount}
         )
     </insert>
 </mapper>
