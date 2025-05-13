@@ -120,11 +120,11 @@ public class CourseController extends MskimRequestMapping {
 		String studentId = "S001";
 		
 		Map<String, Object> map = new HashMap<>();
-//		map.put("studentId", request.getParameter("studentId"));
 		map.put("studentId", studentId);
 		map.put("courseId", request.getParameter("courseId"));
 		map.put("professorId", request.getParameter("professorId"));
 		
+		//트랜젝션처리를 위해 수강신청테이블 insert시 시간표테이블도 같이 insert 처리.
 		courseDao.addCourse(map);
 		
 		return "/pages/dummy";
@@ -155,7 +155,9 @@ public class CourseController extends MskimRequestMapping {
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 
 		String registrationId = request.getParameter("registrationId");
-		courseDao.deleteCourse(registrationId);
+		String courseId = request.getParameter("courseId");
+		
+		courseDao.deleteCourse(registrationId,courseId);
 		
 		return "/pages/dummy";
 	}

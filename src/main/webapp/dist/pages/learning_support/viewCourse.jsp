@@ -109,24 +109,29 @@ body {
     </table>
     <div class="mt-4">
         <p><strong>총 신청 학점:</strong> 6 학점</p>
-        <button class="btn btn-primary">시간표 보기</button>
+        <button class="btn btn-primary view-courseTime">시간표 보기</button>
     </div>
+    
+    <table id="courseTime">
+    <!-- AJAX로 시간표 구현 -->
+    </table>
+    
 </div>
 </main>
 
 <script>
 	$(document).ready(function() {
+
 	    $(".cancel-course").click(function() {
 	        var registrationId = $(this).data("registration-id");
 	        if (confirm("정말 수강을 취소하시겠습니까?")) {
 	            $.ajax({
-	                url: "${path}/learning_support/viewCourse/cancelCourse",
+	                url: "${path}/learning_support/viewCourse/deleteCourse",
 	                type: "post",
 	                data: { registrationId: registrationId},
 	                dataType: "json",
 	                success: function(response) {
 	                    if (response.success) {
-	                        alert("취소되었습니다.");
 	                        location.reload(); // 새로고침
 	                    } else {
 	                        alert("취소 실패: " + response.message);
@@ -138,6 +143,24 @@ body {
 	            });
 	        }
 	    });
+	    
+	    $(".view-courseTime").click(function() {
+	    	$.ajax({
+                url: "${path}/learning_support/viewCourse/viewCourseTime",
+                type: "get",
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        location.reload(); // 새로고침
+                    } else {
+                        alert("취소 실패: " + response.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert("서버 오류: " + xhr.status + " - " + xhr.responseText);
+                }
+            });
+	    })
 	});
 	
 

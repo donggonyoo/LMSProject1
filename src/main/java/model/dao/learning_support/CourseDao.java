@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
+import model.dto.learning_support.AttendanceDto;
 import model.dto.learning_support.CourseDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
@@ -67,19 +68,41 @@ public class CourseDao {
 		int result = 0;
 		long maxId = -1;
 		
+		// 등록된 수강신청id 최대값 조회
 		maxId = session.selectOne("getMaxRegistrationIdNumber");
 		String registrationId = "R" + (++maxId);
 		map.put("registrationId", registrationId);
 		
 		try {
-			result = session.insert("course.addCourse", map);
+			session.insert("course.addCourse", map);
+			map.remove("registrationId");
+			addAttendance(map, session);		
+			MyBatisConnection.close(session);
+			result = 1;
 		} catch (Exception e) {	
 			e.printStackTrace();
-		} finally {
-			MyBatisConnection.close(session);
+			session.close(); // 커밋 안하고 그냥 종료함으로써 둘중 하나 오류시 둘다 롤백처리.
 		}
 		
 		return result;
+	}
+	
+	public void addAttendance(Map<String, Object> map, SqlSession session) {
+		
+		int result = 0;
+		long maxId = -1;
+		
+		// 등록된 수강신청id 최대값 조회
+		maxId = session.selectOne("getMaxAttendanceIdNumber");
+		String attendanceId = "A" + (++maxId);
+		map.put("attendanceId", attendanceId);
+		
+		try {
+			session.insert("course.addAttendance", map);
+		} catch (Exception e) {	
+			e.printStackTrace();
+			throw e;
+		}	
 	}
 
 	public List<RegistrationDto> searchRegistrationCourses(String studentId) {
@@ -98,21 +121,49 @@ public class CourseDao {
 		return result;
 	}
 
-	public int deleteCourse(String registrationId) {
+	public int deleteCourse(String registrationId, String courseId) {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
 		int num = 0;
+
+		try {
+			session.delete("course.deleteCourse", registrationId);
+			deleteAttendance(courseId, session);
+			MyBatisConnection.close(session);
+			num=1;
+		} catch (Exception e) {	
+			e.printStackTrace();
+			session.close();
+		}
+		
+		return num;
+		
+	}
+	
+public void deleteAttendance(String courseId, SqlSession session) {
 		
 		try {
-			num = session.delete("course.deleteCourse", registrationId);
+			session.delete("course.deleteAttendance", courseId); 
+		} catch (Exception e) {	
+			e.printStackTrace();
+			throw e;
+		}	
+	}
+	
+	public List<AttendanceDto> viewCourseTime(String studentId) {
+		
+		SqlSession session = MyBatisConnection.getConnection(); 
+		List<AttendanceDto> result = null;
+		
+		try {
+			result = session.selectList("course.viewCourseTime", studentId);
 		} catch (Exception e) {	
 			e.printStackTrace();
 		} finally {
 			MyBatisConnection.close(session);
 		}
 		
-		return num;
-		
+		return result;
 	}
 
 	

@@ -25,7 +25,8 @@
   	<typeAlias type="domain.Attendance" alias="Attendance" />
   	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
   	<typeAlias type="model.dto.learning_support.SearchDto" alias="SearchDto" />
-  	<typeAlias type="model.dto.learning_support.RegistrationDto" alias="RegistrationDto" />  	
+  	<typeAlias type="model.dto.learning_support.RegistrationDto" alias="RegistrationDto" />
+    <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />	
   </typeAliases>
   
   <!-- Connection 객체  -->

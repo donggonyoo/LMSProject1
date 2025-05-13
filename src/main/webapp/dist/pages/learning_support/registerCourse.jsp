@@ -182,7 +182,10 @@ $(document).ready(function() {
     // 삭제 버튼 클릭 이벤트 (AJAX로 처리)
     $(document).on("click", ".delete-registration", function() {
         var registrationId = $(this).closest("form").find("input[name='registrationId']").val();
-        deleteCourse(registrationId);
+     	// 버튼이 속한 tr에서 courseId가 있는 td(두 번째 td) 가져오기
+        var courseId = $(this).closest("tr").find("td:eq(1)").text();
+     	
+        deleteCourse(registrationId, courseId);
     });
 });
 
@@ -308,11 +311,11 @@ function loadRegistrations() {
 }
 
 // 신청 삭제
-function deleteCourse(registrationId) {
+function deleteCourse(registrationId, courseId) {
     $.ajax({
         url: "${path}/learning_support/deleteCourse",
         type: "get",
-        data: { registrationId: registrationId },
+        data: { registrationId: registrationId, courseId: courseId },
         dataType: "json",
         success: function(data) {
         	loadRegistrations(); // 신청 내역 갱신

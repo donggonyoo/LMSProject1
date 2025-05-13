@@ -5,7 +5,6 @@ import java.util.Date;
 public class Attendance {
     private String attendanceId;
     private Date attendanceDate;
-    private String status;
     private String professorId;
     private String attendanceRemarks;
     private String studentId;
@@ -16,8 +15,6 @@ public class Attendance {
     public void setAttendanceId(String attendanceId) { this.attendanceId = attendanceId; }
     public Date getAttendanceDate() { return attendanceDate; }
     public void setAttendanceDate(Date attendanceDate) { this.attendanceDate = attendanceDate; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
     public String getProfessorId() { return professorId; }
     public void setProfessorId(String professorId) { this.professorId = professorId; }
     public String getAttendanceRemarks() { return attendanceRemarks; }

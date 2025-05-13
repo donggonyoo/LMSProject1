@@ -63,6 +63,36 @@
         )
     </insert>
     
+    <insert id="addAttendance" parameterType="java.util.Map">
+	    INSERT INTO attendance (
+	        attendance_id,
+	        attendance_date,
+            professor_id,
+	        attendance_remarks,
+	        student_id,
+	        course_id
+	    )
+	    VALUES (
+	        #{attendanceId},
+	        now(),
+            #{professorId},
+	        <if test="attendanceRemarks != null">
+	            #{attendanceRemarks},
+	        </if>
+	        <if test="attendanceRemarks == null">
+	            '',
+	        </if>
+	        #{studentId},
+	        #{courseId}
+	    )
+	</insert>
+    
+    <!-- 최대 registration_id의 숫자 부분 조회 -->
+    <select id="getMaxAttendanceIdNumber" resultType="long">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(attendance_id, 2) AS UNSIGNED)), 0) AS max_number
+        FROM attendance
+    </select>
+    
     <!-- 최대 registration_id의 숫자 부분 조회 -->
     <select id="getMaxRegistrationIdNumber" resultType="long">
         SELECT COALESCE(MAX(CAST(SUBSTRING(registration_id, 2) AS UNSIGNED)), 0) AS max_number
@@ -94,7 +124,23 @@
         WHERE registration_id = #{registrationId}
     </delete>
 	
+	<!-- course_id로 attendance 삭제 -->
+    <delete id="deleteAttendance" parameterType="string">
+        DELETE FROM attendance
+        WHERE course_id = #{courseId}
+    </delete>
 	
-	
-	
+	<select id="viewCourseTime" resultType="AttendanceDto" parameterType="string">
+        SELECT s.student_name, c.course_name, p.professor_name, ct.course_time_yoil, ct.course_time_start, ct.course_time_end, ct.course_time_loc 
+        FROM course_time ct,
+             professor p,
+             course c,
+             attendance a,
+             student s
+        WHERE s.student_id = #{studentId}
+        AND s.student_id = a.student_id
+        AND a.course_id = ct.course_id
+        AND ct.course_id = c.course_id
+        AND ct.professor_id = p.professor_id
+    </select>
 </mapper>
