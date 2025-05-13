@@ -290,6 +290,8 @@ $(document).ready(function() {
                     courseId: courseId,    
                 },
                 dataType: "json",
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//              새로고침 로직 처리해야됨
                 success: function(response) {
                 	if ($("#timetable-container").is(":visible")) {                		
                 		location.reload();	                	
@@ -298,6 +300,7 @@ $(document).ready(function() {
                     	location.reload();
                     }
                 	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                	
                     if (response.success) {
                         // 동적으로 테이블 업데이트
                         $(`button[data-registration-id="${registrationId}"]`).closest("tr").remove();
