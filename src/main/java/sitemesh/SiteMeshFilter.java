@@ -35,6 +35,7 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 
 				
 		builder.addDecoratorPath("/post/*","/dist/pages/layout.jsp");
+		builder.addDecoratorPath("/notice/*","/dist/pages/layout.jsp");
 		builder.addDecoratorPath("/mypage/*","/dist/pages/layout.jsp");
 		
 	}

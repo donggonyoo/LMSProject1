@@ -372,7 +372,30 @@ public class PostController extends MskimRequestMapping {
             return "post/updatePost";
         }
     }
+    @RequestMapping("deletePost")
+    public String deletePost(HttpServletRequest request, HttpServletResponse response) {
+    	String postId = request.getParameter("postId");
+    	System.out.println("deletePost called with postId: " + postId);
 
+        if (postId == null || postId.trim().isEmpty()) {
+            request.setAttribute("error", "게시물 ID가 필요합니다.");
+            return "post/getPosts";
+        }
+
+        try {
+            Post post = dao.selectOne(postId);
+            if (post== null) {
+                request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
+                return "post/getPosts";
+            }
+            request.setAttribute("post", post);
+            return "post/deletePost";
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
+            return "post/getPosts";
+        }
+    }
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
         String postId = request.getParameter("postId");

@@ -6,7 +6,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>게시물 목록</title>
+    <title>문의게시판</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
@@ -69,7 +69,7 @@
                         <td><span class="notice-label">공지</span></td>
                         <td style="text-align:left">        
                             <c:if test="${!empty b.postFile}">
-                                <a href="${pageContext.request.contextPath}/upload/board/${b.postFile}">@</a>
+                                <a href="${pageContext.request.contextPath}/upload/board/${b.postFile}">📌</a>
                             </c:if>
                             <c:if test="${empty b.postFile}">
                                    
@@ -111,7 +111,7 @@
                     <c:set var="boardnum" value="${boardnum-1}"/>
                     <td style="text-align:left">        
                         <c:if test="${!empty b.postFile}">
-                            <a href="${pageContext.request.contextPath}/upload/board/${b.postFile}">@</a>
+                            <a href="${pageContext.request.contextPath}/upload/board/${b.postFile}">📌</a>
                         </c:if>
                         <c:if test="${empty b.postFile}">
                                
@@ -142,6 +142,13 @@
         </c:if>
     </table>
 
+    <table class="table">
+        <tr>
+            <td colspan="5" style="text-align:right">
+                <p align="right"><a href="${pageContext.request.contextPath}/post/createPost">[글쓰기]</a></p>
+            </td>
+        </tr>
+    </table>
     <%-- 페이지 처리하기 --%>
     <c:if test="${boardcount > 0}">
         <div class="d-flex justify-content-center mt-4">
@@ -181,13 +188,7 @@
         </div>
     </c:if>
 
-    <table class="table">
-        <tr>
-            <td colspan="5" style="text-align:right">
-                <p align="right"><a href="${pageContext.request.contextPath}/post/createPost">[글쓰기]</a></p>
-            </td>
-        </tr>
-    </table>
+
 
     <script type="text/javascript">
         function listsubmit(page) {

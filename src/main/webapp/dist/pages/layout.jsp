@@ -374,7 +374,7 @@ body {
 										<p>출석관리</p>
 								</a></li>
 							</ul></li>
-						<li class="nav-item"><a href="./notice_board.jsp"
+						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
 						</a></li>

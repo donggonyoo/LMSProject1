@@ -2,7 +2,82 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="notice">
-	<select id="selectCount" resultType="int">
-	select count(*) from notice
-	</select>
+    <select id="count" resultType="int" parameterType="map">
+        SELECT COUNT(*) FROM notice
+        <if test="column != null and find != null">
+            WHERE
+            <choose>
+                <when test="column == 'writerId'">writer_id LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeTitle'">notice_title LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeContent'">notice_content LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeTitle,writerId'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'noticeTitle,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'writerId,noticeContent'">(writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'noticeTitle,writerId,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+            </choose>
+        </if>
+    </select>
+    
+    <select id="selectList" resultType="Notice" parameterType="map">
+        SELECT 
+            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_created_at, notice_updated_at, notice_file, notice_read_count
+        FROM notice
+        <if test="column != null and find != null">
+            WHERE
+            <choose>
+                <when test="column == 'writerId'">writer_id LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeTitle'">notice_title LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeContent'">notice_content LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'noticeTitle,writerId'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'noticeTitle,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'writerId,noticeContent'">(writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'noticeTitle,writerId,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+            </choose>
+        </if>
+        ORDER BY notice_created_at DESC
+        LIMIT #{startRow}, #{pageSize}
+    </select>
+    
+    <insert id="insert" parameterType="Notice">
+        INSERT INTO notice (
+            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_file, notice_created_at, notice_updated_at, notice_read_count
+        ) VALUES (
+            #{noticeId}, #{writerId}, #{noticePassword}, #{noticeTitle},
+            #{noticeContent}, #{noticeFile}, #{noticeCreatedAt}, #{noticeUpdatedAt}, #{noticeReadCount}
+        )
+    </insert>
+    
+    <select id="getMaxNoticeId" resultType="string">
+        SELECT MAX(notice_id) FROM notice
+    </select>
+    
+    <select id="selectOne" resultType="Notice" parameterType="string">
+        SELECT 
+            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_created_at, notice_updated_at, notice_file, notice_read_count
+        FROM notice
+        WHERE notice_id = #{noticeId}
+    </select>
+    
+    <update id="incrementReadCount" parameterType="string">
+        UPDATE notice 
+        SET notice_read_count = notice_read_count + 1
+        WHERE notice_id = #{noticeId}
+    </update>
+    
+    <delete id="delete" parameterType="string">
+        DELETE FROM notice WHERE notice_id = #{noticeId}
+    </delete>
+    <update id="update" parameterType="Notice">
+    UPDATE notice
+    SET writer_id = #{writerId},
+        notice_password = #{noticePassword},
+        notice_title = #{noticeTitle},
+        notice_content = #{noticeContent},
+        notice_file = #{noticeFile},
+        notice_updated_at = #{noticeUpdatedAt}
+    WHERE notice_id = #{noticeId}
+</update>
 </mapper>

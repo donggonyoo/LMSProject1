@@ -4,8 +4,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>게시물 등록</title>
+<meta charset="UTF-8">
+<title>공지사항 등록</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" />
@@ -14,12 +14,15 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
-    <h2 class="text-center">문의게시판 글쓰기</h2>
-    <form action="write" method="post" enctype="multipart/form-data" name="f">
+    <h2 class="text-center">공지사항 글쓰기</h2>
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger">${error}</div>
+    </c:if>
+    <form action="${pageContext.request.contextPath}/notice/write" method="post" enctype="multipart/form-data" name="f">
         <table class="table">
             <tr>
                 <td>글쓴이</td>
-                <td><input type="text" name="author_id" class="form-control" value="${param.author_id}"></td>
+                <td><input type="text" name="writer_id" class="form-control" value="${param.writer_id}"></td>
             </tr>
             <tr>
                 <td>비밀번호</td>
@@ -27,26 +30,19 @@
             </tr>
             <tr>
                 <td>제목</td>
-                <td><input type="text" name="post_title" class="form-control" value="${param.post_title}"></td>
+                <td><input type="text" name="notice_title" class="form-control" value="${param.notice_title}"></td>
             </tr>
             <tr>
                 <td>내용</td>
-                <td><textarea rows="15" name="post_content" class="form-control" id="summernote">${param.post_content}</textarea></td>
+                <td><textarea rows="15" name="notice_content" class="form-control" id="summernote">${param.notice_content}</textarea></td>
             </tr>
             <tr>
                 <td>첨부파일</td>
-                <td><input type="file" name="post_file"></td>
-            </tr>
-            <tr>
-                <td>공지 설정</td>
-                <td>
-                    <input type="checkbox" name="post_notice" value="1" id="post_notice">
-                    <label for="post_notice">공지로 설정</label>
-                </td>
+                <td><input type="file" name="notice_file"></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="javascript:inputcheck()" class="btn btn-primary">[게시물 등록]</a>                       
+                    <button type="button" onclick="inputcheck()" class="btn btn-primary">게시물 등록</button>
                 </td>
             </tr>
         </table>
@@ -67,8 +63,8 @@
                     }
                 }
             });
-            <c:if test="${not empty param.post_content}">
-                $('#summernote').summernote('code', "${fn:escapeXml(param.post_content)}");
+            <c:if test="${not empty param.notice_content}">
+                $('#summernote').summernote('code', "${fn:escapeXml(param.notice_content)}");
             </c:if>
         });
 
@@ -76,7 +72,7 @@
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "${pageContext.request.contextPath}/post/uploadImage",
+                url: "${pageContext.request.contextPath}/notice/uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,
@@ -92,21 +88,27 @@
 
         function inputcheck() {
             let f = document.f;
-            if (f.author_id.value == "") {
+            console.log("inputcheck called");
+            console.log("writer_id:", f.writer_id.value);
+            console.log("pass:", f.pass.value);
+            console.log("notice_title:", f.notice_title.value);
+            console.log("notice_content:", f.notice_content.value);
+            if (f.writer_id.value.trim() === "") {
                 alert("글쓴이를 입력하세요");
-                f.author_id.focus();
+                f.writer_id.focus();
                 return;
             }
-            if (f.pass.value == "") {
+            if (f.pass.value.trim() === "") {
                 alert("비밀번호를 입력하세요");
                 f.pass.focus();
                 return;
             }
-            if (f.post_title.value == "") {
+            if (f.notice_title.value.trim() === "") {
                 alert("제목을 입력하세요");
-                f.post_title.focus();
+                f.notice_title.focus();
                 return;
             }
+            console.log("Submitting form");
             f.submit();
         }
     </script>

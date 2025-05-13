@@ -164,5 +164,12 @@ CREATE TABLE post_comment (
     CONSTRAINT FK_NOTICE_COMMENT_PARENT FOREIGN KEY (parent_comment_id) REFERENCES post_comment(comment_id) ON DELETE CASCADE
 );
 
+ALTER TABLE post
+ADD post_password VARCHAR(255);
 
 
+ALTER TABLE notice 
+ADD notice_password VARCHAR(255);
+
+ALTER TABLE post_comment 
+ADD comment_password VARCHAR(255);
