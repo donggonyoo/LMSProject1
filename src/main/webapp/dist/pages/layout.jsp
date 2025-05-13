@@ -333,7 +333,7 @@ body {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="/LMSProject1/dist/pages/learning_support/registerCourse.jsp"
+								<li class="nav-item"><a href="${path}/learning_support/registerCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청</p>
 								</a></li>
