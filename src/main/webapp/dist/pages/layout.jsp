@@ -244,7 +244,7 @@ body {
 						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" /> 
 						<img 
-							src="${path}/picture/${img}"
+							src="${path}/dist/assets/picture/${img}"
 							class="user-image rounded-circle shadow" alt="User Image" />
 							<span class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
 					</a>
@@ -252,7 +252,7 @@ body {
 							<!--begin::User Image-->
 							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img 
-								src="${path}/picture/${img}"
+								src="${path}/dist/assets/picture/${img}"
 								class="rounded-circle shadow" alt="User Image" />
 								<c:if test="${fn:contains(sessionScope.login, 's')}">
 								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>

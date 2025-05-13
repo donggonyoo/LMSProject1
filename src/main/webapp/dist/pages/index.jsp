@@ -207,7 +207,7 @@ ul.timeline::before {
 						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
 						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 						<img 
-							src="${path}/picture/${img}"
+							src="${path}/dist/assets/picture/${img}"
 							class="user-image rounded-circle shadow" alt="User Image" /> <span
 							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님 반갑습니다</span>
 					</a>
@@ -215,7 +215,7 @@ ul.timeline::before {
 							<!--begin::User Image-->
 							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img
-								src="${path}/picture/${img}"
+								src="${path}/dist/assets/picture/${img}"
 								class="rounded-circle shadow" alt="User Image" /> <%-- 세션 정보에 따라 이름 출력 --%>
 								<c:if test="${fn:contains(sessionScope.login, 's')}">
 								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
