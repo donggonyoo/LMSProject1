@@ -337,7 +337,7 @@ body {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청</p>
 								</a></li>
-								<li class="nav-item"><a href="./widgets/info-box.html"
+								<li class="nav-item"><a href="${path}/learning_support/viewCourse/viewCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
 								</a></li>

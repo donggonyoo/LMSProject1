@@ -21,7 +21,7 @@
 	    SELECT 
 	        c.course_id, c.dept_id, c.professor_id, p.professor_name, 
 	        c.course_name, c.credit_category, c.course_score, c.course_plan,
-	        (SELECT CONCAT(ct.course_time_yoil, ', ', ct.course_time_start, ' - ', ct.course_time_end)
+	        (SELECT CONCAT(ct.course_time_yoil, '/ ', ct.course_time_start, ' - ', ct.course_time_end)
 	         FROM course_time ct
 	         WHERE ct.course_id = c.course_id
 	         LIMIT 1) AS time_slot
@@ -71,17 +71,22 @@
 	
 	
 	<select id="searchRegistrationCourses" resultType="RegistrationDto">
-	    SELECT r.registration_id, c.credit_category, c.course_id, c.course_name, c.course_score, p.professor_name,
-			(SELECT CONCAT(ct.course_time_yoil, ', ', ct.course_time_start, ' - ', ct.course_time_end) 
-			FROM course_time ct
-			WHERE ct.course_id = c.course_id
-			) AS time_slot
+	    SELECT r.registration_id, 
+    		   c.credit_category, 
+    		   c.course_id, 
+    		   c.course_name, 
+    		   c.course_score, 
+    		   p.professor_name,
+    		   ct.course_time_loc,   
+			   CONCAT(ct.course_time_yoil, '/ ', ct.course_time_start, ' - ', ct.course_time_end) as time_slot
 		FROM registration r,
 			  course c,
-			  professor p
+			  professor p,
+			  course_time ct
 		WHERE r.student_id = #{studentId}
-		AND  r.course_id = c.course_id
-		AND c.professor_id = p.professor_id
+		AND   r.course_id = c.course_id
+		AND   c.professor_id = p.professor_id
+		and   c.course_id = ct.course_id
 	</select>
 	
     <delete id="deleteCourse" parameterType="string">

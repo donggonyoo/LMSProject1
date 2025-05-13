@@ -111,7 +111,7 @@ public class CourseController extends MskimRequestMapping {
 	}
 	
 	@RequestMapping("addCourse")
-	public void addCourse (HttpServletRequest request, HttpServletResponse response) {
+	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
 		
 		ObjectMapper mapper = new ObjectMapper();
         String json;
@@ -126,6 +126,8 @@ public class CourseController extends MskimRequestMapping {
 		map.put("professorId", request.getParameter("professorId"));
 		
 		courseDao.addCourse(map);
+		
+		return "/pages/dummy";
 
 	}
 	
@@ -150,10 +152,12 @@ public class CourseController extends MskimRequestMapping {
 	}
 	
 	@RequestMapping("deleteCourse")
-	public void deleteCourse (HttpServletRequest request, HttpServletResponse response) {
+	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 
 		String registrationId = request.getParameter("registrationId");
 		courseDao.deleteCourse(registrationId);
+		
+		return "/pages/dummy";
 	}
 	
 }

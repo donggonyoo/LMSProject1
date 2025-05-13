@@ -231,8 +231,8 @@ function loadCourses() {
                         $("<form>").append(
                             $("<input>").attr({type: "hidden", name: "courseId", value: course.courseId}),
                             $("<input>").attr({type: "hidden", name: "professorId", value: course.professorId}),
-                            $("<button>").addClass("btn btn-primary add-course").text("추가")
-                        )
+                            $("<button>").attr({type: "button"}).addClass("btn btn-primary add-course").text("추가")
+                       	)
                     ),
                     $("<td>").text(course.creditCategory),
                     $("<td>").text(course.courseId),
@@ -255,14 +255,15 @@ function loadCourses() {
 }
 
 // 과목 추가
+
 function addCourse(courseId, professorId) {
     $.ajax({
         url: "${path}/learning_support/addCourse",
-        type: "post",
+        type: "get",
         data: { courseId: courseId, professorId: professorId },
+        dataType: "json",
         success: function(data) {
-			console.log('과목추가성공data: ', data);
-            loadRegistrations(); // 신청 내역 갱신
+        	loadRegistrations(); // 신청 내역 갱신
             loadCourses(); // 강의 목록 갱신 (추가된 항목 제외)
         },
         error: function(xhr) {
@@ -270,6 +271,8 @@ function addCourse(courseId, professorId) {
         }
     });
 }
+
+
 
 // 신청 내역 로드
 function loadRegistrations() {
@@ -291,7 +294,7 @@ function loadRegistrations() {
                     $("<td>").append(
                         $("<form>").append(
                             $("<input>").attr({type: "hidden", name: "registrationId", value: reg.registrationId}),
-                            $("<button>").addClass("btn btn-secondary delete-registration text-red-600").text("삭제")
+                            $("<button>").attr({type: "button"}).addClass("btn btn-secondary delete-registration text-red-600").text("삭제")
                         )
                     )
                 );
@@ -308,11 +311,10 @@ function loadRegistrations() {
 function deleteCourse(registrationId) {
     $.ajax({
         url: "${path}/learning_support/deleteCourse",
-        type: "post",
+        type: "get",
         data: { registrationId: registrationId },
+        dataType: "json",
         success: function(data) {
-			console.log('data', data);
-        	alert("과목이 성공적으로 삭제되었습니다.");
         	loadRegistrations(); // 신청 내역 갱신
             loadCourses(); // 강의 목록 갱신
         },
