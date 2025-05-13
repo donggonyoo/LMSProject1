@@ -7,10 +7,11 @@
     <meta charset="UTF-8">
     <title>게시물 상세</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container mt-5">
-        <h2>게시물 상세</h2>
+        <h1 class="fs-1">게시물 상세</h1> <br>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
         </c:if>
@@ -48,7 +49,7 @@
         <div class="text-end mb-5">
             <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
             <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
-            <a href="${pageContext.request.contextPath}/post/createPost?parent_postId=${post.postId}" class="btn btn-primary">답글 작성</a>
+            <a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
             <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
         </div>
 
@@ -63,6 +64,7 @@
                             <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                         </small></p>
                         <p>${comment.commentContent}</p>
+                        <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">답글</a>
 
                         <c:forEach var="child" items="${commentList}">
                             <c:if test="${child.parentCommentId eq comment.commentId}">
@@ -75,12 +77,26 @@
                                 </div>
                             </c:if>
                         </c:forEach>
+
+                        <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
+                            <input type="hidden" name="postId" value="${post.postId}">
+                            <input type="hidden" name="parentCommentId" value="${comment.commentId}">
+                            <div class="mb-3">
+                                <label for="writerId-${comment.commentId}" class="form-label">작성자</label>
+                                <input type="text" class="form-control" id="writerId-${comment.commentId}" name="writerId">
+                            </div>
+                            <div class="mb-3">
+                                <label for="commentContent-${comment.commentId}" class="form-label">댓글 내용</label>
+                                <textarea class="form-control" id="commentContent-${comment.commentId}" name="commentContent" rows="2"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">대댓글 작성</button>
+                        </form>
                     </div>
                 </div>
             </c:if>
         </c:forEach>
 
-        <form action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-4">
+        <form action="writeComment" method="post" class="mt-4">
             <input type="hidden" name="postId" value="${post.postId}">
             <div class="mb-3">
                 <label for="writerId" class="form-label">작성자</label>
@@ -93,5 +109,11 @@
             <button type="submit" class="btn btn-primary">댓글 작성</button>
         </form>
     </div>
+
+    <script>
+    function showReplyForm(commentId) {
+        document.getElementById('replyForm-' + commentId).style.display = 'block';
+    }
+    </script>
 </body>
 </html>

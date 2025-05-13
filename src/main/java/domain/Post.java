@@ -15,6 +15,8 @@ public class Post {
     private int postGroupStep;
     private String postFile;
     private int postReadCount;
+    private boolean postNotice;
+    
 	public String getPostId() {
 		return postId;
 	}
@@ -87,14 +89,21 @@ public class Post {
 	public void setPostReadCount(int postReadCount) {
 		this.postReadCount = postReadCount;
 	}
+	public boolean isPostNotice() {
+		return postNotice;
+	}
+	public void setPostNotice(boolean postNotice) {
+		this.postNotice = postNotice;
+	}
 	@Override
 	public String toString() {
 		return "Post [postId=" + postId + ", authorId=" + authorId + ", postTitle=" + postTitle + ", postContent="
 				+ postContent + ", postPassword=" + postPassword + ", postCreatedAt=" + postCreatedAt
 				+ ", postUpdatedAt=" + postUpdatedAt + ", postGroup=" + postGroup + ", postGroupLevel=" + postGroupLevel
 				+ ", postGroupStep=" + postGroupStep + ", postFile=" + postFile + ", postReadCount=" + postReadCount
-				+ "]";
+				+ ", postNotice=" + postNotice + "]";
 	}
+
 
     
     

@@ -10,9 +10,9 @@
 <title>게시글 삭제</title>
 </head>
 <body>
-<h2>게시글 삭제</h2>
-<form action="delete" method="post">
-	<input type="hidden" name="postId" value="${param.post_id}">
+<h1 class="fs-1">게시글 삭제</h1>
+<form action="${pageContext.request.contextPath}/post/delete" method="post">
+	<input type="hidden" name="postId" value="${param.postId}">
 	<label>Password : </label>
 	<input type="password" class="form-control" name="pass">
 	<div class="text-right">

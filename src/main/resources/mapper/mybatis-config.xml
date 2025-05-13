@@ -14,6 +14,7 @@
   <typeAliases>
   	<typeAlias type="domain.Professor" alias="Professor" />
   	<typeAlias type="domain.Post" alias="Post" />
+  	<typeAlias type="domain.PostComment" alias="PostComment" />
   	<typeAlias type="domain.Notice" alias="Notice" />
   	<typeAlias type="domain.Course" alias="Course" />
   	<typeAlias type="domain.CourseTime" alias="CourseTime" />
