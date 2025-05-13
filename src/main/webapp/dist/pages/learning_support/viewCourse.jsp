@@ -229,6 +229,46 @@ body {
                     <td class="saturday-1300"></td>
                     <td class="sunday-1300"></td>
                 </tr>
+                <tr>
+                    <td class="time-slot">14:00 - 14:50</td>
+                    <td class="monday-1400"></td>
+                    <td class="tuesday-1400"></td>
+                    <td class="wednesday-1400"></td>
+                    <td class="thursday-1400"></td>
+                    <td class="friday-1400"></td>
+                    <td class="saturday-1400"></td>
+                    <td class="sunday-1400"></td>
+                </tr>
+                <tr>
+                    <td class="time-slot">15:00 - 15:50</td>
+                    <td class="monday-1500"></td>
+                    <td class="tuesday-1500"></td>
+                    <td class="wednesday-1500"></td>
+                    <td class="thursday-1500"></td>
+                    <td class="friday-1500"></td>
+                    <td class="saturday-1500"></td>
+                    <td class="sunday-1500"></td>
+                </tr>
+                <tr>
+                    <td class="time-slot">16:00 - 16:50</td>
+                    <td class="monday-1600"></td>
+                    <td class="tuesday-1600"></td>
+                    <td class="wednesday-1600"></td>
+                    <td class="thursday-1600"></td>
+                    <td class="friday-1600"></td>
+                    <td class="saturday-1600"></td>
+                    <td class="sunday-1600"></td>
+                </tr>
+                <tr>
+                    <td class="time-slot">17:00 - 17:50</td>
+                    <td class="monday-1700"></td>
+                    <td class="tuesday-1700"></td>
+                    <td class="wednesday-1700"></td>
+                    <td class="thursday-1700"></td>
+                    <td class="friday-1700"></td>
+                    <td class="saturday-1700"></td>
+                    <td class="sunday-1700"></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -251,7 +291,13 @@ $(document).ready(function() {
                 },
                 dataType: "json",
                 success: function(response) {
-                    console.log('Cancel response:', response);
+                	if ($("#timetable-container").is(":visible")) {                		
+                		location.reload();	                	
+                		$(".view-courseTime").trigger("click");
+                    } else {
+                    	location.reload();
+                    }
+                	
                     if (response.success) {
                         // 동적으로 테이블 업데이트
                         $(`button[data-registration-id="${registrationId}"]`).closest("tr").remove();
@@ -259,9 +305,7 @@ $(document).ready(function() {
                         var totalCredits = parseInt($("p:contains('총 신청 학점')").text().match(/\d+/)[0]) - 3; // 예시로 3학점 감소
                         $("p:contains('총 신청 학점')").text(`총 신청 학점: ${totalCredits} 학점`);
                         // 시간표가 표시 중이면 시간표도 갱신
-                        if ($("#timetable-container").is(":visible")) {
-                            $(".view-courseTime").trigger("click");
-                        }
+                       	
                     } else {
                         alert("취소 실패: " + response.message);
                     }
