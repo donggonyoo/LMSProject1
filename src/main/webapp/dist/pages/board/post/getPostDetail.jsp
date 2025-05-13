@@ -63,10 +63,14 @@
                         <small class="text-muted">
                             <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                         </small></p>
-                        <p>${comment.commentContent}</p>
-                        <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">답글</a>
+                         <p>${comment.commentContent}</p>
+                        <div class="d-flex gap-2">
+                            <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">댓글</a>
+                            <a href="javascript:void(0)" onclick="showEditForm('${comment.commentId}')" class="btn btn-sm btn-warning">수정</a>
+                            <a href="javascript:void(0)" onclick="confirmDelete('${comment.commentId}')" class="btn btn-sm btn-danger">삭제</a>
+                        </div>
 
-                        <c:forEach var="child" items="${commentList}">
+                       <c:forEach var="child" items="${commentList}">
                             <c:if test="${child.parentCommentId eq comment.commentId}">
                                 <div class="ms-4 border-start ps-3 mt-2">
                                     <p><strong>${child.writerId}</strong>
@@ -74,9 +78,29 @@
                                         <fmt:formatDate value="${child.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                                     </small></p>
                                     <p>${child.commentContent}</p>
+                                    <div class="d-flex gap-2">
+                                        <a href="javascript:void(0)" onclick="showEditForm('${child.commentId}')" class="btn btn-sm btn-warning">수정</a>
+                                        <a href="javascript:void(0)" onclick="confirmDelete('${child.commentId}')" class="btn btn-sm btn-danger">삭제</a>
+                                    </div>
+
+                                    <form id="editForm-${child.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
+                                        <input type="hidden" name="commentId" value="${child.commentId}">
+                                        <input type="hidden" name="postId" value="${post.postId}">
+                                        <div class="mb-3">
+                                            <label for="editWriterId-${child.commentId}" class="form-label">작성자</label>
+                                            <input type="text" class="form-control" id="editWriterId-${child.commentId}" name="writerId" value="${child.writerId}" readonly>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="editCommentContent-${child.commentId}" class="form-label">댓글 내용</label>
+                                            <textarea class="form-control" id="editCommentContent-${child.commentId}" name="commentContent" rows="2">${child.commentContent}</textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
+                                        <button type="button" onclick="hideEditForm('${child.commentId}')" class="btn btn-secondary btn-sm">취소</button>
+                                    </form>
                                 </div>
                             </c:if>
                         </c:forEach>
+
 
                         <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
                             <input type="hidden" name="postId" value="${post.postId}">

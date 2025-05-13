@@ -10,13 +10,14 @@ public class Post {
     private String postPassword;
     private Date postCreatedAt;
     private Date postUpdatedAt;
-    private int postGroup;
-    private int postGroupLevel;
-    private int postGroupStep;
+    private Integer postGroup;
+    private Integer postGroupLevel;
+    private Integer postGroupStep;
     private String postFile;
-    private int postReadCount;
+    private Integer postReadCount;
     private boolean postNotice;
     
+    // Getters and Setters
 	public String getPostId() {
 		return postId;
 	}

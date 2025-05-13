@@ -25,6 +25,13 @@
                 <td>비밀번호</td>
                 <td><input type="password" name="pass" class="form-control"></td>
             </tr>
+              <tr>
+                <td>공지 설정</td>
+                <td>
+                    <input type="checkbox" name="post_notice" value="1" id="post_notice">
+                    <label for="post_notice">공지로 설정</label>
+                </td>
+            </tr>
             <tr>
                 <td>제목</td>
                 <td><input type="text" name="post_title" class="form-control" value="${param.post_title}"></td>
@@ -37,13 +44,7 @@
                 <td>첨부파일</td>
                 <td><input type="file" name="post_file"></td>
             </tr>
-            <tr>
-                <td>공지 설정</td>
-                <td>
-                    <input type="checkbox" name="post_notice" value="1" id="post_notice">
-                    <label for="post_notice">공지로 설정</label>
-                </td>
-            </tr>
+          
             <tr>
                 <td colspan="2">
                     <a href="javascript:inputcheck()" class="btn btn-primary">[게시물 등록]</a>                       

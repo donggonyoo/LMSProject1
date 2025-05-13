@@ -11,8 +11,9 @@ public class Notice {
 	private Date noticeCreatedAt;
 	private Date  noticeUpdatedAt;
 	private String noticeFile;
-	private int noticeReadCount;
+	private Integer noticeReadCount;
 	
+	// Getters and Setters
 	public String getNoticePassword() {
 		return noticePassword;
 	}

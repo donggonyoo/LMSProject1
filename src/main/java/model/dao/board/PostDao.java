@@ -160,4 +160,13 @@ public class PostDao {
             MyBatisConnection.close(session);
         }
     }
+    
+    public List<String> getAllPostIds() {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            return session.selectList("post.getAllPostIds");
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
 }

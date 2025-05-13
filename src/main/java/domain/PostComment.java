@@ -10,6 +10,8 @@ public class PostComment {
 	private String parentCommentId;
 	private Date createdAt;
 	private Date updatedAt;
+	
+	// Getters and Setters
 	public String getCommentId() {
 		return commentId;
 	}

@@ -47,7 +47,7 @@
                 <when test="column == 'postTitle,authorId,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
             </choose>
         </if>
-        ORDER BY post_group DESC, post_group_step DESC
+   		ORDER BY post_group DESC, post_group_level ASC, post_group_step ASC, post_created_at DESC
         LIMIT #{startRow}, #{pageSize}
     </select>
 
@@ -122,4 +122,8 @@
     <select id="getMaxCommentId" resultType="string">
         SELECT MAX(comment_id) FROM post_comment
     </select>
+    
+    <select id="getAllPostIds" resultType="string">
+    SELECT post_id FROM post
+	</select>
 </mapper>
