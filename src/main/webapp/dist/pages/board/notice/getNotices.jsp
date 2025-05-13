@@ -6,128 +6,93 @@
 <head>
     <meta charset="UTF-8">
     <title>공지사항</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <h1 class="fs-1">공지사항</h1><br>
-    <form action="getNotices" method="post" name="sf">
-    <input type="hidden" name="pageNum" value="1">
-    <select class="w3-select" name="column" style="width: 10%;">
-        <option value="">선택하시오</option>
-        <option value="writerId">작성자</option>
-        <option value="noticeTitle">제목</option>
-        <option value="noticeContent">내용</option>
-        <option value="noticeTitle,writerId">제목+작성자</option>
-        <option value="noticeTitle,noticeContent">제목+내용</option>
-        <option value="writerId,noticeContent">작성자+내용</option>
-        <option value="noticeTitle,writerId,noticeContent">제목+작성자+내용</option>
-    </select>
+    <div class="container mt-5">
+        <h2 class="text-center">공지사항</h2>
 
-    <script>
-        document.sf.column.value='${param.column}';
-    </script>
-
-    <input class="form-control d-inline-block w-auto" type="text" placeholder="Search" name="find" value="${param.find}" style="width: 90%;">
-    <button class="btn btn-primary" type="submit">Search</button>
-</form>
-
-    <table class="table">
-        <c:if test="${boardcount == 0}">
-            <tr>
-                <td colspan="5">등록된 게시글이 없습니다.</td>
-            </tr>
+        <!-- 에러 메시지 -->
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
         </c:if>
-        <c:if test="${boardcount > 0}">
-            <tr>
-                <td colspan="5" style="text-align:right">글개수: ${boardcount}</td>
-            </tr>
-            
-            <tr>
-                <th width="8%">번호</th>
-                <th width="50%">제목</th>
-                <th width="14%">작성자</th>
-                <th width="17%">등록일</th>
-                <th width="11%">조회수</th>
-            </tr>
-            <c:set var="boardnum" value="${boardNum}"/>
-            <c:forEach var="n" items="${list}">
+
+        <!-- 검색 페이지 링크 -->
+        <div class="text-right mb-3">
+            <a href="${pageContext.request.contextPath}/notice/searchNotice" class="btn btn-primary">공지사항 검색</a>
+        </div>
+
+        <!-- 공지사항 목록 -->
+        <table class="table table-bordered">
+            <thead>
                 <tr>
-                    <td>${boardnum}</td>
-                    <c:set var="boardnum" value="${boardnum-1}"/>
-                    <td style="text-align:left">        
-                        <c:if test="${!empty n.noticeFile}">
-                            <a href="${pageContext.request.contextPath}/upload/board/${n.noticeFile}">📌</a>
-                        </c:if>
-                        <a href="${pageContext.request.contextPath}/notice/getNoticeDetail?notice_id=${n.noticeId}">
-                            ${n.noticeTitle}
-                        </a>
-                    </td>
-                    <td>${n.writerId}</td>
-                    <fmt:formatDate value="${n.noticeCreatedAt}" pattern="yyyy-MM-dd" var="rdate"/>    
-                    <fmt:formatDate value="${today}" pattern="yyyy-MM-dd" var="tdate"/>                     
-                    <td>
-                        <c:if test="${rdate == tdate}">
-                            <fmt:formatDate value="${n.noticeCreatedAt}" pattern="HH:mm:ss"/>
-                        </c:if>
-                        <c:if test="${rdate != tdate}">
-                            <fmt:formatDate value="${n.noticeCreatedAt}" pattern="yyyy-MM-dd HH:mm:ss"/>
-                        </c:if>
-                    </td>    
-                    <td>${n.noticeReadCount}</td>    
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
                 </tr>
-            </c:forEach>
-        </c:if>
-    </table>
-  <table class="table">
-        <tr>
-            <td colspan="5" style="text-align:right">
-                <p align="right"><a href="${pageContext.request.contextPath}/notice/createNotice">[글쓰기]</a></p>
-            </td>
-        </tr>
-    </table>
-    <c:if test="${boardcount > 0}">
-        <div class="d-flex justify-content-center mt-4">
-            <ul class="pagination">
-                <li class="page-item ${pageNum <= 1 ? 'disabled' : ''}">
-                    <c:if test="${pageNum <= 1}">
-                        <span class="page-link">[이전]</span>
-                    </c:if>
-                    <c:if test="${pageNum > 1}">
-                        <a class="page-link" href="javascript:listsubmit(${pageNum-1})">[이전]</a>
-                    </c:if>
-                </li>
+            </thead>
+            <tbody>
+                <c:forEach var="notice" items="${list}" varStatus="status">
+                    <tr>
+                        <td>${boardNum - status.index}</td>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/notice/getNoticeDetail?notice_id=${notice.noticeId}">
+                                ${notice.noticeTitle}
+                            </a>
+                        </td>
+                        <td>${notice.writerId}</td>
+                        <td>
+                            <c:set var="todayDate"><fmt:formatDate value="${today}" pattern="yyyy-MM-dd"/></c:set>
+                            <c:set var="createDate"><fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd"/></c:set>
+                            <c:choose>
+                                <c:when test="${todayDate eq createDate}">
+                                    <fmt:formatDate value="${notice.noticeCreatedAt}" pattern="HH:mm"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td>${notice.noticeReadCount}</td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty list}">
+                    <tr>
+                        <td colspan="5" class="text-center">공지사항이 없습니다.</td>
+                    </tr>
+                </c:if>
+            </tbody>
+        </table>
 
-                <c:forEach var="a" begin="${startpage}" end="${endpage}">
-                    <li class="page-item ${a == pageNum ? 'active' : ''}">
-                        <c:if test="${a == pageNum}">
-                            <span class="page-link">[${a}]</span>
-                        </c:if>
-                        <c:if test="${a != pageNum}">
-                            <a class="page-link" href="javascript:listsubmit(${a})">[${a}]</a>
-                        </c:if>
+        <!-- 페이지네이션 -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <c:if test="${pageNum > 1}">
+                    <li class="page-item">
+                        <a class="page-link" href="?pageNum=${pageNum - 1}">이전</a>
+                    </li>
+                </c:if>
+                <c:forEach begin="${startpage}" end="${endpage}" var="i">
+                    <li class="page-item ${i == pageNum ? 'active' : ''}">
+                        <a class="page-link" href="?pageNum=${i}">${i}</a>
                     </li>
                 </c:forEach>
-
-                <li class="page-item ${pageNum >= maxpage ? 'disabled' : ''}">
-                    <c:if test="${pageNum >= maxpage}">
-                        <span class="page-link">[다음]</span>
-                    </c:if>
-                    <c:if test="${pageNum < maxpage}">
-                        <a class="page-link" href="javascript:listsubmit(${pageNum+1})">[다음]</a>
-                    </c:if>
-                </li>
+                <c:if test="${pageNum < maxpage}">
+                    <li class="page-item">
+                        <a class="page-link" href="?pageNum=${pageNum + 1}">다음</a>
+                    </li>
+                </c:if>
             </ul>
+        </nav>
+
+        <!-- 글쓰기 버튼 -->
+        <div class="text-right">
+            <a href="${pageContext.request.contextPath}/notice/createNotice" class="btn btn-primary">글쓰기</a>
         </div>
-    </c:if>
-
-
-    <script type="text/javascript">
-        function listsubmit(page) {
-            let f = document.sf;
-            f.pageNum.value = page;
-            f.submit();
-        }
-    </script>
+    </div>
 </body>
 </html>

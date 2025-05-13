@@ -16,6 +16,7 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             session.insert("post.insert", post);
+            session.commit();
         } catch (Exception e) {
             session.rollback();
             throw e;
@@ -28,6 +29,7 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             session.update("post.update", post);
+            session.commit();
         } catch (Exception e) {
             session.rollback();
             throw e;
@@ -40,6 +42,23 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             session.delete("post.delete", postId);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw e;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    // 게시물과 관련 댓글을 함께 삭제하는 메서드 (트랜잭션 처리)
+    public void deleteWithComments(String postId) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            // 트랜잭션 시작
+            session.delete("post.deleteCommentsByPostId", postId); // 관련 댓글 삭제
+            session.delete("post.delete", postId); // 게시물 삭제
+            session.commit();
         } catch (Exception e) {
             session.rollback();
             throw e;
@@ -96,6 +115,10 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             session.update("post.incrementReadCount", postId);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw e;
         } finally {
             MyBatisConnection.close(session);
         }
@@ -126,6 +149,10 @@ public class PostDao {
             map.put("group", group);
             map.put("step", step);
             session.update("post.updateGroupStep", map);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw e;
         } finally {
             MyBatisConnection.close(session);
         }
@@ -135,6 +162,7 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             session.insert("post.insertComment", comment);
+            session.commit();
         } catch (Exception e) {
             session.rollback();
             throw e;
@@ -165,6 +193,41 @@ public class PostDao {
         SqlSession session = MyBatisConnection.getConnection();
         try {
             return session.selectList("post.getAllPostIds");
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+    
+    public PostComment selectComment(String commentId) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            return session.selectOne("post.selectComment", commentId);
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public void updateComment(PostComment comment) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            session.update("post.updateComment", comment);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw e;
+        } finally {
+            MyBatisConnection.close(session);
+        }
+    }
+
+    public void deleteComment(String commentId) {
+        SqlSession session = MyBatisConnection.getConnection();
+        try {
+            session.delete("post.deleteComment", commentId);
+            session.commit();
+        } catch (Exception e) {
+            session.rollback();
+            throw e;
         } finally {
             MyBatisConnection.close(session);
         }
