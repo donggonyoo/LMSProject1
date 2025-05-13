@@ -260,11 +260,10 @@ function addCourse(courseId, professorId) {
         url: "${path}/learning_support/addCourse",
         type: "post",
         data: { courseId: courseId, professorId: professorId },
-        dataType: "json",
         success: function(data) {
+			console.log('과목추가성공data: ', data);
             loadRegistrations(); // 신청 내역 갱신
             loadCourses(); // 강의 목록 갱신 (추가된 항목 제외)
-            alert('data: ',data);
         },
         error: function(xhr) {
             alert("과목 추가에 실패했습니다: " + xhr.responseText);
@@ -311,11 +310,11 @@ function deleteCourse(registrationId) {
         url: "${path}/learning_support/deleteCourse",
         type: "post",
         data: { registrationId: registrationId },
-        dataType: "json",
         success: function(data) {
-            loadRegistrations(); // 신청 내역 갱신
+			console.log('data', data);
+        	alert("과목이 성공적으로 삭제되었습니다.");
+        	loadRegistrations(); // 신청 내역 갱신
             loadCourses(); // 강의 목록 갱신
-            alert("과목이 성공적으로 삭제되었습니다.");
         },
         error: function(xhr) {
             alert("과목 삭제에 실패했습니다: " + xhr.responseText);

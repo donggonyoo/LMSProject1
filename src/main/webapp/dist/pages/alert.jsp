@@ -2,6 +2,6 @@
     pageEncoding="UTF-8"%>
 
 <script>
-	alert("${msg}")
+	alert("${msg}");
 	location.href="${url}";
 </script>

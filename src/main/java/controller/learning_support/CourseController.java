@@ -125,15 +125,14 @@ public class CourseController extends MskimRequestMapping {
 		map.put("courseId", request.getParameter("courseId"));
 		map.put("professorId", request.getParameter("professorId"));
 		
-		if (courseDao.addCourse(map) < 1) {
+		if (courseDao.addCourse(map) > 0) {//
+			return "/pages/learning_support/ajax_learning_support";
+		} else {
 			request.setAttribute("msg", "수강신청 추가 실패");
 			request.setAttribute("url", "registerCourse");
 			return "/pages/alert";
-		} else {
-			request.setAttribute("json", "강의추가 성공");
 		}
 
-        return "/pages/learning_support/ajax_learning_support";
 	}
 	
 	@RequestMapping("searchRegistrationCourses")
@@ -160,9 +159,10 @@ public class CourseController extends MskimRequestMapping {
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 
 		String registrationId = request.getParameter("registrationId");
-		System.out.println(registrationId);
 		int num = courseDao.deleteCourse(registrationId);
-		return "";
+        request.setAttribute("msg", "dddd");
+        
+        return "/pages/alert";
 	}
 	
 }
