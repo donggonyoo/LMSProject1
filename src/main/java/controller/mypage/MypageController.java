@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +26,7 @@ import domain.Student;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.mypage.DeptDao;
+import model.dao.mypage.ProStuDao;
 import model.dao.mypage.ProfessorDao;
 import model.dao.mypage.StudentDao;
 //http://localhost:8080/LMSProject1/dist/pages/mypage/registerUserChk
@@ -30,6 +34,8 @@ import model.dao.mypage.StudentDao;
 initParams = {@WebInitParam(name="view", value="/dist/pages/")}
 )
 public class MypageController  extends MskimRequestMapping{
+	
+	
 	
 	public String IdChk(String a) { //아이디를 만들어줌 교수는 pxxxx , 학생은 sxxxx
 		String num = null;
@@ -176,6 +182,7 @@ public class MypageController  extends MskimRequestMapping{
 		return "alert";
 	}
 	
+	
 
 	//사진업로드관련
 	@RequestMapping("picture")
@@ -200,6 +207,20 @@ public class MypageController  extends MskimRequestMapping{
 		return "mypage/picture";
 	}
 	
+	@RequestMapping("doLogin") //로그인상태로접근불가능
+	public String doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		HttpSession session = request.getSession();
+		String login = (String)session.getAttribute("login");
+		if(login==null) {
+			return "mypage/doLogin";
+		}
+		else {
+			request.setAttribute("msg", "로그아웃을하세요");
+			request.setAttribute("url","index");
+			return "alert";
+		}
+		
+	}
 	
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -207,28 +228,54 @@ public class MypageController  extends MskimRequestMapping{
 		//session정보를 얻음(session영역 속성 등록을위해)
 
 		String id = request.getParameter("id");
-		String pass = request.getParameter("pass");
+		String pass = request.getParameter("password");
 
 		if(id==null || id.trim()=="" || pass==null || pass.trim()=="") {
 			request.setAttribute("msg", "아이디or비번확인");
 			request.setAttribute("url","doLogin");
 			return "alert";
 		}
-		
-		if(id.substring(0,1).equals("p")) {//첫번째문자가 p냐??(교수)
-			Professor pro = new ProfessorDao().selectOne(id);
-			if(pro==null){
-				request.setAttribute("msg", "교수아이디를 확인하세요");
+		//student or professor의 id,pw,name을가지고있는 map
+		Map<String,String> map = new ProStuDao().login(id); 
+			
+			if(map==null){
+				request.setAttribute("msg", "아이디 확인하세요");
 				request.setAttribute("url","doLogin");
 			}
 
 			else{
-				//요청받은 비밀번호와 DB의 비밀번호비교
-				if(pass.equals(pro.getProfessorPassword())
+				String dbId="";
+				String dbPw="";
+				String dbName="";
+				Set<Entry<String,String>> entrySet = map.entrySet();
+				for (Entry<String, String> entry : entrySet) {
+					if(entry.getKey().contains("id")) {
+						dbId = entry.getValue();
+					}
+					else if(entry.getKey().contains("password")) {
+						dbPw = entry.getValue();
+					}
+					else {
+						dbName = entry.getValue();
+					}
+				} //dbId,dbPw,dbName 꺼내기종료
+					
+				
+				if(pass.equals(dbPw)
 					//BCrypt.checkpw(pass, pro.getProfessorPassword())
 						){//로그인성공
-					session.setAttribute("login", id);
-					request.setAttribute("msg", pro.getProfessorName()+"님이 로그인 하셨습니다");
+					session.setAttribute("login", dbId);
+					if(dbId.contains("s")) {
+						StudentDao dao = new StudentDao();
+						Student student = dao.selectOne(dbId);
+						session.setAttribute("m", student);
+					}
+					else {
+						ProfessorDao dao = new ProfessorDao();
+						Professor professor = dao.selectOne(dbId);
+						session.setAttribute("m", professor);
+					}
+					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
 
 				}
@@ -237,42 +284,12 @@ public class MypageController  extends MskimRequestMapping{
 					request.setAttribute("url","doLogin");
 				}
 			}
-			
-		}
+			return "alert";
 		
-		else if(id.substring(0,1).equals("s")) { //첫번째문자가 s냐??(학생)
-			Student stu = new StudentDao().selectOne(id);
-			System.out.println(stu);
-			
-			if(stu==null){
-				request.setAttribute("msg", "학생아이디를 확인하세요");
-				request.setAttribute("url","doLogin");
-			}
-
-			else{
-				//요청받은 비밀번호와 DB의 비밀번호비교
-				if(pass.equals(stu.getStudentPassword())){//로그인성공
-					System.out.println("학생로그인");
-					session.setAttribute("login", id);
-					request.setAttribute("msg", stu.getStudentName()+"님이 로그인 하셨습니다");
-					request.setAttribute("url","index");
-					//return "index";
-
-				}
-				else{
-					request.setAttribute("msg", "비번을 확인하세요");
-					request.setAttribute("url","doLogin");
-				}
-			}
-			
-		}
-		else {
-			System.out.println("뭐야?");
-			request.setAttribute("msg", "아이디를 확인하세요");
-			request.setAttribute("url","doLogin");
-		}
-		return "alert";
 	}
+	
+	
+	
 	
 	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
 	public String main(HttpServletRequest request , HttpServletResponse response) {
@@ -293,5 +310,56 @@ public class MypageController  extends MskimRequestMapping{
 		request.getSession().invalidate();
 		return "redirect:doLogin"; //redirect하도록 설정(속성초기화)
 	}
+	
+	@RequestMapping("findIdProcess")
+	public String findIdProcess(HttpServletRequest request, HttpServletResponse response) {
+		String name = request.getParameter("name");
+		String email = request.getParameter("email");
+
+		ProStuDao proStuDao = new ProStuDao();
+		String id = proStuDao.findId(name, email);
+		if(id==null) {
+			request.setAttribute("msg", "입력된정보가없어요");			
+			return "idSearch";
+		}
+		else {
+			request.setAttribute("msg", "id : "+id); //추후에는 이메일로보내는거까지??
+			request.setAttribute("id", id);
+			return "idSearch";
+		}
+		
+	}
+	
+	@RequestMapping("findPwProcess")
+	public String findPwProcess(HttpServletRequest request, HttpServletResponse response) {
+		String id = request.getParameter("id");
+		String email = request.getParameter("email");
+		String pw = new ProStuDao().findPw(id,email);
+		if(pw==null) {
+			request.setAttribute("msg", "입력된정보가없어요");			
+			return "pwSearch";
+		}
+		else {
+			request.setAttribute("msg", "비밀번호는"+pw+"입니다");
+			request.setAttribute("id", id);
+			request.setAttribute("pw", pw);
+			//return "mypage/pwUpdate";
+			return "mypage/alertPw";
+		}
+	}
+	
+	//pwUpdate에서 넘어오는곳(비밀번호처리만담당)
+	@RequestMapping("pw")
+	public String pw(HttpServletRequest request, HttpServletResponse response) {
+		String id = request.getParameter("id");
+		String pw = request.getParameter("pw");
+		String cPw = request.getParameter("cPw");
+		System.out.println(id);
+		System.out.println(pw);
+		System.out.println(cPw);
+		request.setAttribute("msg", "비밀번호변경완료");
+		return "mypage/close";
+	}
+	
 	
 }

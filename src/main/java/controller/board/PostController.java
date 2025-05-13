@@ -230,7 +230,7 @@ public class PostController extends MskimRequestMapping {
         if (writer == null || writer.trim().isEmpty() || pass == null || pass.trim().isEmpty() || title == null || title.trim().isEmpty()) {
             request.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
             request.setAttribute("board", dao.selectOne(postId));
-            return "post/reply";
+            return "post/replyPost";
         }
 
         Post post = new Post();
@@ -256,7 +256,7 @@ public class PostController extends MskimRequestMapping {
             e.printStackTrace();
             request.setAttribute("error", "답글 등록 실패: " + e.getMessage());
             request.setAttribute("board", dao.selectOne(postId));
-            return "post/reply";
+            return "post/replyPost";
         }
     }
 
@@ -372,7 +372,30 @@ public class PostController extends MskimRequestMapping {
             return "post/updatePost";
         }
     }
+    @RequestMapping("deletePost")
+    public String deletePost(HttpServletRequest request, HttpServletResponse response) {
+    	String postId = request.getParameter("postId");
+    	System.out.println("deletePost called with postId: " + postId);
 
+        if (postId == null || postId.trim().isEmpty()) {
+            request.setAttribute("error", "게시물 ID가 필요합니다.");
+            return "post/getPosts";
+        }
+
+        try {
+            Post post = dao.selectOne(postId);
+            if (post== null) {
+                request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
+                return "post/getPosts";
+            }
+            request.setAttribute("post", post);
+            return "post/deletePost";
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
+            return "post/getPosts";
+        }
+    }
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
         String postId = request.getParameter("postId");
@@ -450,10 +473,29 @@ public class PostController extends MskimRequestMapping {
             return "PO001";
         }
         try {
-            String numberPart = maxPostId.substring(2);
-            int number = Integer.parseInt(numberPart);
-            number++;
-            return "PO" + String.format("%03d", number);
+            if (maxPostId.startsWith("PO")) { // "PO"로 시작하는 경우만 처리
+                String numberPart = maxPostId.substring(2);
+                int number = Integer.parseInt(numberPart);
+                number++;
+                return "PO" + String.format("%03d", number);
+            } else {
+                // "PO"로 시작하지 않으면 무시하고 다음 ID 계산
+                return "PO001"; // 또는 기존 최대 PO ID를 찾아 증가시키는 로직 추가 가능
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("post_id 생성 실패: " + e.getMessage() + ", maxPostId: " + maxPostId);
+            // 기존 PO ID 중 최대값을 찾아 증가시키는 대체 로직
+            List<String> allIds = dao.getAllPostIds(); // 모든 post_id 조회 (임시)
+            int maxNumber = 0;
+            for (String id : allIds) {
+                if (id.startsWith("PO")) {
+                    try {
+                        int num = Integer.parseInt(id.substring(2));
+                        maxNumber = Math.max(maxNumber, num);
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            return "PO" + String.format("%03d", maxNumber + 1);
         } catch (Exception e) {
             System.err.println("post_id 생성 실패: " + e.getMessage());
             return "PO001";

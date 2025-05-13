@@ -21,6 +21,9 @@
   	<typeAlias type="domain.Dept" alias="Dept" />
   	<typeAlias type="domain.Score" alias="Score" />
   	<typeAlias type="domain.Student" alias="Student" />
+  	<typeAlias type="model.dto.mypage.FindIdDto" alias="FindIdDto" />
+  	<typeAlias type="model.dto.mypage.FindPwDto" alias="FindPwDto" />
+  	<typeAlias type="model.dto.mypage.LoginDto" alias="LoginDto" />
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />
   	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
@@ -49,6 +52,7 @@
   	<mapper resource="mapper/board/NoticeMapper.xml"/>
   	<mapper resource="mapper/mypage/StudentMapper.xml"/>
   	<mapper resource="mapper/mypage/ProfessorMapper.xml"/>
+  	<mapper resource="mapper/mypage/ProStu.xml"/>
   	<mapper resource="mapper/mypage/DeptMapper.xml"/>
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
   </mappers>

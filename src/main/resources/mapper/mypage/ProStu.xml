@@ -1,0 +1,36 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="prostu">
+	<select id="findId" resultType="String" parameterType="FindIdDto">
+	SELECT student_id 
+	FROM student
+	WHERE student_name = #{studentName} AND student_email=#{studentEmail}
+	UNION
+	SELECT professor_id 
+	FROM professor
+	WHERE professor_name = #{professorName} AND professor_email=#{professorEmail};
+	</select>
+	
+	<select id="loginChk" resultType="java.util.HashMap" parameterType="LoginDto">
+	SELECT student_id , student_name , student_password
+	FROM student
+	WHERE student_id = #{studentId} 
+	UNION
+	SELECT professor_id , professor_name ,professor_password
+	FROM professor
+	WHERE professor_id = #{professorId} 
+	</select>
+	
+	<select id="findPw" resultType="String" parameterType="FindPwDto">
+	SELECT student_password 
+	FROM student
+	WHERE student_id = #{studentId} AND student_email=#{studentEmail}
+	UNION
+	SELECT professor_password
+	FROM professor
+	WHERE professor_id = #{professorId} AND professor_email=#{professorEmail};
+	</select>
+
+</mapper>

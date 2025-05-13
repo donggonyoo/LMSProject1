@@ -3,7 +3,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<c:set var="path" value="${pageContext.request.contextPath}" scope="application"/>
+<c:set var="path" value="${pageContext.request.contextPath}"
+	scope="application" />
 
 <!doctype html>
 <html lang="en">
@@ -202,20 +203,29 @@ ul.timeline::before {
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <img
-							src="${path}/dist/assets/img/user2-160x160.jpg"
-							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}</span>
+						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
+						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
+						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+						<img 
+							src="${path}/picture/${img}"
+							class="user-image rounded-circle shadow" alt="User Image" /> <span
+							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님 반갑습니다</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
+							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img
-								src="${path}/dist/assets/img/user2-160x160.jpg"
-								class="rounded-circle shadow" alt="User Image" />
-								<p>
-									Alexander Pierce - Web Developer <small>Member since
-										Nov. 2023</small>
-								</p></li>
+								src="${path}/picture/${img}"
+								class="rounded-circle shadow" alt="User Image" /> <%-- 세션 정보에 따라 이름 출력 --%>
+								<c:if test="${fn:contains(sessionScope.login, 's')}">
+								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<p>${m.studentName}<small>${birth}</small>
+									</p>
+								</c:if> <c:if test="${not fn:contains(sessionScope.login, 's')}">
+								<fmt:formatDate value="${m.professorBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<p>${m.professorName}<small>${birth}</small>
+									</p>
+								</c:if></li>
 							<!--end::User Image-->
 							<!--begin::Menu Body-->
 							<li class="user-body">
@@ -235,7 +245,8 @@ ul.timeline::before {
 							<!--end::Menu Body-->
 							<!--begin::Menu Footer-->
 							<li class="user-footer"><a href="#"
-								class="btn btn-default btn-flat">Profile</a> <a href="${path}/mypage/logout"
+								class="btn btn-default btn-flat">Profile</a> <a
+								href="${path}/mypage/logout"
 								class="btn btn-default btn-flat float-end">Sign out</a></li>
 							<!--end::Menu Footer-->
 						</ul></li>
@@ -254,9 +265,8 @@ ul.timeline::before {
 				<!--begin::Brand Link-->
 				<a href="${path}/dist/pages/index.jsp" class="brand-link"> <!--begin::Brand Image-->
 					<img src="${path}/dist/assets/img/AdminLTELogo.png"
-					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
-					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB
-						학사관리시스템</span> <!--end::Brand Text-->
+					class="brand-image opacity-75 shadow" /> <!--end::Brand Image--> <!--begin::Brand Text-->
+					<span class="brand-text fw-light">LDB 학사관리시스템</span> <!--end::Brand Text-->
 				</a>
 				<!--end::Brand Link-->
 			</div>
@@ -295,8 +305,9 @@ ul.timeline::before {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/learning_support/registerCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+								<li class="nav-item"><a
+									href="${path}/learning_support/registerCourse" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
 										<p>수강신청</p>
 								</a></li>
 								<li class="nav-item"><a href="${path}/learning_support/viewCourse/viewCourse"
@@ -308,7 +319,12 @@ ul.timeline::before {
 										<p>미정</p>
 								</a></li>
 							</ul></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
+							
+							<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
+							 
+							<li class="nav-item"><a href="#" class="nav-link"> 
+						<i
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
 									교수지원
@@ -336,7 +352,10 @@ ul.timeline::before {
 										<p>출석관리</p>
 								</a></li>
 							</ul></li>
-						<li class="nav-item"><a href="./notice_board.jsp"
+							
+						
+						
+						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
 						</a></li>
@@ -407,9 +426,9 @@ ul.timeline::before {
 								<div class="card-body">
 									<div class="d-flex flex-wrap">
 										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
-										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> 
-										<a href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> 
-										<a href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
+										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> <a
+											href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> <a
+											href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
 									</div>
 								</div>
 							</div>

@@ -3,70 +3,80 @@ package domain;
 import java.util.Date;
 
 public class Notice {
-	private String notice_id;
-	private String writer_id;
-	private String notice_title;
-	private String notice_content;
-	private Date notice_created_at;
-	private Date  notice_updated_at;
-	private String notice_file;
-	private int notice_read_count;
+	private String noticeId;
+	private String noticePassword;
+	private String writerId;
+	private String noticeTitle;
+	private String noticeContent;
+	private Date noticeCreatedAt;
+	private Date  noticeUpdatedAt;
+	private String noticeFile;
+	private Integer noticeReadCount;
 	
-	public String getNotice_id() {
-		return notice_id;
+	// Getters and Setters
+	public String getNoticePassword() {
+		return noticePassword;
 	}
-	public void setNotice_id(String notice_id) {
-		this.notice_id = notice_id;
+	public void setNoticePassword(String noticePassword) {
+		this.noticePassword = noticePassword;
 	}
-	public String getWriter_id() {
-		return writer_id;
+	public String getNoticeId() {
+		return noticeId;
 	}
-	public void setWriter_id(String writer_id) {
-		this.writer_id = writer_id;
+	public void setNoticeId(String noticeId) {
+		this.noticeId = noticeId;
 	}
-	public String getNotice_title() {
-		return notice_title;
+	public String getWriterId() {
+		return writerId;
 	}
-	public void setNotice_title(String notice_title) {
-		this.notice_title = notice_title;
+	public void setWriterId(String writerId) {
+		this.writerId = writerId;
 	}
-	public String getNotice_content() {
-		return notice_content;
+	public String getNoticeTitle() {
+		return noticeTitle;
 	}
-	public void setNotice_content(String notice_content) {
-		this.notice_content = notice_content;
+	public void setNoticeTitle(String noticeTitle) {
+		this.noticeTitle = noticeTitle;
 	}
-	public Date getNotice_created_at() {
-		return notice_created_at;
+	public String getNoticeContent() {
+		return noticeContent;
 	}
-	public void setNotice_created_at(Date notice_created_at) {
-		this.notice_created_at = notice_created_at;
+	public void setNoticeContent(String noticeContent) {
+		this.noticeContent = noticeContent;
 	}
-	public Date getNotice_updated_at() {
-		return notice_updated_at;
+	public Date getNoticeCreatedAt() {
+		return noticeCreatedAt;
 	}
-	public void setNotice_updated_at(Date notice_updated_at) {
-		this.notice_updated_at = notice_updated_at;
+	public void setNoticeCreatedAt(Date noticeCreatedAt) {
+		this.noticeCreatedAt = noticeCreatedAt;
 	}
-	public String getNotice_file() {
-		return notice_file;
+	public Date getNoticeUpdatedAt() {
+		return noticeUpdatedAt;
 	}
-	public void setNotice_file(String notice_file) {
-		this.notice_file = notice_file;
+	public void setNoticeUpdatedAt(Date noticeUpdatedAt) {
+		this.noticeUpdatedAt = noticeUpdatedAt;
 	}
-	public int getNotice_read_count() {
-		return notice_read_count;
+	public String getNoticeFile() {
+		return noticeFile;
 	}
-	public void setNotice_read_count(int notice_read_count) {
-		this.notice_read_count = notice_read_count;
+	public void setNoticeFile(String noticeFile) {
+		this.noticeFile = noticeFile;
+	}
+	public int getNoticeReadCount() {
+		return noticeReadCount;
+	}
+	public void setNoticeReadCount(int noticeReadCount) {
+		this.noticeReadCount = noticeReadCount;
 	}
 	@Override
 	public String toString() {
-		return "Notice [notice_id=" + notice_id + ", writer_id=" + writer_id + ", notice_title=" + notice_title
-				+ ", notice_content=" + notice_content + ", notice_created_at=" + notice_created_at
-				+ ", notice_updated_at=" + notice_updated_at + ", notice_file=" + notice_file + ", notice_read_count="
-				+ notice_read_count + "]";
+		return "Notice [noticeId=" + noticeId + ", noticePassword=" + noticePassword + ", writerId=" + writerId
+				+ ", noticeTitle=" + noticeTitle + ", noticeContent=" + noticeContent + ", noticeCreatedAt="
+				+ noticeCreatedAt + ", noticeUpdatedAt=" + noticeUpdatedAt + ", noticeFile=" + noticeFile
+				+ ", noticeReadCount=" + noticeReadCount + "]";
 	}
+	
+	
 	
 	
 }
