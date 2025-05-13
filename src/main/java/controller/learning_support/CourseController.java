@@ -111,7 +111,7 @@ public class CourseController extends MskimRequestMapping {
 	}
 	
 	@RequestMapping("addCourse")
-	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
+	public void addCourse (HttpServletRequest request, HttpServletResponse response) {
 		
 		ObjectMapper mapper = new ObjectMapper();
         String json;
@@ -125,13 +125,7 @@ public class CourseController extends MskimRequestMapping {
 		map.put("courseId", request.getParameter("courseId"));
 		map.put("professorId", request.getParameter("professorId"));
 		
-		if (courseDao.addCourse(map) > 0) {//
-			return "/pages/learning_support/ajax_learning_support";
-		} else {
-			request.setAttribute("msg", "수강신청 추가 실패");
-			request.setAttribute("url", "registerCourse");
-			return "/pages/alert";
-		}
+		courseDao.addCourse(map);
 
 	}
 	
@@ -156,13 +150,10 @@ public class CourseController extends MskimRequestMapping {
 	}
 	
 	@RequestMapping("deleteCourse")
-	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
+	public void deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 
 		String registrationId = request.getParameter("registrationId");
-		int num = courseDao.deleteCourse(registrationId);
-        request.setAttribute("msg", "dddd");
-        
-        return "/pages/alert";
+		courseDao.deleteCourse(registrationId);
 	}
 	
 }
