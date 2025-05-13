@@ -78,7 +78,7 @@
                             <c:if test="${b.postGroupLevel > 0}">
                                 <c:forEach var="i" begin="1" end="${b.postGroupLevel}">
                                      
-                                </c:forEach>└
+                                </c:forEach>↳
                             </c:if>
                             <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${b.postId}">
                                 ${b.postTitle}
@@ -119,7 +119,7 @@
                         <c:if test="${b.postGroupLevel > 0}">
                             <c:forEach var="i" begin="1" end="${b.postGroupLevel}">
                                  
-                            </c:forEach>└
+                            </c:forEach>↳
                         </c:if>
                         <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${b.postId}">
                             ${b.postTitle}
