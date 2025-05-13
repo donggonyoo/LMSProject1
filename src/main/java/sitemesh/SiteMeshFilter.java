@@ -28,7 +28,14 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 				.addExcludedPath("/learning_support/searchCourse*")
 				.addExcludedPath("/learning_support/addCourse*")
 				.addExcludedPath("/learning_support/searchRegistrationCourses*")
-				.addExcludedPath("/learning_support/deleteCourse*");
+				.addExcludedPath("/learning_support/deleteCourse*")
+				.addExcludedPath("/mypage/index*")
+				.addExcludedPath("/mypage/registerUser*")
+				.addExcludedPath("/mypage/registerImg*");
+
+				
+		builder.addDecoratorPath("/post/*","/dist/pages/layout.jsp");
+		builder.addDecoratorPath("/mypage/*","/dist/pages/layout.jsp");
 		
 	}
 	

@@ -33,18 +33,7 @@
     </select>
 
     <select id="selectList" resultType="Post" parameterType="map">
-        SELECT
-            post_id,
-            author_id,
-            post_title,
-            post_content,
-            post_created_at,
-            post_group,
-            post_group_level,
-            post_group_step,
-            post_file,
-            post_read_count
-        FROM post
+        SELECT * FROM post
         <if test="column != null and find != null">
             WHERE
             <choose>
@@ -71,35 +60,40 @@
                 </when>
             </choose>
         </if>
-        ORDER BY post_id DESC
+        ORDER BY post_group DESC, post_group_step DESC
         LIMIT #{startRow}, #{pageSize}
     </select>
 
     <select id="selectOne" resultType="Post" parameterType="string">
-        SELECT
-            post_id,
-            author_id,
-            post_title,
-            post_content,
-            post_created_at,
-            post_group,
-            post_group_level,
-            post_group_step,
-            post_file,
-            post_read_count
-        FROM post
-        WHERE post_id = #{post_id}
+        SELECT * FROM post
+        WHERE post_id = #{postId}
     </select>
 
     <update id="incrementReadCount" parameterType="string">
         UPDATE post
         SET post_read_count = post_read_count + 1
-        WHERE post_id = #{post_id}
+        WHERE post_id = #{postId}
     </update>
 
-    <insert id="insert" parameterType="Post" useGeneratedKeys="true" keyProperty="post_id">
+    <select id="getMaxPostId" resultType="string">
+        SELECT MAX(post_id) FROM post
+    </select>
+
+    <select id="getMaxGroup" resultType="int">
+        SELECT MAX(post_group) FROM post
+    </select>
+
+    <update id="updateGroupStep" parameterType="map">
+        UPDATE post
+        SET post_group_step = post_group_step + 1
+        WHERE post_group = #{group} AND post_group_step > #{step}
+    </update>
+
+    <insert id="insert" parameterType="Post">
         INSERT INTO post (
+            post_id,
             author_id,
+            post_password,
             post_title,
             post_content,
             post_created_at,
@@ -109,7 +103,9 @@
             post_file,
             post_read_count
         ) VALUES (
+            #{postId},
             #{authorId},
+            #{postPassword},
             #{postTitle},
             #{postContent},
             #{postCreatedAt},
@@ -120,4 +116,24 @@
             #{postReadCount}
         )
     </insert>
+    
+<update id="update" parameterType="Post">
+        UPDATE post
+        SET
+            author_id = #{authorId},
+            post_password = #{postPassword},
+            post_title = #{postTitle},
+            post_content = #{postContent},
+            post_file = #{postFile},
+            post_created_at = #{postCreatedAt},
+            post_group = #{postGroup},
+            post_group_level = #{postGroupLevel},
+            post_group_step = #{postGroupStep},
+            post_read_count = #{postReadCount}
+        WHERE post_id = #{postId}
+    </update>
+    
+    <delete id="delete" parameterType="string">
+        DELETE FROM post WHERE post_id = #{postId}
+    </delete>
 </mapper>

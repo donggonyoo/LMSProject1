@@ -48,7 +48,7 @@
 	crossorigin="anonymous" />
 <!--end::Third Party Plugin(Bootstrap Icons)-->
 <!--begin::Required Plugin(AdminLTE)-->
-<link rel="stylesheet" href="../../dist/css/adminlte.css" />
+<link rel="stylesheet" href="${path}/dist/css/adminlte.css" />
 <!--end::Required Plugin(AdminLTE)-->
 <!-- apexcharts -->
 <link rel="stylesheet"
@@ -203,14 +203,14 @@ ul.timeline::before {
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
 						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <img
-							src="../../dist/assets/img/user2-160x160.jpg"
+							src="${path}/dist/assets/img/user2-160x160.jpg"
 							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">DONGGONYOO</span>
+							<span class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
 							<li class="user-header text-bg-primary"><img
-								src="../../dist/assets/img/user2-160x160.jpg"
+								src="${path}/dist/assets/img/user2-160x160.jpg"
 								class="rounded-circle shadow" alt="User Image" />
 								<p>
 									Alexander Pierce - Web Developer <small>Member since
@@ -235,7 +235,7 @@ ul.timeline::before {
 							<!--end::Menu Body-->
 							<!--begin::Menu Footer-->
 							<li class="user-footer"><a href="#"
-								class="btn btn-default btn-flat">Profile</a> <a href="#"
+								class="btn btn-default btn-flat">Profile</a> <a href="${path}/mypage/logout"
 								class="btn btn-default btn-flat float-end">Sign out</a></li>
 							<!--end::Menu Footer-->
 						</ul></li>
@@ -252,8 +252,8 @@ ul.timeline::before {
 			<!--begin::Sidebar Brand-->
 			<div class="sidebar-brand">
 				<!--begin::Brand Link-->
-				<a href="./index.jsp" class="brand-link"> <!--begin::Brand Image-->
-					<img src="../../dist/assets/img/AdminLTELogo.png"
+				<a href="${path}/dist/pages/index.jsp" class="brand-link"> <!--begin::Brand Image-->
+					<img src="${path}/dist/assets/img/AdminLTELogo.png"
 					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
 					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB
 						학사관리시스템</span> <!--end::Brand Text-->
@@ -275,7 +275,7 @@ ul.timeline::before {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.jsp"
+								<li class="nav-item"><a href="${path}/mypage/logout"
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
@@ -340,7 +340,7 @@ ul.timeline::before {
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
 						</a></li>
-						<li class="nav-item"><a href="./question_board.jsp"
+						<li class="nav-item"><a href="${path}/post/getPosts"
 							class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
 								<p>문의게시판</p>
 						</a></li>
@@ -544,7 +544,7 @@ ul.timeline::before {
 		crossorigin="anonymous"></script>
 	<!--end::Required Plugin(Bootstrap 5)-->
 	<!--begin::Required Plugin(AdminLTE)-->
-	<script src="../../dist/js/adminlte.js"></script>
+	<script src="${path}/dist/js/adminlte.js"></script>
 	<!--end::Required Plugin(AdminLTE)-->
 	<!--begin::OverlayScrollbars Configure-->
 	<script>

@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
-	1. 첨부파일이 존재하는 게시물의 제목 앞에 @ 표시하기
-	2. 게시글번호를 보여주기 위한 번호로 변경하기
+    1. 첨부파일이 존재하는 게시물의 제목 앞에 @ 표시하기
+    2. 게시글번호를 보여주기 위한 번호로 변경하기
 --%>
 <!DOCTYPE html>
 <html>
@@ -16,27 +16,27 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 <body>
-    <h2>문의게시판</h2>
+    <h1>문의게시판</h1>
     <form action="${pageContext.request.contextPath}/post/getPosts" method="post" name="sf">
-        <input type="hidden" name="pageNum" value="1">
-        <select class="w3-select" name="column">
-            <option value="">선택하시오</option>
-            <option value="author_id">작성자</option>
-            <option value="post_title">제목</option>
-            <option value="post_content">내용</option>
-            <option value="post_title,author_id">제목+작성자</option>
-            <option value="post_title,post_content">제목+내용</option>
-            <option value="author_id,post_content">작성자+내용</option>
-            <option value="post_title,author_id,post_content">제목+작성자+내용</option>
-        </select>
-        
-        <script>
-            document.sf.column.value='${param.column}';
-        </script>
-        
-        <input class="form-control d-inline-block w-auto" type="text" placeholder="Search" name="find" value="${param.find}">
-        <button class="btn btn-primary" type="submit">Search</button>
-    </form>
+    <input type="hidden" name="pageNum" value="1">
+    <select class="w3-select" name="column" style="width: 10%;">
+        <option value="">선택하시오</option>
+        <option value="authorId">작성자</option>
+        <option value="postTitle">제목</option>
+        <option value="postContent">내용</option>
+        <option value="postTitle,authorId">제목+작성자</option>
+        <option value="postTitle,postContent">제목+내용</option>
+        <option value="authorId,postContent">작성자+내용</option>
+        <option value="postTitle,authorId,postContent">제목+작성자+내용</option>
+    </select>
+
+    <script>
+        document.sf.column.value='${param.column}';
+    </script>
+
+    <input class="form-control d-inline-block w-auto" type="text" placeholder="Search" name="find" value="${param.find}" style="width: 90%;">
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
 
     <table class="table">
         <c:if test="${boardcount == 0}">
@@ -63,7 +63,7 @@
                     <c:set var="boardnum" value="${boardnum-1}"/>
                     <td style="text-align:left">        
                         <c:if test="${!empty b.postFile}">
-                            <a href="../upload/board/${b.postFile}">@</a>
+                            <a href="${pageContext.request.contextPath}/upload/board/${b.postFile}">@</a>
                         </c:if>
                         <c:if test="${empty b.postFile}">
                                
@@ -74,7 +74,7 @@
                                  
                             </c:forEach>└
                         </c:if>
-                        <a href="${pageContext.request.contextPath}/post/getPostDetail?postId=${b.postId}">
+                        <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${b.postId}">
                             ${b.postTitle}
                         </a>
                     </td>
