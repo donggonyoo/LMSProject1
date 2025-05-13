@@ -285,7 +285,6 @@ public class MypageController  extends MskimRequestMapping{
 				}
 			}
 			return "alert";
-		
 	}
 	
 	
@@ -337,7 +336,7 @@ public class MypageController  extends MskimRequestMapping{
 		String pw = new ProStuDao().findPw(id,email);
 		if(pw==null) {
 			request.setAttribute("msg", "입력된정보가없어요");			
-			return "pwSearch";
+			return "mypage/close";
 		}
 		else {
 			request.setAttribute("msg", "비밀번호는"+pw+"입니다");
@@ -357,8 +356,20 @@ public class MypageController  extends MskimRequestMapping{
 		System.out.println(id);
 		System.out.println(pw);
 		System.out.println(cPw);
-		request.setAttribute("msg", "비밀번호변경완료");
+		String msg = "비밀번호변경실패";
+		boolean updatePw = new ProStuDao().updatePw(id,pw,cPw);
+		if(updatePw) {
+			msg = "비밀번호변경완료!!!";
+		}
+		
+		request.setAttribute("msg",msg);
 		return "mypage/close";
+	}
+	
+	@RequestMapping("close")
+	public String close(HttpServletRequest request, HttpServletResponse response) {
+		request.setAttribute("msg", request.getAttribute("msg"));
+		return "close";
 	}
 	
 	

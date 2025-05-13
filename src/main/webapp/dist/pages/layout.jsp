@@ -300,7 +300,7 @@ body {
 			<!--begin::Sidebar Brand-->
 			<div class="sidebar-brand">
 				<!--begin::Brand Link-->
-				<a href="/LMSProject1/dist/pages/index.jsp" class="brand-link"> <!--begin::Brand Image-->
+				<a href="${path}/mypage/index" class="brand-link"> <!--begin::Brand Image-->
 					<img src="/LMSProject1/dist/assets/img/AdminLTELogo.png"
 					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
 					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB학사관리시스템</span> <!--end::Brand Text-->

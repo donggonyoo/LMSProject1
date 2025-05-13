@@ -44,16 +44,7 @@
 <body>
     <div class="card">
         <h4 class="text-center mb-4">아이디 찾기</h4>
-        <form action="findIdProcess">
-        <div class="mb-3">
-            <label for="pro" class="form-label">교수</label>
-            <input type="radio" id="pro" name="position" value="pro">
-     		&emsp;&emsp;&emsp;
-            <label for="stu" class="form-label">학생</label>
-            <input type="radio" id="stu" name="position" value="stu">
-        </div>       
-       
-       
+        <form action="findIdProcess">      
         <div class="mb-3">
             <label for="name" class="form-label">이름</label>
             <input type="text" class="form-control" id="name" name="name" placeholder="이름 입력">

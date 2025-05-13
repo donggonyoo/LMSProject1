@@ -8,6 +8,8 @@ import config.MyBatisConnection;
 import model.dto.mypage.FindIdDto;
 import model.dto.mypage.FindPwDto;
 import model.dto.mypage.LoginDto;
+import model.dto.mypage.UpdateProPwDto;
+import model.dto.mypage.UpdateStuPwDto;
 
 public class ProStuDao {
 	
@@ -70,7 +72,42 @@ public class ProStuDao {
 			MyBatisConnection.close(connection);
 		}
 		return null;
+	}
 
+
+	public boolean updatePw(String id, String pw, String cPw) {
+		SqlSession connection = MyBatisConnection.getConnection();
+		UpdateProPwDto pDto = new UpdateProPwDto();
+		UpdateStuPwDto sDto = new UpdateStuPwDto();
+		
+		try {
+			if(id.contains("p")) {
+				pDto.setProfessorId(id);
+				pDto.setProfessorPassword(pw);
+				pDto.setProfessorNewPassword(cPw);
+				if(connection.update("updateProPw",pDto)>0) {
+				connection.commit();
+					return true;
+				}
+			}
+			else {
+				sDto.setStudentId(id);
+				sDto.setStudentPassword(pw);
+				sDto.setStudentNewPassword(cPw);
+				if(connection.update("updateStuPw",sDto)>0) {
+					connection.commit();
+					return true;
+				}
+			}
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			MyBatisConnection.close(connection);
+		}
+		return false;
 	}
 
 	
