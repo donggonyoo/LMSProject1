@@ -187,7 +187,7 @@ public class MypageController  extends MskimRequestMapping{
 	//사진업로드관련
 	@RequestMapping("picture")
 	public String picture(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String path = request.getServletContext().getRealPath("")+"/picture/";
+		String path = request.getServletContext().getRealPath("")+"/dist/assets/picture/";
 		//기준 디렉토리 의 실제 경로
 		//D:\java\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\LMSProject1\picture
 		String fname = null;
