@@ -241,20 +241,29 @@ body {
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown"> 
-						<img src="/LMSProject1/dist/assets/img/user2-160x160.jpg"
+						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" /> 
+						<img 
+							src="${path}/picture/${img}"
 							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">1</span>
+							<span class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
-							<li class="user-header text-bg-primary"><img
-								src="/LMSProject1/dist/assets/img/user2-160x160.jpg"
+							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+							<li class="user-header text-bg-primary"><img 
+								src="${path}/picture/${img}"
 								class="rounded-circle shadow" alt="User Image" />
-								<p>
-									Alexander Pierce - Web Developer <small>Member since
-										Nov. 2023</small>
-								</p></li>
+								<c:if test="${fn:contains(sessionScope.login, 's')}">
+								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<p>${m.studentName}<small>${birth}</small>
+									</p>
+								</c:if> 
+								<c:if test="${not fn:contains(sessionScope.login, 's')}">
+								<fmt:formatDate value="${m.professorBirthday}"  pattern="YYYY-MM-dd" var="birth"/>
+									<p>${m.professorName}<small>${birth}</small>
+									</p>
+								</c:if></li>
 							<!--end::User Image-->
 							<!--begin::Menu Body-->
 							<li class="user-body">
@@ -274,7 +283,7 @@ body {
 							<!--end::Menu Body-->
 							<!--begin::Menu Footer-->
 							<li class="user-footer"><a href="#"
-								class="btn btn-default btn-flat">Profile</a> <a href="#"
+								class="btn btn-default btn-flat">Profile</a> <a href="${path}/mypage/logout"
 								class="btn btn-default btn-flat float-end">Sign out</a></li>
 							<!--end::Menu Footer-->
 						</ul></li>
@@ -346,6 +355,9 @@ body {
 										<p>미정</p>
 								</a></li>
 							</ul></li>
+							
+							<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
