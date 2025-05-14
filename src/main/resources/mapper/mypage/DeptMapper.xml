@@ -7,4 +7,7 @@
 <select id="selectId" parameterType="String" resultType="String">
 	select dept_id from dept where dept_name=#{val}
 </select>
+<select id="selectAll" resultType="Dept">
+select * from dept
+</select>
 </mapper>

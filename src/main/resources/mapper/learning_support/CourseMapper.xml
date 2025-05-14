@@ -11,10 +11,14 @@
 	    ORDER BY college
 	</select>
 	
-	<select id="selectDepartments" resultType="java.util.Map">
+	<select id="selectDepartments" resultType="DeptDto">
 	    select dept_id, dept_name
-		from dept
-		where college = #{college};
+		from   dept
+		where  1=1
+		<if test="college != null and college != ''">
+		and    college = #{college};
+		</if>
+		
 	</select>
 	
 	<select id="searchCourse" resultType="CourseDto">

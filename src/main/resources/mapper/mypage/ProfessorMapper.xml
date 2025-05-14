@@ -13,13 +13,13 @@
 	insert  into professor 
 	(
 	professor_id , professor_name , professor_email,
-	professor_birthday , professor_phone , professor_major,
+	professor_birthday , professor_phone , dept_id,
 	professor_img , professor_password
 	)
 	values
 	(
 	#{professorId},#{professorName},#{professorEmail},
-	#{professorBirthday},#{professorPhone},#{professorMajor},
+	#{professorBirthday},#{professorPhone},#{deptId},
 	#{professorImg},#{professorPassword}
 	)
 	

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -21,8 +22,10 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
+import domain.Dept;
 import domain.Professor;
 import domain.Student;
+import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.mypage.DeptDao;
@@ -102,10 +105,30 @@ public class MypageController  extends MskimRequestMapping{
 		return "s"+sNum;
 	}
 	
+	//로그인없이 접근을 막아줄 함수
+	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String login  = (String)session.getAttribute("login");
+		if(login==null) {
+			request.setAttribute("msg", "로그인하세요");
+			request.setAttribute("url", "doLogin");
+			return "alert";
+		}
+		
+		return null; //정상인경우
+	}
+	
+	
+	@RequestMapping("registerUser")
+	public String  registerUser(HttpServletRequest request , HttpServletResponse response) throws ParseException {
+		List<Dept> dept = new DeptDao().selectAll();
+		request.setAttribute("dept", dept);
+		return "mypage/registerUser";
+	}
 	
 	
 	@RequestMapping("registerUserChk")
-	public String  registerUser(HttpServletRequest request , HttpServletResponse response) throws ParseException {
+	public String  registerUserChk(HttpServletRequest request , HttpServletResponse response) throws ParseException {
 		
 		String name  = request.getParameter("name");
 		String date = request.getParameter("birth");
@@ -115,7 +138,7 @@ public class MypageController  extends MskimRequestMapping{
 		String img = request.getParameter("picture");
 		String major = request.getParameter("major");
 		String email = request.getParameter("email");
-		String tel = request.getParameter("tel");
+		String phone = request.getParameter("phone");
 		String id = IdChk(position);//직급에따른 아이디부여해주는 메서드
 		System.out.println("name:"+name);
 		System.out.println("date : "+date);
@@ -144,8 +167,8 @@ public class MypageController  extends MskimRequestMapping{
 			pro.setProfessorEmail(email);
 			//pro.setProfessorPassword(hashpw);
 			pro.setProfessorPassword(pass);
-			pro.setProfessorMajor(deptId);
-			pro.setProfessorPhone(tel);
+			pro.setDeptId(deptId);
+			pro.setProfessorPhone(phone);
 			ProfessorDao pDao = new ProfessorDao();
 			if(!pDao.insert(pro)) {
 				msg = "회원가입실패";
@@ -166,7 +189,7 @@ public class MypageController  extends MskimRequestMapping{
 		    //stu.setStudentPassword(hashpw);
 		    stu.setStudentPassword(pass);
 		    stu.setStudentPhone(deptId);
-		    stu.setStudentPhone(tel);
+		    stu.setStudentPhone(phone);
 		    stu.setStudentStatus("재학");
 		    
 		    StudentDao sDao = new StudentDao();
@@ -229,6 +252,7 @@ public class MypageController  extends MskimRequestMapping{
 
 		String id = request.getParameter("id");
 		String pass = request.getParameter("password");
+		session.setMaxInactiveInterval(9000);
 
 		if(id==null || id.trim()=="" || pass==null || pass.trim()=="") {
 			request.setAttribute("msg", "아이디or비번확인");
@@ -265,15 +289,17 @@ public class MypageController  extends MskimRequestMapping{
 					//BCrypt.checkpw(pass, pro.getProfessorPassword())
 						){//로그인성공
 					session.setAttribute("login", dbId);
-					if(dbId.contains("s")) {
+					if(dbId.toLowerCase().contains("s")) {
 						StudentDao dao = new StudentDao();
 						Student student = dao.selectOne(dbId);
 						session.setAttribute("m", student);
 					}
-					else {
+					else if(dbId.toLowerCase().contains("p")){
 						ProfessorDao dao = new ProfessorDao();
 						Professor professor = dao.selectOne(dbId);
 						session.setAttribute("m", professor);
+						
+						
 					}
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
@@ -290,15 +316,9 @@ public class MypageController  extends MskimRequestMapping{
 	
 	
 	
+	@MSLogin("loginIdCheck")
 	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
 	public String main(HttpServletRequest request , HttpServletResponse response) {
-
-		String login = (String)request.getSession().getAttribute("login");
-		if(login==null || login.trim().equals("")) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url","doLogin");
-			return "alert";
-		}
 		return "index"; //forward 됨
 		//redirect시 다른 request영역이므로 속성이 넘어가지않음
 
@@ -336,7 +356,7 @@ public class MypageController  extends MskimRequestMapping{
 		String pw = new ProStuDao().findPw(id,email);
 		if(pw==null) {
 			request.setAttribute("msg", "입력된정보가없어요");			
-			return "mypage/close";
+			return "close";
 		}
 		else {
 			request.setAttribute("msg", "비밀번호는"+pw+"입니다");
@@ -359,6 +379,9 @@ public class MypageController  extends MskimRequestMapping{
 		String msg = "비밀번호변경실패";
 		boolean updatePw = new ProStuDao().updatePw(id,pw,cPw);
 		if(updatePw) {
+			if(request.getSession()!=null) {
+				request.setAttribute("logout", "logout");
+			}
 			msg = "비밀번호변경완료!!!";
 		}
 		
@@ -369,8 +392,43 @@ public class MypageController  extends MskimRequestMapping{
 	@RequestMapping("close")
 	public String close(HttpServletRequest request, HttpServletResponse response) {
 		request.setAttribute("msg", request.getAttribute("msg"));
-		return "close";
+		return "mypage/close";
 	}
+	
+	@MSLogin("loginIdCheck")
+	@RequestMapping("userInfo")
+	public String info(HttpServletRequest request, HttpServletResponse response) {
+		String id = (String)request.getSession().getAttribute("login");
+		String deptName = new ProStuDao().selectDeptName(id);
+		request.setAttribute("deptName", deptName);
+		return "mypage/userInfo";
+	}
+	
+	@MSLogin("loginIdCheck")
+	@RequestMapping("userUpdate")
+	public String userUpdate(HttpServletRequest request, HttpServletResponse response) {
+		String id = (String)request.getSession().getAttribute("login");
+		String img = request.getParameter("picture");
+		String phone = request.getParameter("phone");
+		String email = request.getParameter("email");
+		System.out.println(id);
+		System.out.println(img);
+		System.out.println(phone);
+		System.out.println(email);
+		String msg="수정실패";
+		if(ProStuDao.userUpdate(id,img,phone,email)) {
+			msg=id+"님 수정성공";
+			request.setAttribute("msg", msg);
+			return "mypage/close";
+		}
+		else {
+			request.setAttribute("msg", msg);
+			return "mypage/close";
+		}
+		
+		
+	}
+	
 	
 	
 }

@@ -90,7 +90,7 @@
         <h4 class="text-center mb-4">비밀번호 변경</h4>
         <form action="pw" method="post" onsubmit="return input_check(this)">
            
-            <input type="hidden" value="${param.id}" name="id">
+            <input type="hidden" value="${param.id}" name="id" placeholder="아이디를입력하세요">
             <!-- 현재비밀번호는 비밀번호찾기가성공적으로됐다면 자동으로 입력될것임 -->
             <div class="mb-3">
                 <label for="pw" class="form-label">현재 비밀번호</label>

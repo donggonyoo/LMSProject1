@@ -42,5 +42,31 @@
 		update professor set professor_password=#{professorNewPassword}
 		where professor_password=#{professorPassword} and professor_id=#{professorId}
 	</update>
+	
+	<select id="selectDeptName" parameterType="String" resultType="String">
+		select d.dept_name
+		from student s inner join dept d on(s.dept_id = d.dept_id)
+		where s.student_id = #{val}
+		union
+		select d.dept_name
+		from professor p inner join dept d on(p.dept_id = d.dept_id)
+		where p.professor_id = #{val}
+	</select>
+	
+	<update id="updateProInfo" parameterType="UpdateProInfoDto">
+	update professor 
+	set professor_img=#{professorImg},
+	professor_email=#{professorEmail},
+	professor_phone=#{professorPhone}
+	where professor_id = #{professorId}
+	</update>
+	
+	<update id="updateStuInfo" parameterType="UpdateStuInfoDto">
+	update student 
+	set student_img=#{studentImg},
+	student_email=#{studentEmail},
+	student_phone=#{studentPhone}
+	where student_id = #{studentId}
+	</update>
 
 </mapper>

@@ -203,7 +203,7 @@ function updateDepartments() {
             $deptSelect.empty();
             $deptSelect.append('<option value="">전체</option>');
             $.each(data, function(idx, dept) {
-                $deptSelect.append($("<option>").val(dept.dept_id).text(dept.dept_name));
+                $deptSelect.append($("<option>").val(dept.deptId).text(dept.deptName));
             });
         },
         error: function(xhr) {

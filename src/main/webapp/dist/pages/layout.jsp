@@ -322,7 +322,7 @@ body {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="./index.jsp"
+								<li class="nav-item"><a href="${path}/mypage/userInfo"
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
@@ -368,7 +368,7 @@ body {
 						</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item"><a
-									href="./layout/unfixed-sidebar.html" class="nav-link"> <i
+									href="${path}/professor_support/registCourse" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>

@@ -205,24 +205,29 @@ ul.timeline::before {
 					<li class="nav-item dropdown user-menu"><a href="#"
 						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
 						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
-						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
-						<img 
-							src="${path}/dist/assets/picture/${img}"
+						<c:set var="img"
+								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+							<img src="${path}/dist/assets/picture/${img}"
 							class="user-image rounded-circle shadow" alt="User Image" /> <span
-							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님 반갑습니다</span>
+							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님
+								반갑습니다</span>
+						
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
-							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+							<c:set var="img"
+								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img
 								src="${path}/dist/assets/picture/${img}"
 								class="rounded-circle shadow" alt="User Image" /> <%-- 세션 정보에 따라 이름 출력 --%>
 								<c:if test="${fn:contains(sessionScope.login, 's')}">
-								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<fmt:formatDate value="${m.studentBirthday}"
+										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.studentName}<small>${birth}</small>
 									</p>
 								</c:if> <c:if test="${not fn:contains(sessionScope.login, 's')}">
-								<fmt:formatDate value="${m.professorBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<fmt:formatDate value="${m.professorBirthday}"
+										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.professorName}<small>${birth}</small>
 									</p>
 								</c:if></li>
@@ -285,7 +290,7 @@ ul.timeline::before {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/mypage/logout"
+								<li class="nav-item"><a href="${path}/mypage/userInfo"
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
@@ -310,7 +315,8 @@ ul.timeline::before {
 										<i class="nav-icon bi bi-circle"></i>
 										<p>수강신청</p>
 								</a></li>
-								<li class="nav-item"><a href="${path}/learning_support/viewCourse/viewCourse"
+								<li class="nav-item"><a
+									href="${path}/learning_support/viewCourse/viewCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
 								</a></li>
@@ -319,12 +325,11 @@ ul.timeline::before {
 										<p>미정</p>
 								</a></li>
 							</ul></li>
-							
-							<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+
+						<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
 							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
-							 
-							<li class="nav-item"><a href="#" class="nav-link"> 
-						<i
+
+						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
 									교수지원
@@ -334,8 +339,8 @@ ul.timeline::before {
 						</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item"><a
-									href="./layout/unfixed-sidebar.html" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
+									href="${path}/professor_support/registCourse" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>
 								<li class="nav-item"><a href="./layout/fixed-sidebar.html"
@@ -352,9 +357,9 @@ ul.timeline::before {
 										<p>출석관리</p>
 								</a></li>
 							</ul></li>
-							
-						
-						
+
+
+
 						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
