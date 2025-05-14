@@ -40,23 +40,13 @@ public class PostController extends MskimRequestMapping {
             pageNum = 1;
         }
 
-        String column = request.getParameter("column");
-        String find = request.getParameter("find");
-
-        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty()) {
-            column = null;
-            find = null;
-        }
-
-        // 공지 게시물 조회 (페이지네이션 없이)
         List<Post> notices = dao.listNotices();
         if (notices == null) {
             notices = new ArrayList<>();
         }
 
-        // 일반 게시물 개수 조회 (공지 제외)
-        int boardcount = dao.boardCount(column, find) - notices.size();
-        List<Post> list = dao.list(pageNum, limit, column, find);
+        int boardcount = dao.boardCount(null, null) - notices.size();
+        List<Post> list = dao.list(pageNum, limit, null, null);
         if (list == null) {
             list = new ArrayList<>();
         }
@@ -68,7 +58,63 @@ public class PostController extends MskimRequestMapping {
 
         int boardNum = boardcount - (pageNum - 1) * limit;
 
-        request.setAttribute("notices", notices); // 공지 게시물 전달
+        request.setAttribute("notices", notices);
+        request.setAttribute("boardcount", boardcount);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("list", list);
+        request.setAttribute("startpage", startpage);
+        request.setAttribute("endpage", endpage);
+        request.setAttribute("maxpage", maxpage);
+        request.setAttribute("boardNum", boardNum);
+        request.setAttribute("today", new Date());
+
+        return "post/getPosts";
+    }
+
+    @RequestMapping("searchPost")
+    public String searchPost(HttpServletRequest request, HttpServletResponse response) {
+        int limit = 10;
+        int pageNum = 1;
+
+        try {
+            String pageNumParam = request.getParameter("pageNum");
+            if (pageNumParam != null && !pageNumParam.trim().isEmpty()) {
+                pageNum = Integer.parseInt(pageNumParam);
+                if (pageNum < 1) pageNum = 1;
+            }
+        } catch (NumberFormatException e) {
+            pageNum = 1;
+        }
+
+        String column = request.getParameter("column");
+        String find = request.getParameter("find");
+
+        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty()) {
+            column = null;
+            find = null;
+            request.setAttribute("error", "검색 조건과 검색어를 입력해주세요.");
+        }
+
+        List<Post> notices = dao.listNotices();
+        if (notices == null) {
+            notices = new ArrayList<>();
+        }
+
+        int boardcount = dao.boardCount(column, find) - notices.size();
+        List<Post> list = dao.list(pageNum, limit, column, find);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+
+        int maxpage = (int) Math.ceil((double) boardcount / limit);
+        int startpage = ((int) (pageNum / 10.0 + 0.9) - 1) * 10 + 1;
+        int endpage = startpage + 9;
+        if (endpage > maxpage) endpage = maxpage;
+
+        // boardNum을 페이지의 첫 번째 게시물 번호로 설정 (1부터 시작)
+        int boardNum = boardcount - (pageNum - 1) * limit + 1;
+
+        request.setAttribute("notices", notices);
         request.setAttribute("boardcount", boardcount);
         request.setAttribute("pageNum", pageNum);
         request.setAttribute("list", list);
@@ -80,9 +126,9 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("column", column);
         request.setAttribute("find", find);
 
-        return "post/getPosts";
+        return "post/searchPost";
     }
-
+    
     @RequestMapping("createPost")
     public String createPost(HttpServletRequest request, HttpServletResponse response) {
         String parentPostId = request.getParameter("parent_post_id");
@@ -110,7 +156,7 @@ public class PostController extends MskimRequestMapping {
         String postTitle = request.getParameter("post_title");
         String postContent = request.getParameter("post_content");
         String parentPostId = request.getParameter("parent_post_id");
-        String postNotice = request.getParameter("post_notice"); // post_notice 파라미터
+        String postNotice = request.getParameter("post_notice");
 
         if (authorId == null || authorId.trim().isEmpty() ||
             pass == null || pass.trim().isEmpty() ||
@@ -130,7 +176,7 @@ public class PostController extends MskimRequestMapping {
         post.setPostCreatedAt(new Date());
         post.setPostUpdatedAt(new Date());
         post.setPostReadCount(0);
-        post.setPostNotice("1".equals(postNotice)); // 체크박스 값이 "1"이면 공지로 설정
+        post.setPostNotice("1".equals(postNotice));
 
         if (parentPostId != null && !parentPostId.trim().isEmpty()) {
             Post parentPost = dao.selectOne(parentPostId);
@@ -316,7 +362,7 @@ public class PostController extends MskimRequestMapping {
         String postContent = request.getParameter("postContent");
         String originalFile = request.getParameter("postFile");
         Part filePart = request.getPart("postFile");
-        String postNotice = request.getParameter("post_notice"); // post_notice 파라미터
+        String postNotice = request.getParameter("post_notice");
 
         if (postId == null || postId.trim().isEmpty() || postPassword == null || postPassword.trim().isEmpty() ||
             authorId == null || authorId.trim().isEmpty() || postTitle == null || postTitle.trim().isEmpty()) {
@@ -360,7 +406,7 @@ public class PostController extends MskimRequestMapping {
         post.setPostContent(postContent);
         post.setPostFile(newFile);
         post.setPostUpdatedAt(new Date());
-        post.setPostNotice("1".equals(postNotice)); // 공지 여부 설정
+        post.setPostNotice("1".equals(postNotice));
 
         try {
             dao.update(post);
@@ -372,10 +418,11 @@ public class PostController extends MskimRequestMapping {
             return "post/updatePost";
         }
     }
+
     @RequestMapping("deletePost")
     public String deletePost(HttpServletRequest request, HttpServletResponse response) {
-    	String postId = request.getParameter("postId");
-    	System.out.println("deletePost called with postId: " + postId);
+        String postId = request.getParameter("postId");
+        System.out.println("deletePost called with postId: " + postId);
 
         if (postId == null || postId.trim().isEmpty()) {
             request.setAttribute("error", "게시물 ID가 필요합니다.");
@@ -384,7 +431,7 @@ public class PostController extends MskimRequestMapping {
 
         try {
             Post post = dao.selectOne(postId);
-            if (post== null) {
+            if (post == null) {
                 request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
                 return "post/getPosts";
             }
@@ -396,6 +443,7 @@ public class PostController extends MskimRequestMapping {
             return "post/getPosts";
         }
     }
+
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
         String postId = request.getParameter("postId");
@@ -407,7 +455,7 @@ public class PostController extends MskimRequestMapping {
         if (postId == null || postId.trim().isEmpty() || pass == null || pass.trim().isEmpty()) {
             System.out.println("에러: postId 또는 pass가 비어 있음");
             request.setAttribute("error", "게시물 ID와 비밀번호가 필요합니다.");
-            return "post/delete";
+            return "post/deletePost?postId=" + (postId != null ? postId : "");
         }
 
         Post post = dao.selectOne(postId);
@@ -416,7 +464,7 @@ public class PostController extends MskimRequestMapping {
         if (post == null) {
             System.out.println("에러: 게시물을 찾을 수 없음, postId: " + postId);
             request.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "post/delete";
+            return "post/deletePost?postId=" + postId;
         }
 
         if (!post.getPostPassword().equals(pass)) {
@@ -424,7 +472,7 @@ public class PostController extends MskimRequestMapping {
             System.out.println("입력한 비밀번호: " + pass);
             System.out.println("에러: 비밀번호가 일치하지 않음");
             request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "post/delete";
+            return "post/deletePost?postId=" + postId;
         }
 
         try {
@@ -438,14 +486,15 @@ public class PostController extends MskimRequestMapping {
                 }
             }
 
-            dao.delete(postId);
+            // 게시물과 댓글을 트랜잭션 내에서 삭제
+            dao.deleteWithComments(postId);
             System.out.println("삭제 성공, postId: " + postId);
             return "redirect:/LMSProject1/post/getPosts";
         } catch (Exception e) {
             System.out.println("삭제 실패, 에러 메시지: " + e.getMessage());
             e.printStackTrace();
             request.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
-            return "post/delete";
+            return "post/deletePost?postId=" + postId;
         }
     }
 
@@ -467,25 +516,95 @@ public class PostController extends MskimRequestMapping {
         }
     }
 
+    @RequestMapping("updateComment")
+    public String updateComment(HttpServletRequest request, HttpServletResponse response) {
+        String commentId = request.getParameter("commentId");
+        String postId = request.getParameter("postId");
+        String writerId = request.getParameter("writerId");
+        String commentContent = request.getParameter("commentContent");
+        String password = request.getParameter("password");
+
+        if (commentId == null || commentId.trim().isEmpty() || postId == null || postId.trim().isEmpty() ||
+            writerId == null || writerId.trim().isEmpty() || commentContent == null || commentContent.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            request.setAttribute("error", "필수 입력값이 누락되었습니다.");
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
+        }
+
+        PostComment comment = dao.selectComment(commentId);
+        if (comment == null) {
+            request.setAttribute("error", "댓글을 찾을 수 없습니다.");
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
+        }
+
+        // 비밀번호 확인
+        if (!comment.getCommentPassword().equals(password)) {
+            request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
+        }
+
+        comment.setWriterId(writerId);
+        comment.setCommentContent(commentContent);
+        comment.setUpdatedAt(new Date());
+
+        try {
+            dao.updateComment(comment);
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
+        } catch (Exception e) {
+            request.setAttribute("error", "댓글 수정 실패: " + e.getMessage());
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
+        }
+    }
+
+    @RequestMapping("deleteComment")
+    public void deleteComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String commentId = request.getParameter("commentId");
+        String postId = request.getParameter("postId");
+        String password = request.getParameter("password");
+
+        if (commentId == null || commentId.trim().isEmpty() || postId == null || postId.trim().isEmpty() ||
+            password == null || password.trim().isEmpty()) {
+            response.getWriter().write("error: 필수 입력값이 누락되었습니다.");
+            return;
+        }
+
+        PostComment comment = dao.selectComment(commentId);
+        if (comment == null) {
+            response.getWriter().write("error: 댓글을 찾을 수 없습니다.");
+            return;
+        }
+
+        // 비밀번호 확인
+        if (!comment.getCommentPassword().equals(password)) {
+            response.getWriter().write("error: 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+
+        try {
+            dao.deleteComment(commentId);
+            response.getWriter().write("success");
+        } catch (Exception e) {
+            response.getWriter().write("error: 댓글 삭제 실패: " + e.getMessage());
+        }
+    }
+    
     private synchronized String generateNewPostId() {
         String maxPostId = dao.getMaxPostId();
         if (maxPostId == null || maxPostId.isEmpty()) {
             return "PO001";
         }
         try {
-            if (maxPostId.startsWith("PO")) { // "PO"로 시작하는 경우만 처리
+            if (maxPostId.startsWith("PO")) {
                 String numberPart = maxPostId.substring(2);
                 int number = Integer.parseInt(numberPart);
                 number++;
                 return "PO" + String.format("%03d", number);
             } else {
-                // "PO"로 시작하지 않으면 무시하고 다음 ID 계산
-                return "PO001"; // 또는 기존 최대 PO ID를 찾아 증가시키는 로직 추가 가능
+                return "PO001";
             }
         } catch (NumberFormatException e) {
             System.err.println("post_id 생성 실패: " + e.getMessage() + ", maxPostId: " + maxPostId);
-            // 기존 PO ID 중 최대값을 찾아 증가시키는 대체 로직
-            List<String> allIds = dao.getAllPostIds(); // 모든 post_id 조회 (임시)
+            List<String> allIds = dao.getAllPostIds();
             int maxNumber = 0;
             for (String id : allIds) {
                 if (id.startsWith("PO")) {

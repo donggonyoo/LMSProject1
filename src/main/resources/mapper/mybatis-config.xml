@@ -16,6 +16,7 @@
   	<typeAlias type="domain.Post" alias="Post" />
   	<typeAlias type="domain.PostComment" alias="PostComment" />
   	<typeAlias type="domain.Notice" alias="Notice" />
+  	<typeAlias type="model.dto.board.NoticeDto" alias="Noticedto"/>
   	<typeAlias type="domain.Course" alias="Course" />
   	<typeAlias type="domain.CourseTime" alias="CourseTime" />
   	<typeAlias type="domain.Dept" alias="Dept" />

@@ -63,14 +63,14 @@
                         <small class="text-muted">
                             <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                         </small></p>
-                         <p>${comment.commentContent}</p>
+                        <p>${comment.commentContent}</p>
                         <div class="d-flex gap-2">
                             <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">댓글</a>
                             <a href="javascript:void(0)" onclick="showEditForm('${comment.commentId}')" class="btn btn-sm btn-warning">수정</a>
                             <a href="javascript:void(0)" onclick="confirmDelete('${comment.commentId}')" class="btn btn-sm btn-danger">삭제</a>
                         </div>
 
-                       <c:forEach var="child" items="${commentList}">
+                        <c:forEach var="child" items="${commentList}">
                             <c:if test="${child.parentCommentId eq comment.commentId}">
                                 <div class="ms-4 border-start ps-3 mt-2">
                                     <p><strong>${child.writerId}</strong>
@@ -94,13 +94,16 @@
                                             <label for="editCommentContent-${child.commentId}" class="form-label">댓글 내용</label>
                                             <textarea class="form-control" id="editCommentContent-${child.commentId}" name="commentContent" rows="2">${child.commentContent}</textarea>
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="editPassword-${child.commentId}" class="form-label">비밀번호</label>
+                                            <input type="password" class="form-control" id="editPassword-${child.commentId}" name="password" required>
+                                        </div>
                                         <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
                                         <button type="button" onclick="hideEditForm('${child.commentId}')" class="btn btn-secondary btn-sm">취소</button>
                                     </form>
                                 </div>
                             </c:if>
                         </c:forEach>
-
 
                         <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
                             <input type="hidden" name="postId" value="${post.postId}">
@@ -112,6 +115,10 @@
                             <div class="mb-3">
                                 <label for="commentContent-${comment.commentId}" class="form-label">댓글 내용</label>
                                 <textarea class="form-control" id="commentContent-${comment.commentId}" name="commentContent" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password-${comment.commentId}" class="form-label">비밀번호</label>
+                                <input type="password" class="form-control" id="password-${comment.commentId}" name="password" required>
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">대댓글 작성</button>
                         </form>
@@ -130,14 +137,49 @@
                 <label for="commentContent" class="form-label">댓글 내용</label>
                 <textarea class="form-control" id="commentContent" name="commentContent" rows="3"></textarea>
             </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
             <button type="submit" class="btn btn-primary">댓글 작성</button>
         </form>
     </div>
 
     <script>
-    function showReplyForm(commentId) {
-        document.getElementById('replyForm-' + commentId).style.display = 'block';
-    }
+        function showReplyForm(commentId) {
+            document.getElementById('replyForm-' + commentId).style.display = 'block';
+        }
+
+        function showEditForm(commentId) {
+            document.getElementById('editForm-' + commentId).style.display = 'block';
+        }
+
+        function hideEditForm(commentId) {
+            document.getElementById('editForm-' + commentId).style.display = 'none';
+        }
+
+        function confirmDelete(commentId) {
+            if (confirm('댓글을 삭제하시겠습니까?')) {
+                let password = prompt('비밀번호를 입력하세요:');
+                if (password) {
+                    $.ajax({
+                        url: '${pageContext.request.contextPath}/post/deleteComment',
+                        type: 'POST',
+                        data: { commentId: commentId, postId: '${post.postId}', password: password },
+                        success: function(response) {
+                            if (response === 'success') {
+                                location.reload(); // 성공 시 페이지 새로고침
+                            } else {
+                                alert('삭제 실패: ' + response);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            alert('삭제 중 오류가 발생했습니다: ' + error);
+                        }
+                    });
+                }
+            }
+        }
     </script>
 </body>
 </html>

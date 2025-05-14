@@ -10,7 +10,7 @@ import config.MyBatisConnection;
 import domain.Notice;
 
 public class NoticeDao {
-    
+
     public void insert(Notice notice) {
         SqlSession session = MyBatisConnection.getConnection();
         try {
@@ -103,12 +103,13 @@ public class NoticeDao {
 		SqlSession session = MyBatisConnection.getConnection();
 		 try {
 	            session.update("notice.update", notice);
+	            session.commit(); 
 	        } catch (Exception e) {
 	            session.rollback();
 	            throw e;
 	        } finally {
 	            MyBatisConnection.close(session);
 	        }
-		
+
 	}
 }

@@ -77,11 +77,14 @@ public class CourseDao {
 			session.insert("course.addCourse", map);
 			map.remove("registrationId");
 			addAttendance(map, session);		
-			MyBatisConnection.close(session);
+			session.commit();
 			result = 1;
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			e.printStackTrace();
-			session.close(); // 커밋 안하고 그냥 종료함으로써 둘중 하나 오류시 둘다 롤백처리.
+			session.rollback(); // 커밋 안하고 그냥 종료함으로써 둘중 하나 오류시 둘다 롤백처리.
+			throw new RuntimeException("수강신청 실패: " + e.getMessage(), e);
+		} finally {
+			session.close();
 		}
 		
 		return result;
@@ -101,7 +104,7 @@ public class CourseDao {
 			session.insert("course.addAttendance", map);
 		} catch (Exception e) {	
 			e.printStackTrace();
-			throw e;
+			throw new RuntimeException("시간표 데이터 등록 실패; " + e.getMessage(), e);
 		}	
 	}
 
@@ -140,13 +143,13 @@ public class CourseDao {
 		
 	}
 	
-public void deleteAttendance(String courseId, SqlSession session) {
+	public void deleteAttendance(String courseId, SqlSession session) {
 		
 		try {
 			session.delete("course.deleteAttendance", courseId); 
 		} catch (Exception e) {	
 			e.printStackTrace();
-			throw e;
+			throw new RuntimeException("시간표 데이터 삭제 실패; " + e.getMessage(), e);
 		}	
 	}
 	
