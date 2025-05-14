@@ -23,13 +23,13 @@ import model.dao.board.NoticeDao;
 @MultipartConfig
 public class NoticeController extends MskimRequestMapping {
     private NoticeDao dao = new NoticeDao();
-    
+
     @RequestMapping("getNotices")
     public String getNotices(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("getNotices called with pageNum: " + request.getParameter("pageNum"));
         int limit = 10;
         int pageNum = 1;
-        
+
         try {
             String pageNumParam = request.getParameter("pageNum");
             if (pageNumParam != null && !pageNumParam.trim().isEmpty()) {
@@ -39,15 +39,59 @@ public class NoticeController extends MskimRequestMapping {
         } catch (NumberFormatException e) {
             pageNum = 1;
         }
+
+        int boardcount = dao.boardCount(null, null);
+        List<Notice> list = dao.list(pageNum, limit, null, null);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        System.out.println("Board count: " + boardcount + ", List size: " + list.size());
+        int maxpage = (int) Math.ceil((double) boardcount / limit);
+        int startpage = ((int) (pageNum / 10.0 + 0.9) - 1) * 10 + 1;
+        int endpage = startpage + 9;
+        if (endpage > maxpage) endpage = maxpage;
+
+        int boardNum = boardcount - (pageNum - 1) * limit;
+
+        request.setAttribute("boardcount", boardcount);
+        request.setAttribute("pageNum", pageNum);
+        request.setAttribute("list", list);
+        request.setAttribute("startpage", startpage);
+        request.setAttribute("endpage", endpage);
+        request.setAttribute("maxpage", maxpage);
+        request.setAttribute("boardNum", boardNum);
+        request.setAttribute("today", new Date());
+
+        return "notice/getNotices";
+    }
+
+    @RequestMapping("searchNotice")
+    public String searchNotice(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("searchNotice called with pageNum: " + request.getParameter("pageNum"));
+        int limit = 10;
+        int pageNum = 1;
+
+        try {
+            String pageNumParam = request.getParameter("pageNum");
+            if (pageNumParam != null && !pageNumParam.trim().isEmpty()) {
+                pageNum = Integer.parseInt(pageNumParam);
+                if (pageNum < 1) pageNum = 1;
+            }
+        } catch (NumberFormatException e) {
+            pageNum = 1;
+        }
+
         String column = request.getParameter("column");
         String find = request.getParameter("find");
-        
+
         System.out.println("Parameters - column: " + column + ", find: " + find);
-        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty()) {
+        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty() ||
+            !isValidColumn(column)) {
             column = null;
             find = null;
+            request.setAttribute("error", "유효한 검색 조건과 검색어를 입력해주세요.");
         }
-        
+
         int boardcount = dao.boardCount(column, find);
         List<Notice> list = dao.list(pageNum, limit, column, find);
         if (list == null) {
@@ -60,7 +104,7 @@ public class NoticeController extends MskimRequestMapping {
         if (endpage > maxpage) endpage = maxpage;
 
         int boardNum = boardcount - (pageNum - 1) * limit;
-        
+
         request.setAttribute("boardcount", boardcount);
         request.setAttribute("pageNum", pageNum);
         request.setAttribute("list", list);
@@ -71,15 +115,28 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("today", new Date());
         request.setAttribute("column", column);
         request.setAttribute("find", find);
-        
-        return "notice/getNotices";
+
+        return "notice/searchNotice";
     }
-    
+
+    private boolean isValidColumn(String column) {
+        if (column == null) return false;
+        String[] validColumns = {
+            "writerId", "noticeTitle", "noticeContent",
+            "noticeTitle,writerId", "noticeTitle,noticeContent",
+            "writerId,noticeContent", "noticeTitle,writerId,noticeContent"
+        };
+        for (String valid : validColumns) {
+            if (valid.equals(column)) return true;
+        }
+        return false;
+    }
+
     @RequestMapping("createNotice")
     public String createNotice(HttpServletRequest request, HttpServletResponse response) {
         return "notice/createNotice";
     }
-    
+
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         System.out.println("write method called");
@@ -101,25 +158,25 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("error", "파일 업로드 실패: " + e.getMessage());
             return "notice/createNotice";
         }
-        
+
         String writerId = request.getParameter("writer_id");
         String pass = request.getParameter("pass");
         String noticeTitle = request.getParameter("notice_title");
         String noticeContent = request.getParameter("notice_content");
-        
+
         System.out.println("writer_id: " + writerId);
         System.out.println("pass: " + pass);
         System.out.println("notice_title: " + noticeTitle);
         System.out.println("notice_content: " + noticeContent);
         System.out.println("notice_file: " + noticeFile);
-        
+
         if (writerId == null || writerId.trim().isEmpty() ||
                 pass == null || pass.trim().isEmpty() ||
                 noticeTitle == null || noticeTitle.trim().isEmpty()) {
             request.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
             return "notice/createNotice";
         }
-        
+
         String newNoticeId = generateNewNoticeId();
         Notice notice = new Notice();
         notice.setNoticeId(newNoticeId);
@@ -131,7 +188,7 @@ public class NoticeController extends MskimRequestMapping {
         notice.setNoticeCreatedAt(new Date());
         notice.setNoticeUpdatedAt(new Date());
         notice.setNoticeReadCount(0);
-        
+
         try {
             dao.insert(notice);
             return "redirect:/LMSProject1/notice/getNotices";
@@ -141,7 +198,7 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/createNotice";
         }
     }
-    
+
     @RequestMapping("getNoticeDetail")
     public String getNoticeDetail(HttpServletRequest request, HttpServletResponse response) {
         String noticeId = request.getParameter("notice_id");
@@ -152,19 +209,19 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("error", "게시물 ID가 필요합니다.");
             return "notice/getNotices";
         }
-        
+
         try {
             Notice notice = dao.selectOne(noticeId);
             if (notice == null) {
                 request.setAttribute("error", "게시물을 찾을 수 없습니다.");
                 return "notice/getNotices";
             }
-            
+
             if (readcnt == null || !readcnt.trim().equalsIgnoreCase("f")) {
                 dao.incrementReadCount(noticeId);
-                notice = dao.selectOne(noticeId); // 조회수 반영된 최신 데이터 가져오기
+                notice = dao.selectOne(noticeId);
             }
-            
+
             request.setAttribute("notice", notice);
             return "notice/getNoticeDetail";
         } catch (Exception e) {
@@ -173,7 +230,7 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/getNotices";
         }
     }
-    
+
     @RequestMapping("deleteNotice")
     public String deleteNotice(HttpServletRequest request, HttpServletResponse response) {
         String noticeId = request.getParameter("noticeId");
@@ -198,14 +255,14 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/getNotices";
         }
     }
-    
+
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
         String noticeId = request.getParameter("noticeId");
         String pass = request.getParameter("pass");
         System.out.println("delete called with noticeId: " + noticeId + ", pass: " + pass);
 
-        if (noticeId == null || noticeId.trim().isEmpty() || 
+        if (noticeId == null || noticeId.trim().isEmpty() ||
             pass == null || pass.trim().isEmpty()) {
             request.setAttribute("error", "게시물 ID와 비밀번호는 필수입니다.");
             return "notice/deleteNotice?noticeId=" + (noticeId != null ? noticeId : "");
@@ -217,7 +274,7 @@ public class NoticeController extends MskimRequestMapping {
                 request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
                 return "notice/deleteNotice?noticeId=" + noticeId;
             }
-            
+
             if (!notice.getNoticePassword().equals(pass)) {
                 request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
                 return "notice/deleteNotice?noticeId=" + noticeId;
@@ -231,7 +288,7 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/deleteNotice?noticeId=" + noticeId;
         }
     }
-    
+
     private synchronized String generateNewNoticeId() {
         String maxNoticeId = dao.getMaxNoticeId();
         System.out.println("Max notice_id: " + maxNoticeId);
@@ -240,10 +297,10 @@ public class NoticeController extends MskimRequestMapping {
             return "N001";
         }
         try {
-            String numberPart = maxNoticeId.substring(1); // "N001" -> "001"
+            String numberPart = maxNoticeId.substring(1);
             int number = Integer.parseInt(numberPart);
             number++;
-            String newId = "N" + String.format("%03d", number); // "N002"
+            String newId = "N" + String.format("%03d", number);
             System.out.println("Generated notice_id: " + newId);
             return newId;
         } catch (Exception e) {
@@ -251,7 +308,7 @@ public class NoticeController extends MskimRequestMapping {
             return "N001";
         }
     }
-    
+
     @RequestMapping("uploadImage")
     public void uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Part filePart = request.getPart("file");
@@ -269,7 +326,7 @@ public class NoticeController extends MskimRequestMapping {
             response.getWriter().write("파일 업로드 실패");
         }
     }
-    
+
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {
         String noticeId = request.getParameter("noticeId");
@@ -282,10 +339,10 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("error", "게시물을 찾을 수 없습니다.");
             return "notice/getNotices";
         }
-        request.setAttribute("notice", notice);  
+        request.setAttribute("notice", notice);
         return "notice/updateNotice";
     }
-    
+
     @RequestMapping("update")
     public String update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String noticeId = request.getParameter("noticeId");
@@ -295,27 +352,27 @@ public class NoticeController extends MskimRequestMapping {
         String noticeContent = request.getParameter("noticeContent");
         String originalFile = request.getParameter("noticeFile");
         Part filePart = request.getPart("noticeFile");
-        
+
         if (noticeId == null || noticeId.trim().isEmpty() || noticePassword == null || noticePassword.trim().isEmpty() ||
             writerId == null || writerId.trim().isEmpty() || noticeTitle == null || noticeTitle.trim().isEmpty()) {
             request.setAttribute("error", "필수 입력값이 누락되었습니다.");
             request.setAttribute("notice", dao.selectOne(noticeId));
             return "notice/updateNotice";
         }
-        
+
         Notice notice = dao.selectOne(noticeId);
-        
+
         if (notice == null) {
             request.setAttribute("error", "게시물을 찾을 수 없습니다.");
             return "notice/getNotices";
         }
-        
+
         if (!notice.getNoticePassword().equals(noticePassword)) {
             request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
             request.setAttribute("notice", notice);
             return "notice/updateNotice";
         }
-        
+
         String newFile = originalFile;
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = filePart.getSubmittedFileName();
@@ -332,15 +389,15 @@ public class NoticeController extends MskimRequestMapping {
                 }
             }
         }
-        
+
         notice.setNoticeId(noticeId);
         notice.setNoticePassword(noticePassword);
-        notice.setWriterId(writerId); 
+        notice.setWriterId(writerId);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
         notice.setNoticeFile(newFile);
         notice.setNoticeUpdatedAt(new Date());
-        
+
         try {
             dao.update(notice);
             return "redirect:/LMSProject1/notice/getNotices";
@@ -348,7 +405,7 @@ public class NoticeController extends MskimRequestMapping {
             e.printStackTrace();
             request.setAttribute("error", "게시물 수정 실패: " + e.getMessage());
             request.setAttribute("notice", notice);
-            return "notice/updateNotice"; // "post/updatePost" → "notice/updateNotice" 수정
+            return "notice/updateNotice";
         }
     }
 }

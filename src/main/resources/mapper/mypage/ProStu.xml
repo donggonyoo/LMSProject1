@@ -32,5 +32,15 @@
 	FROM professor
 	WHERE professor_id = #{professorId} AND professor_email=#{professorEmail};
 	</select>
+	
+	<update id="updateStuPw" parameterType="UpdateStuPwDto" >
+		update student set student_password=#{studentNewPassword}
+		where student_password=#{studentPassword} and student_id=#{studentId}
+	</update>
+	
+	<update id="updateProPw" parameterType="UpdateProPwDto">
+		update professor set professor_password=#{professorNewPassword}
+		where professor_password=#{professorPassword} and professor_id=#{professorId}
+	</update>
 
 </mapper>

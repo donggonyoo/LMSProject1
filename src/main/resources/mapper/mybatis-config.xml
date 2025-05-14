@@ -16,14 +16,19 @@
   	<typeAlias type="domain.Post" alias="Post" />
   	<typeAlias type="domain.PostComment" alias="PostComment" />
   	<typeAlias type="domain.Notice" alias="Notice" />
+  	<typeAlias type="model.dto.board.NoticeDto" alias="Noticedto"/>
   	<typeAlias type="domain.Course" alias="Course" />
   	<typeAlias type="domain.CourseTime" alias="CourseTime" />
   	<typeAlias type="domain.Dept" alias="Dept" />
   	<typeAlias type="domain.Score" alias="Score" />
   	<typeAlias type="domain.Student" alias="Student" />
+  	
   	<typeAlias type="model.dto.mypage.FindIdDto" alias="FindIdDto" />
   	<typeAlias type="model.dto.mypage.FindPwDto" alias="FindPwDto" />
   	<typeAlias type="model.dto.mypage.LoginDto" alias="LoginDto" />
+  	<typeAlias type="model.dto.mypage.UpdateProPwDto" alias="UpdateProPwDto" />
+  	<typeAlias type="model.dto.mypage.UpdateStuPwDto" alias="UpdateStuPwDto" />
+  	
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />
   	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
