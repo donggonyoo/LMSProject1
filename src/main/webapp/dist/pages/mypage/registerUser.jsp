@@ -81,10 +81,10 @@
         </div>
         <div class="mb-3">
             <label for="major" class="form-label">전공 선택</label>
-            <select class="form-select" id="major" name="major">
+            <select class="form-select" id="major" name="deptId">
                 <option selected value="none">전공</option>
                 <c:forEach items="${dept}" var="s">
-                <option value="${s.deptName}">${s.deptName}</option>
+                <option value="${s.deptId}">${s.deptName}</option>
                 </c:forEach>
                 <!-- <option value="Computer Science">컴퓨터공학과</option>
                 <option value="Electrical Engineering">전자공학과</option>
