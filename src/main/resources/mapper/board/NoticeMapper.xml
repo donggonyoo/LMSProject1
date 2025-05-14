@@ -2,38 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="notice">
-	<select id="count" resultType="int" parameterType="map">
-	    SELECT COUNT(*) FROM notice
-	    <where>
-	        <if test="column != null and find != null and find != ''">
-	            <choose>
-	                <when test="column == 'writerId'">writer_id LIKE CONCAT('%', #{find}, '%')</when>
-	                <when test="column == 'noticeTitle'">notice_title LIKE CONCAT('%', #{find}, '%')</when>
-	                <when test="column == 'noticeContent'">notice_content LIKE CONCAT('%', #{find}, '%')</when>
-	                <when test="column == 'noticeTitle,writerId'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%'))</when>
-	                <when test="column == 'noticeTitle,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
-	                <when test="column == 'writerId,noticeContent'">(writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
-	                <when test="column == 'noticeTitle,writerId,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
-	            </choose>
-	        </if>
-	    </where>
-	</select>
+    <select id="count" resultType="int" parameterType="map">
+        SELECT COUNT(*) FROM notice
+        <where>
+            <if test="column != null and find != null and find != ''">
+                <choose>
+                    <when test="column == 'writerId'">writer_name LIKE CONCAT('%', #{find}, '%')</when> <!-- writerId -> writerName -->
+                    <when test="column == 'noticeTitle'">notice_title LIKE CONCAT('%', #{find}, '%')</when>
+                    <when test="column == 'noticeContent'">notice_content LIKE CONCAT('%', #{find}, '%')</when>
+                    <when test="column == 'noticeTitle,writerId'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_name LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
+                    <when test="column == 'noticeTitle,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                    <when test="column == 'writerId,noticeContent'">(writer_name LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
+                    <when test="column == 'noticeTitle,writerId,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_name LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
+                </choose>
+            </if>
+        </where>
+    </select>
     
     <select id="selectList" resultType="Notice" parameterType="map">
         SELECT 
-            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_id, writer_id, writer_name, notice_password, notice_title, notice_content,
             notice_created_at, notice_updated_at, notice_file, notice_read_count
         FROM notice
         <if test="column != null and find != null">
             WHERE
             <choose>
-                <when test="column == 'writerId'">writer_id LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'writerName'">writer_name LIKE CONCAT('%', #{find}, '%')</when> <!-- 수정 -->
                 <when test="column == 'noticeTitle'">notice_title LIKE CONCAT('%', #{find}, '%')</when>
                 <when test="column == 'noticeContent'">notice_content LIKE CONCAT('%', #{find}, '%')</when>
-                <when test="column == 'noticeTitle,writerId'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'noticeTitle,writerName'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_name LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
                 <when test="column == 'noticeTitle,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
-                <when test="column == 'writerId,noticeContent'">(writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
-                <when test="column == 'noticeTitle,writerId,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_id LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'writerName,noticeContent'">(writer_name LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
+                <when test="column == 'noticeTitle,writerName,noticeContent'">(notice_title LIKE CONCAT('%', #{find}, '%') OR writer_name LIKE CONCAT('%', #{find}, '%') OR notice_content LIKE CONCAT('%', #{find}, '%'))</when> <!-- 수정 -->
             </choose>
         </if>
         ORDER BY notice_created_at DESC
@@ -42,10 +42,10 @@
     
     <insert id="insert" parameterType="Notice">
         INSERT INTO notice (
-            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_id, writer_id, writer_name, notice_password, notice_title, notice_content,
             notice_file, notice_created_at, notice_updated_at, notice_read_count
         ) VALUES (
-            #{noticeId}, #{writerId}, #{noticePassword}, #{noticeTitle},
+            #{noticeId}, #{writerId}, #{writerName}, #{noticePassword}, #{noticeTitle},
             #{noticeContent}, #{noticeFile}, #{noticeCreatedAt}, #{noticeUpdatedAt}, #{noticeReadCount}
         )
     </insert>
@@ -56,7 +56,7 @@
     
     <select id="selectOne" resultType="Notice" parameterType="string">
         SELECT 
-            notice_id, writer_id, notice_password, notice_title, notice_content,
+            notice_id, writer_id, writer_name, notice_password, notice_title, notice_content,
             notice_created_at, notice_updated_at, notice_file, notice_read_count
         FROM notice
         WHERE notice_id = #{noticeId}
@@ -71,14 +71,16 @@
     <delete id="delete" parameterType="string">
         DELETE FROM notice WHERE notice_id = #{noticeId}
     </delete>
+    
     <update id="update" parameterType="Notice">
-    UPDATE notice
-    SET writer_id = #{writerId},
-        notice_password = #{noticePassword},
-        notice_title = #{noticeTitle},
-        notice_content = #{noticeContent},
-        notice_file = #{noticeFile},
-        notice_updated_at = #{noticeUpdatedAt}
-    WHERE notice_id = #{noticeId}
-</update>
+        UPDATE notice
+        SET writer_id = #{writerId},
+            writer_name = #{writerName}, <!-- 추가 -->
+            notice_password = #{noticePassword},
+            notice_title = #{noticeTitle},
+            notice_content = #{noticeContent},
+            notice_file = #{noticeFile},
+            notice_updated_at = #{noticeUpdatedAt}
+        WHERE notice_id = #{noticeId}
+    </update>
 </mapper>

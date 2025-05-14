@@ -20,13 +20,13 @@
                 <div class="col-md-3">
                     <select name="column" class="form-control">
                         <option value="" ${column == '' ? 'selected' : ''}>전체</option>
-                        <option value="writerId" ${column == 'writerId' ? 'selected' : ''}>작성자</option>
+                        <option value="writerName" ${column == 'writerName' ? 'selected' : ''}>작성자</option>
                         <option value="noticeTitle" ${column == 'noticeTitle' ? 'selected' : ''}>제목</option>
                         <option value="noticeContent" ${column == 'noticeContent' ? 'selected' : ''}>내용</option>
-                        <option value="noticeTitle,writerId" ${column == 'noticeTitle,writerId' ? 'selected' : ''}>제목+작성자</option>
+                        <option value="noticeTitle,writerName" ${column == 'noticeTitle,writerName' ? 'selected' : ''}>제목+작성자</option>
                         <option value="noticeTitle,noticeContent" ${column == 'noticeTitle,noticeContent' ? 'selected' : ''}>제목+내용</option>
-                        <option value="writerId,noticeContent" ${column == 'writerId,noticeContent' ? 'selected' : ''}>작성자+내용</option>
-                        <option value="noticeTitle,writerId,noticeContent" ${column == 'noticeTitle,writerId,noticeContent' ? 'selected' : ''}>제목+작성자+내용</option>
+                        <option value="writerName,noticeContent" ${column == 'writerName,noticeContent' ? 'selected' : ''}>작성자+내용</option>
+                        <option value="noticeTitle,writerName,noticeContent" ${column == 'noticeTitle,writerName,noticeContent' ? 'selected' : ''}>제목+작성자+내용</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -53,6 +53,8 @@
                         <th>작성자</th>
                         <th>작성일</th>
                         <th>조회수</th>
+                        <th>수정</th>
+                        <th>삭제</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,9 +64,19 @@
                             <td>
                                 <a href="${pageContext.request.contextPath}/notice/getNoticeDetail?notice_id=${notice.noticeId}">${notice.noticeTitle}</a>
                             </td>
-                            <td>${notice.writerId}</td>
+                            <td>${notice.writerName}</td> 
                             <td><fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                             <td>${notice.noticeReadCount}</td>
+                            	<td>
+                            		<c:if test="${notice.writerId == login}">
+                            			<a href="${pageContext.request.contextPath}/notice/updateNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-warning">수정</a>
+                            		</c:if>
+                            	</td>
+                            	<td>
+                            		<c:if test="${notice.writerId == login}">
+                            			<a href="${pageContext.request.contextPath}/notice/deleteNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-danger">삭제</a>
+                            		</c:if>
+                            	</td>
                         </tr>
                     </c:forEach>
                 </tbody>

@@ -51,13 +51,11 @@ public class PostDao {
         }
     }
 
-    // 게시물과 관련 댓글을 함께 삭제하는 메서드 (트랜잭션 처리)
     public void deleteWithComments(String postId) {
         SqlSession session = MyBatisConnection.getConnection();
         try {
-            // 트랜잭션 시작
-            session.delete("post.deleteCommentsByPostId", postId); // 관련 댓글 삭제
-            session.delete("post.delete", postId); // 게시물 삭제
+            session.delete("post.deleteCommentsByPostId", postId);
+            session.delete("post.delete", postId);
             session.commit();
         } catch (Exception e) {
             session.rollback();
@@ -188,7 +186,7 @@ public class PostDao {
             MyBatisConnection.close(session);
         }
     }
-    
+
     public List<String> getAllPostIds() {
         SqlSession session = MyBatisConnection.getConnection();
         try {
@@ -197,7 +195,7 @@ public class PostDao {
             MyBatisConnection.close(session);
         }
     }
-    
+
     public PostComment selectComment(String commentId) {
         SqlSession session = MyBatisConnection.getConnection();
         try {

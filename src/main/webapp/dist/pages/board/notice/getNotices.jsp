@@ -44,7 +44,7 @@
                                 ${notice.noticeTitle}
                             </a>
                         </td>
-                        <td>${notice.writerId}</td>
+                        <td>${notice.writerName}</td> 
                         <td>
                             <c:set var="todayDate"><fmt:formatDate value="${today}" pattern="yyyy-MM-dd"/></c:set>
                             <c:set var="createDate"><fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd"/></c:set>
@@ -67,7 +67,13 @@
                 </c:if>
             </tbody>
         </table>
-
+        <!-- 글쓰기 버튼 -->
+        
+        <div class="text-right">
+        	<c:if test="${not empty login and isProfessor}">	
+            	<a href="${pageContext.request.contextPath}/notice/createNotice" class="btn btn-primary">글쓰기</a>
+            </c:if>
+        </div>
         <!-- 페이지네이션 -->
         <nav>
             <ul class="pagination justify-content-center">
@@ -88,11 +94,6 @@
                 </c:if>
             </ul>
         </nav>
-
-        <!-- 글쓰기 버튼 -->
-        <div class="text-right">
-            <a href="${pageContext.request.contextPath}/notice/createNotice" class="btn btn-primary">글쓰기</a>
-        </div>
     </div>
 </body>
 </html>

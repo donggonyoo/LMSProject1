@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 <th>작성자</th>
-                <td>${post.authorId}</td>
+                <td>${post.authorName}</td>
             </tr>
             <tr>
                 <th>작성일</th>
@@ -48,9 +48,11 @@
 
         <div class="text-end mb-5">
             <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
-            <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
-            <a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
-            <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
+            <c:if test="${isLoggedIn and post.authorId == sessionScope.login}">
+                <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
+                <a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
+                <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
+            </c:if>
         </div>
 
         <h3>댓글</h3>
@@ -59,90 +61,102 @@
             <c:if test="${empty comment.parentCommentId}">
                 <div class="card my-2">
                     <div class="card-body">
-                        <p><strong>${comment.writerId}</strong>
+                        <p><strong>${comment.commentAuthorName}</strong>
                         <small class="text-muted">
                             <fmt:formatDate value="${comment.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                         </small></p>
                         <p>${comment.commentContent}</p>
-                        <div class="d-flex gap-2">
-                            <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">댓글</a>
-                            <a href="javascript:void(0)" onclick="showEditForm('${comment.commentId}')" class="btn btn-sm btn-warning">수정</a>
-                            <a href="javascript:void(0)" onclick="confirmDelete('${comment.commentId}')" class="btn btn-sm btn-danger">삭제</a>
-                        </div>
+                        <c:if test="${isLoggedIn}">
+                            <div class="d-flex gap-2">
+                                <a href="javascript:void(0)" onclick="showReplyForm('${comment.commentId}')" class="btn btn-sm btn-secondary">댓글</a>
+                                <c:if test="${comment.writerId == sessionScope.login}">
+                                    <a href="javascript:void(0)" onclick="showEditForm('${comment.commentId}')" class="btn btn-sm btn-warning">수정</a>
+                                    <a href="javascript:void(0)" onclick="confirmDelete('${comment.commentId}')" class="btn btn-sm btn-danger">삭제</a>
+                                </c:if>
+                            </div>
+                        </c:if>
 
                         <c:forEach var="child" items="${commentList}">
                             <c:if test="${child.parentCommentId eq comment.commentId}">
                                 <div class="ms-4 border-start ps-3 mt-2">
-                                    <p><strong>${child.writerId}</strong>
+                                    <p><strong>${child.commentAuthorName}</strong>
                                     <small class="text-muted">
                                         <fmt:formatDate value="${child.createdAt}" pattern="yyyy-MM-dd HH:mm"/>
                                     </small></p>
                                     <p>${child.commentContent}</p>
-                                    <div class="d-flex gap-2">
-                                        <a href="javascript:void(0)" onclick="showEditForm('${child.commentId}')" class="btn btn-sm btn-warning">수정</a>
-                                        <a href="javascript:void(0)" onclick="confirmDelete('${child.commentId}')" class="btn btn-sm btn-danger">삭제</a>
-                                    </div>
+                                    <c:if test="${isLoggedIn}">
+                                        <div class="d-flex gap-2">
+                                            <c:if test="${child.writerId == sessionScope.login}">
+                                                <a href="javascript:void(0)" onclick="showEditForm('${child.commentId}')" class="btn btn-sm btn-warning">수정</a>
+                                                <a href="javascript:void(0)" onclick="confirmDelete('${child.commentId}')" class="btn btn-sm btn-danger">삭제</a>
+                                            </c:if>
+                                        </div>
 
-                                    <form id="editForm-${child.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
-                                        <input type="hidden" name="commentId" value="${child.commentId}">
-                                        <input type="hidden" name="postId" value="${post.postId}">
-                                        <div class="mb-3">
-                                            <label for="editWriterId-${child.commentId}" class="form-label">작성자</label>
-                                            <input type="text" class="form-control" id="editWriterId-${child.commentId}" name="writerId" value="${child.writerId}" readonly>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editCommentContent-${child.commentId}" class="form-label">댓글 내용</label>
-                                            <textarea class="form-control" id="editCommentContent-${child.commentId}" name="commentContent" rows="2">${child.commentContent}</textarea>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="editPassword-${child.commentId}" class="form-label">비밀번호</label>
-                                            <input type="password" class="form-control" id="editPassword-${child.commentId}" name="password" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
-                                        <button type="button" onclick="hideEditForm('${child.commentId}')" class="btn btn-secondary btn-sm">취소</button>
-                                    </form>
+                                        <form id="editForm-${child.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
+                                            <input type="hidden" name="commentId" value="${child.commentId}">
+                                            <input type="hidden" name="postId" value="${post.postId}">
+                                            <div class="mb-3">
+                                                <label for="editWriterId-${child.commentId}" class="form-label">작성자</label>
+                                                <input type="text" class="form-control" id="editWriterId-${child.commentId}" name="writerId" value="${child.commentAuthorName}" readonly>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editCommentContent-${child.commentId}" class="form-label">댓글 내용</label>
+                                                <textarea class="form-control" id="editCommentContent-${child.commentId}" name="commentContent" rows="2">${child.commentContent}</textarea>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="editPassword-${child.commentId}" class="form-label">비밀번호</label>
+                                                <input type="password" class="form-control" id="editPassword-${child.commentId}" name="commentPassword" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
+                                            <button type="button" onclick="hideEditForm('${child.commentId}')" class="btn btn-secondary btn-sm">취소</button>
+                                        </form>
+                                    </c:if>
                                 </div>
                             </c:if>
                         </c:forEach>
 
-                        <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
-                            <input type="hidden" name="postId" value="${post.postId}">
-                            <input type="hidden" name="parentCommentId" value="${comment.commentId}">
-                            <div class="mb-3">
-                                <label for="writerId-${comment.commentId}" class="form-label">작성자</label>
-                                <input type="text" class="form-control" id="writerId-${comment.commentId}" name="writerId">
-                            </div>
-                            <div class="mb-3">
-                                <label for="commentContent-${comment.commentId}" class="form-label">댓글 내용</label>
-                                <textarea class="form-control" id="commentContent-${comment.commentId}" name="commentContent" rows="2"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password-${comment.commentId}" class="form-label">비밀번호</label>
-                                <input type="password" class="form-control" id="password-${comment.commentId}" name="password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">대댓글 작성</button>
-                        </form>
+                        <c:if test="${isLoggedIn}">
+                            <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
+                                <input type="hidden" name="postId" value="${post.postId}">
+                                <input type="hidden" name="parentCommentId" value="${comment.commentId}">
+                                <div class="mb-3">
+                                    <label for="writerId-${comment.commentId}" class="form-label">작성자</label>
+                                    <input type="text" class="form-control" id="writerId-${comment.commentId}" name="writerId" value="${authorName}" readonly>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="commentContent-${comment.commentId}" class="form-label">댓글 내용</label>
+                                    <textarea class="form-control" id="commentContent-${comment.commentId}" name="commentContent" rows="2"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password-${comment.commentId}" class="form-label">비밀번호</label>
+                                    <input type="password" class="form-control" id="password-${comment.commentId}" name="commentPassword" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">대댓글 작성</button>
+                            </form>
+                        </c:if>
                     </div>
                 </div>
             </c:if>
         </c:forEach>
 
-        <form action="writeComment" method="post" class="mt-4">
-            <input type="hidden" name="postId" value="${post.postId}">
-            <div class="mb-3">
-                <label for="writerId" class="form-label">작성자</label>
-                <input type="text" class="form-control" id="writerId" name="writerId">
-            </div>
-            <div class="mb-3">
-                <label for="commentContent" class="form-label">댓글 내용</label>
-                <textarea class="form-control" id="commentContent" name="commentContent" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">비밀번호</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">댓글 작성</button>
-        </form>
+        <c:if test="${isLoggedIn}">
+            <form action="writeComment" method="post" class="mt-4">
+                <input type="hidden" name="postId" value="${post.postId}">
+                <div class="mb-3">
+                    <label for="writerId" class="form-label">작성자</label>
+                    <input type="text" class="form-control" id="writerId" name="writerId" value="${authorName}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="commentContent" class="form-label">댓글 내용</label>
+                    <textarea class="form-control" id="commentContent" name="commentContent" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="commentPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">댓글 작성</button>
+            </form>
+        </c:if>
     </div>
 
     <script>
@@ -168,7 +182,7 @@
                         data: { commentId: commentId, postId: '${post.postId}', password: password },
                         success: function(response) {
                             if (response === 'success') {
-                                location.reload(); // 성공 시 페이지 새로고침
+                                location.reload();
                             } else {
                                 alert('삭제 실패: ' + response);
                             }

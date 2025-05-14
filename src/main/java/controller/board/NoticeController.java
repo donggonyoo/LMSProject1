@@ -12,9 +12,12 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import domain.Notice;
+import domain.Professor;
+import domain.Student;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.board.NoticeDao;
@@ -45,6 +48,9 @@ public class NoticeController extends MskimRequestMapping {
         if (list == null) {
             list = new ArrayList<>();
         }
+        for (Notice notice : list) {
+            System.out.println("getNotices - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
+        }
         System.out.println("Board count: " + boardcount + ", List size: " + list.size());
         int maxpage = (int) Math.ceil((double) boardcount / limit);
         int startpage = ((int) (pageNum / 10.0 + 0.9) - 1) * 10 + 1;
@@ -52,7 +58,14 @@ public class NoticeController extends MskimRequestMapping {
         if (endpage > maxpage) endpage = maxpage;
 
         int boardNum = boardcount - (pageNum - 1) * limit;
-
+        
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        Object user = session.getAttribute("m");
+        boolean isProfessor = (user instanceof Professor);
+        
+        request.setAttribute("login", login);
+        request.setAttribute("isProfessor", isProfessor);
         request.setAttribute("boardcount", boardcount);
         request.setAttribute("pageNum", pageNum);
         request.setAttribute("list", list);
@@ -60,7 +73,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("endpage", endpage);
         request.setAttribute("maxpage", maxpage);
         request.setAttribute("boardNum", boardNum);
-        request.setAttribute("today", new Date());
+        request.setAttribute("today", new Date()); // 2025-05-14 15:29 KST
 
         return "notice/getNotices";
     }
@@ -96,6 +109,9 @@ public class NoticeController extends MskimRequestMapping {
         List<Notice> list = dao.list(pageNum, limit, column, find);
         if (list == null) {
             list = new ArrayList<>();
+        }
+        for (Notice notice : list) {
+            System.out.println("searchNotice - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
         }
         System.out.println("Board count: " + boardcount + ", List size: " + list.size());
         int maxpage = (int) Math.ceil((double) boardcount / limit);
@@ -134,12 +150,46 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("createNotice")
     public String createNotice(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        if (login == null) {
+            request.setAttribute("error", "로그인하시오");
+            return "redirect:/mypage/doLogin";
+        }
+
+        Object user = session.getAttribute("m");
+        if (user == null) {
+            request.setAttribute("error", "사용자 정보가 없습니다. 다시 로그인해 주세요.");
+            return "redirect:/mypage/doLogin";
+        }
+
+        System.out.println("createNotice - User type: " + user.getClass().getName()); 
+        String writerName = user instanceof Professor ? ((Professor) user).getProfessorName() : 
+                            (user instanceof Student ? ((Student) user).getStudentName() : "Unknown");
+        if (!(user instanceof Professor)) {
+            request.setAttribute("error", "공지사항 작성은 교수만 가능합니다.");
+            return "notice/getNotices";
+        }
+
+        request.setAttribute("writerName", writerName); 
+        System.out.println("createNotice - Login: " + login + ", WriterName: " + writerName);
         return "notice/createNotice";
     }
 
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         System.out.println("write method called");
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        Object user = session.getAttribute("m");
+        String writerName = user != null ? 
+            (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
+        System.out.println("write - Login: " + login + ", WriterName: " + writerName);
+        if (login == null) {
+            request.setAttribute("error", "로그인하시오");
+            return "redirect:/mypage/doLogin";
+        }
+
         Part filePart = null;
         String noticeFile = null;
         try {
@@ -159,18 +209,16 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/createNotice";
         }
 
-        String writerId = request.getParameter("writer_id");
         String pass = request.getParameter("pass");
         String noticeTitle = request.getParameter("notice_title");
         String noticeContent = request.getParameter("notice_content");
 
-        System.out.println("writer_id: " + writerId);
         System.out.println("pass: " + pass);
         System.out.println("notice_title: " + noticeTitle);
         System.out.println("notice_content: " + noticeContent);
         System.out.println("notice_file: " + noticeFile);
 
-        if (writerId == null || writerId.trim().isEmpty() ||
+        if (login == null || login.trim().isEmpty() ||
                 pass == null || pass.trim().isEmpty() ||
                 noticeTitle == null || noticeTitle.trim().isEmpty()) {
             request.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
@@ -180,7 +228,8 @@ public class NoticeController extends MskimRequestMapping {
         String newNoticeId = generateNewNoticeId();
         Notice notice = new Notice();
         notice.setNoticeId(newNoticeId);
-        notice.setWriterId(writerId);
+        notice.setWriterId(login);
+        notice.setWriterName(writerName); // 세션에서 가져온 이름 설정
         notice.setNoticePassword(pass);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
@@ -222,6 +271,7 @@ public class NoticeController extends MskimRequestMapping {
                 notice = dao.selectOne(noticeId);
             }
 
+            System.out.println("getNoticeDetail - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
             request.setAttribute("notice", notice);
             return "notice/getNoticeDetail";
         } catch (Exception e) {
@@ -329,6 +379,13 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        if (login == null) {
+            request.setAttribute("error", "로그인하시오");
+            return "redirect:/mypage/doLogin";
+        }
+
         String noticeId = request.getParameter("noticeId");
         if (noticeId == null || noticeId.trim().isEmpty()) {
             request.setAttribute("error", "게시물 ID가 필요합니다.");
@@ -339,31 +396,55 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("error", "게시물을 찾을 수 없습니다.");
             return "notice/getNotices";
         }
+        if (!notice.getWriterId().equals(login)) {
+            request.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
+            return "notice/getNotices";
+        }
+        
+        Object user = session.getAttribute("m");
+        String writerName = user != null ? 
+            (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
+        request.setAttribute("writerName", writerName); // writerName을 요청 속성으로 설정
+        System.out.println("updateNotice - Login: " + login + ", WriterName: " + writerName);
         request.setAttribute("notice", notice);
         return "notice/updateNotice";
     }
 
     @RequestMapping("update")
     public String update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        Object user = session.getAttribute("m");
+        String writerName = user != null ? 
+            (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
+        System.out.println("update - Login: " + login + ", WriterName: " + writerName);
+        if (login == null) {
+            request.setAttribute("error", "로그인하시오");
+            return "redirect:/mypage/doLogin";
+        }
+
         String noticeId = request.getParameter("noticeId");
         String noticePassword = request.getParameter("noticePassword");
-        String writerId = request.getParameter("writerId");
         String noticeTitle = request.getParameter("noticeTitle");
         String noticeContent = request.getParameter("noticeContent");
         String originalFile = request.getParameter("noticeFile");
         Part filePart = request.getPart("noticeFile");
 
         if (noticeId == null || noticeId.trim().isEmpty() || noticePassword == null || noticePassword.trim().isEmpty() ||
-            writerId == null || writerId.trim().isEmpty() || noticeTitle == null || noticeTitle.trim().isEmpty()) {
+            noticeTitle == null || noticeTitle.trim().isEmpty()) {
             request.setAttribute("error", "필수 입력값이 누락되었습니다.");
             request.setAttribute("notice", dao.selectOne(noticeId));
             return "notice/updateNotice";
         }
 
         Notice notice = dao.selectOne(noticeId);
-
         if (notice == null) {
             request.setAttribute("error", "게시물을 찾을 수 없습니다.");
+            return "notice/getNotices";
+        }
+
+        if (!notice.getWriterId().equals(login)) {
+            request.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
             return "notice/getNotices";
         }
 
@@ -391,8 +472,9 @@ public class NoticeController extends MskimRequestMapping {
         }
 
         notice.setNoticeId(noticeId);
+        notice.setWriterId(login);
+        notice.setWriterName(writerName); // 세션에서 가져온 이름 설정
         notice.setNoticePassword(noticePassword);
-        notice.setWriterId(writerId);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
         notice.setNoticeFile(newFile);

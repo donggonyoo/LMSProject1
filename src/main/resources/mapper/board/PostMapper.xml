@@ -4,37 +4,26 @@
 
     <select id="count" parameterType="map" resultType="int">
         SELECT COUNT(*) FROM post
-        <if test="column != null and find != null">
-            WHERE
-            <choose>
-                <when test="column == 'author_id'">
-                    author_id LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'post_title'">
-                    post_title LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'post_content'">
-                    post_content LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'title_author'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'title_content'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'author_content'">
-                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'all'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-            </choose>
-        </if>
+        <where>
+            post_notice = 0
+            <if test="column != null and find != null and find !=''">
+                AND
+                <choose>
+                    <when test="column == 'authorName'">author_name LIKE CONCAT('%', #{find}, '%')</when>
+                    <when test="column == 'postTitle'">post_title LIKE CONCAT('%', #{find}, '%')</when>
+                    <when test="column == 'postContent'">post_content LIKE CONCAT('%', #{find}, '%')</when>
+                    <when test="column == 'postTitle,authorName'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_name LIKE CONCAT('%', #{find}, '%'))</when>
+                    <when test="column == 'postTitle,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                    <when test="column == 'authorName,postContent'">(author_name LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                    <when test="column == 'postTitle,authorName,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_name LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                </choose>
+            </if>
+        </where>
     </select>
 
     <select id="selectNotices" resultType="domain.Post">
         SELECT
-            post_id, author_id, post_password, post_title, post_content,
+            post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
             post_group_step, post_file, post_read_count, post_notice
         FROM post
@@ -44,35 +33,21 @@
 
     <select id="selectList" parameterType="map" resultType="domain.Post">
         SELECT
-            post_id, author_id, post_password, post_title, post_content,
+            post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
             post_group_step, post_file, post_read_count, post_notice
         FROM post
         WHERE post_notice = 0
-        <if test="column != null and find != null">
+        <if test="column != null and find != null and find !=''">
             AND
             <choose>
-                <when test="column == 'author_id'">
-                    author_id LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'post_title'">
-                    post_title LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'post_content'">
-                    post_content LIKE CONCAT('%', #{find}, '%')
-                </when>
-                <when test="column == 'title_author'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'title_content'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'author_content'">
-                    (author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
-                <when test="column == 'all'">
-                    (post_title LIKE CONCAT('%', #{find}, '%') OR author_id LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))
-                </when>
+                <when test="column == 'authorName'">author_name LIKE CONCAT('%', #{find}, '%')</when> <!-- author_id -> author_name 수정 -->
+                <when test="column == 'postTitle'">post_title LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postContent'">post_content LIKE CONCAT('%', #{find}, '%')</when>
+                <when test="column == 'postTitle,authorName'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_name LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'authorName,postContent'">(author_name LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
+                <when test="column == 'postTitle,authorName,postContent'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_name LIKE CONCAT('%', #{find}, '%') OR post_content LIKE CONCAT('%', #{find}, '%'))</when>
             </choose>
         </if>
         ORDER BY post_group DESC, post_group_level ASC, post_group_step ASC, post_created_at DESC
@@ -81,10 +56,11 @@
 
     <select id="selectOne" parameterType="string" resultType="domain.Post">
         SELECT
-            post_id, author_id, post_password, post_title, post_content,
+            post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
             post_group_step, post_file, post_read_count, post_notice
-        FROM post WHERE post_id = #{postId}
+        FROM post
+        WHERE post_id = #{postId}
     </select>
 
     <update id="incrementReadCount" parameterType="string">
@@ -106,11 +82,11 @@
 
     <insert id="insert" parameterType="domain.Post">
         INSERT INTO post (
-            post_id, author_id, post_password, post_title, post_content,
+            post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
             post_group_step, post_file, post_read_count, post_notice
         ) VALUES (
-            #{postId}, #{authorId}, #{postPassword}, #{postTitle}, #{postContent},
+            #{postId}, #{authorId}, #{authorName}, #{postPassword}, #{postTitle}, #{postContent},
             #{postCreatedAt}, #{postUpdatedAt}, #{postGroup}, #{postGroupLevel},
             #{postGroupStep}, #{postFile}, #{postReadCount}, #{postNotice}
         )
@@ -118,9 +94,9 @@
 
     <update id="update" parameterType="domain.Post">
         UPDATE post SET
-            author_id = #{authorId}, post_password = #{postPassword}, post_title = #{postTitle},
-            post_content = #{postContent}, post_file = #{postFile}, post_updated_at = #{postUpdatedAt},
-            post_notice = #{postNotice}
+            author_id = #{authorId}, author_name = #{authorName}, post_password = #{postPassword},
+            post_title = #{postTitle}, post_content = #{postContent}, post_file = #{postFile},
+            post_updated_at = #{postUpdatedAt}, post_notice = #{postNotice}
         WHERE post_id = #{postId}
     </update>
 
@@ -128,45 +104,44 @@
         DELETE FROM post WHERE post_id = #{postId}
     </delete>
 
-    <!-- 게시물에 연결된 모든 댓글 삭제 -->
     <delete id="deleteCommentsByPostId" parameterType="string">
         DELETE FROM post_comment WHERE post_id = #{postId}
     </delete>
 
-	 <insert id="insertComment" parameterType="domain.PostComment">
-	    INSERT INTO post_comment (
-	        comment_id, post_id, writer_id, comment_content, parent_comment_id,
-	        created_at, updated_at, comment_password
-	    ) VALUES (
-	        #{commentId}, #{postId}, #{writerId}, #{commentContent}, #{parentCommentId},
-	        #{createdAt}, #{updatedAt}, #{commentPassword}
-	    )
-	</insert>
+    <insert id="insertComment" parameterType="domain.PostComment">
+        INSERT INTO post_comment (
+            comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id,
+            created_at, updated_at, comment_password
+        ) VALUES (
+            #{commentId}, #{postId}, #{writerId}, #{commentAuthorName}, #{commentContent}, #{parentCommentId},
+            #{createdAt}, #{updatedAt}, #{commentPassword}
+        )
+    </insert>
 
     <select id="selectCommentList" parameterType="string" resultType="domain.PostComment">
         SELECT
-            comment_id, post_id, writer_id, comment_content, parent_comment_id,
-            created_at, updated_at
+            comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id,
+            created_at, updated_at, comment_password
         FROM post_comment
         WHERE post_id = #{postId}
         ORDER BY created_at ASC
     </select>
-    
+
     <select id="selectComment" parameterType="string" resultType="domain.PostComment">
-	    SELECT comment_id, post_id, writer_id, comment_content, parent_comment_id, created_at, updated_at
-	    FROM post_comment
-	    WHERE comment_id = #{commentId}
-	</select>
-	
-	<update id="updateComment" parameterType="domain.PostComment">
-	    UPDATE post_comment
-	    SET writer_id = #{writerId}, comment_content = #{commentContent}, updated_at = #{updatedAt}
-	    WHERE comment_id = #{commentId}
-	</update>
-	
-	<delete id="deleteComment" parameterType="string">
-	    DELETE FROM post_comment WHERE comment_id = #{commentId}
-	</delete>
+        SELECT comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id, created_at, updated_at, comment_password
+        FROM post_comment
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <update id="updateComment" parameterType="domain.PostComment">
+        UPDATE post_comment
+        SET writer_id = #{writerId}, comment_author_name = #{commentAuthorName}, comment_content = #{commentContent}, updated_at = #{updatedAt}
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteComment" parameterType="string">
+        DELETE FROM post_comment WHERE comment_id = #{commentId}
+    </delete>
 
     <select id="getMaxCommentId" resultType="string">
         SELECT MAX(comment_id) FROM post_comment
@@ -175,5 +150,4 @@
     <select id="getAllPostIds" resultType="string">
         SELECT post_id FROM post
     </select>
-
 </mapper>

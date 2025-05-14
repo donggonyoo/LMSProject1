@@ -12,47 +12,58 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
-    <h2 class="text-center">게시물 수정</h2>
-    <form action="update" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="noticeId" value="${notice.noticeId}">
-        <table class="table">
-            <tr>
-                <td>글쓴이</td>
-                <td>
-                    <label class="form-label d-inline">${notice.writerId}</label>
-                    <input type="hidden" name="writerId" value="${notice.writerId}">
-                </td>
-            </tr>
-            <tr>
-                <td>비밀번호</td>
-                <td><input type="password" name="noticePassword" class="form-control"></td>
-            </tr>
-            <tr>
-                <td>제목</td>
-                <td><input type="text" name="noticeTitle" class="form-control" value="${notice.noticeTitle}"></td>
-            </tr>
-            <tr>
-                <td>내용</td>
-                <td><textarea rows="15" name="noticeContent" class="form-control" id="summernote">${notice.noticeContent}</textarea></td>
-            </tr>
-            <tr>
-                <td>첨부파일</td>
-                <td>
-                    <input type="file" name="noticeFile">
-                    <c:if test="${not empty notice.noticeFile}">
-                        <p>현재 파일: ${notice.noticeFile}</p>
-                        <input type="hidden" name="noticeFile" value="${notice.noticeFile}">
-                    </c:if>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button type="submit" class="btn btn-primary">수정 완료</button>
-                    <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <div class="container mt-5">
+        <h2 class="text-center">게시물 수정</h2>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
+        <form action="update" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="noticeId" value="${notice.noticeId}">
+            <table class="table">
+                <tr>
+                    <td>글쓴이</td>
+                    <td>
+                        <input type="text" name="writerId" class="form-control" value="${notice.writerId}" readonly>
+                        <input type="hidden" name="writerId" value="${notice.writerId}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>작성자 이름</td>
+                    <td>
+                        <input type="text" class="form-control" value="${writerName}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td><input type="password" name="noticePassword" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td><input type="text" name="noticeTitle" class="form-control" value="${notice.noticeTitle}"></td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td><textarea rows="15" name="noticeContent" class="form-control" id="summernote">${notice.noticeContent}</textarea></td>
+                </tr>
+                <tr>
+                    <td>첨부파일</td>
+                    <td>
+                        <input type="file" name="noticeFile">
+                        <c:if test="${not empty notice.noticeFile}">
+                            <p>현재 파일: ${notice.noticeFile}</p>
+                            <input type="hidden" name="noticeFile" value="${notice.noticeFile}">
+                        </c:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit" class="btn btn-primary">수정 완료</button>
+                        <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
     <script>
         $(document).ready(function() {
             $("#summernote").summernote({
