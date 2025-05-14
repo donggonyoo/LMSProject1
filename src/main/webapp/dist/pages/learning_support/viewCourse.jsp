@@ -160,7 +160,7 @@ body {
         </tbody>
     </table>
     <div class="mt-4">
-        <p><strong>총 신청 학점:</strong> 6 학점</p>
+        <p><strong>총 신청 학점:</strong> ${totalScore}학점</p>
         <button class="btn btn-primary view-courseTime">시간표 보기</button>
     </div>
     
@@ -290,25 +290,15 @@ $(document).ready(function() {
                     courseId: courseId,    
                 },
                 dataType: "json",
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//              새로고침 로직 처리해야됨
                 success: function(response) {
-                	if ($("#timetable-container").is(":visible")) {                		
-                		location.reload();	                	
-                		$(".view-courseTime").trigger("click");
-                    } else {
-                    	location.reload();
-                    }
-                	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////                	
                     if (response.success) {
-                        // 동적으로 테이블 업데이트
-                        $(`button[data-registration-id="${registrationId}"]`).closest("tr").remove();
-                        // 총 학점 업데이트 (예시)
-                        var totalCredits = parseInt($("p:contains('총 신청 학점')").text().match(/\d+/)[0]) - 3; // 예시로 3학점 감소
-                        $("p:contains('총 신청 학점')").text(`총 신청 학점: ${totalCredits} 학점`);
+                        // 수강신청 취소한 행(tr) 삭제
+                        $('button[data-registration-id="' + registrationId + '"]').closest("tr").remove();
+                        $("p:contains('총 신청 학점')").text("총 신청 학점:" +  response.totalScore +  "학점");
                         // 시간표가 표시 중이면 시간표도 갱신
-                       	
+                       	if ($("#timetable-container").is(":visible")) {                		
+                		$(".view-courseTime").trigger("click");
+                    }
                     } else {
                         alert("취소 실패: " + response.message);
                     }
@@ -366,9 +356,7 @@ $(document).ready(function() {
 							console.log('dayClass: ' + dayClass);
                             // 시간대 클래스 (예: 09:00 -> 0900)
                             var startTime = item.courseTimeStartFormatted ? item.courseTimeStartFormatted.replace(":", "") : "0900";
-                            console.log('startTime', startTime);
-                            // 이거 왜안돼?????????
-                            // var cellClass = `.${dayClass}-${startTime}`;
+                            console.log('startTime', startTime);                            
                             var cellClass = "." + dayClass + "-" + startTime;
                             
                             console.log('Targeting cell:', cellClass);
