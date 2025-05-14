@@ -65,12 +65,39 @@ body {
 .btn-secondary:hover {
     background: #cbd5e0;
 }
+
+/* 시간표 스타일 */
+#timetable-container {
+    display: none; /* 초기 숨김 */
+    margin-top: 20px;
+}
+#timetable-table {
+    background: linear-gradient(135deg, #f0f4f8, #d9e7f0);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+#timetable-table th {
+    background: #4a90e2;
+    color: white;
+    font-weight: 600;
+}
+#timetable-table td {
+    background: white;
+    transition: background 0.3s ease;
+}
+#timetable-table tr:hover td {
+    background: #f8fafc;
+}
 </style>
 </head>
 
 <main class="app-main">
     <div class="card">
-    <h2 class="text-xl font-semibold mb-4">수강신청 현황</h2>
+    <div class="d-flex flex-column gap-2">
+	    <h2 class="text-xl font-semibold mb-4">수강신청 현황</h2>
+	    <p><strong>총 신청 학점:</strong> 6 학점</p>
+    </div>
     <table class="table">
         <thead>
             <tr>
@@ -108,13 +135,24 @@ body {
         </tbody>
     </table>
     <div class="mt-4">
-        <p><strong>총 신청 학점:</strong> 6 학점</p>
+        
         <button class="btn btn-primary view-courseTime">시간표 보기</button>
     </div>
     
-    <table id="courseTime">
-    <!-- AJAX로 시간표 구현 -->
-    </table>
+    <div id="timetable-container">
+        <table id="courseTime" class="timetable-table">
+            <thead>
+                <tr>
+                    <th>강의명</th>
+                    <th>교수</th>
+                    <th>요일</th>
+                    <th>시간</th>
+                    <th>강의실</th>
+                </tr>
+            </thead>
+            <tbody id="timetable-body"></tbody>
+        </table>
+    </div>
     
 </div>
 </main>
@@ -145,22 +183,45 @@ body {
 	    });
 	    
 	    $(".view-courseTime").click(function() {
-	    	$.ajax({
-                url: "${path}/learning_support/viewCourse/viewCourseTime",
-                type: "get",
-                dataType: "json",
-                success: function(response) {
-                    if (response.success) {
-                        location.reload(); // 새로고침
-                    } else {
-                        alert("취소 실패: " + response.message);
-                    }
-                },
-                error: function(xhr) {
-                    alert("서버 오류: " + xhr.status + " - " + xhr.responseText);
-                }
-            });
-	    })
+	    	$("#timetable-container").show();// 시간표 표시
+			
+			$.ajax({
+				url: "${path}/learning_support/viewCourse/viewCourseTime",
+				type: "get",
+				dataType:"json",
+				success: function(response) {
+					if (response.success) {
+						var timetable = response.timetable;
+						var tbody = $("#timetable-body");
+						tbody.empty();// 기존내용 클리어
+						
+						if (timetable.length > 0) {
+							$.each(timetable, function(idx, item) {
+								var row = $("<tr>").append(
+									$("<td>").text(item.courseName),
+									$("<td>").text(item.professorName),
+									$("<td>").text(item.courseTimeYoil),
+									$("<td>").text(item.courseTimeStartFormatted + " - " + item.courseTimeEndFormatted),
+	                                $("<td>").text(item.courseTimeLoc)
+								);
+								tbody.append(row);
+							});
+						} else {
+	                        tbody.append($("<tr>").append(
+	                                $("<td colspan='5' class='text-center text-gray-500'>").text("등록된 강의가 없습니다.")
+	                            ));
+	                        }
+	                    } else {
+	                        alert("시간표 로드 실패: " + response.message);
+	                    }
+					},
+					error: function(xhr) {
+		                alert("서버 오류: " + xhr.status + " - " + xhr.responseText);
+		            }
+			});
+	    
+	    });
+	    
 	});
 	
 
