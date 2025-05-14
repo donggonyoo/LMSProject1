@@ -226,7 +226,8 @@
                     inputField.removeClass('is-invalid');
                 }
             });
-
+////////////////////////////////////////////////////////////
+//기능 구현해야됨. 현재 html에 form태그 없음.
             // (선택 사항) 폼 제출 시 최종 검증
             $('form').on('submit', function(event) {
                 let isValid = true;
@@ -248,7 +249,7 @@
                     var majorName = $("#majorName").val();
                     var professorName = $("#professorName").val();
                     var creditCategory = $("input[name='courseType']:checked").val();
-                    
+                    // 적다 말았음 세팅하고 html에 form태그 만들어야됨
                     var params = {
 						majorName: majorName,
 						professorName: professorName,
