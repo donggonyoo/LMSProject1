@@ -252,7 +252,6 @@ public class MypageController  extends MskimRequestMapping{
 
 		String id = request.getParameter("id");
 		String pass = request.getParameter("password");
-		session.setMaxInactiveInterval(9000);
 
 		if(id==null || id.trim()=="" || pass==null || pass.trim()=="") {
 			request.setAttribute("msg", "아이디or비번확인");
@@ -297,9 +296,7 @@ public class MypageController  extends MskimRequestMapping{
 					else if(dbId.toLowerCase().contains("p")){
 						ProfessorDao dao = new ProfessorDao();
 						Professor professor = dao.selectOne(dbId);
-						session.setAttribute("m", professor);
-						
-						
+						session.setAttribute("m", professor);	
 					}
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
@@ -319,6 +316,16 @@ public class MypageController  extends MskimRequestMapping{
 	@MSLogin("loginIdCheck")
 	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
 	public String main(HttpServletRequest request , HttpServletResponse response) {
+		String id = (String)request.getSession().getAttribute("login");
+		if(id.contains("p")) {
+			Professor p = (Professor)request.getSession().getAttribute("m");
+			request.getSession().setAttribute("m", p);
+		}
+		else {
+			Student p = (Student)request.getSession().getAttribute("m");
+			request.getSession().setAttribute("m", p);
+		}
+		
 		return "index"; //forward 됨
 		//redirect시 다른 request영역이므로 속성이 넘어가지않음
 

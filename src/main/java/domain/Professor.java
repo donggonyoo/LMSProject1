@@ -13,6 +13,8 @@ public class Professor {
     private String professorPassword;
 
     // Getters and Setters
+    public String getId() { return professorId; }
+    public String getImg() { return professorImg; }    
     public String getProfessorId() { return professorId; }
     public void setProfessorId(String professorId) { this.professorId = professorId; }
     public String getProfessorName() { return professorName; }
