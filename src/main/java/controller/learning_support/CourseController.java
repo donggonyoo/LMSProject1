@@ -17,6 +17,7 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.DeptDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
 
@@ -56,7 +57,8 @@ public class CourseController extends MskimRequestMapping {
 	public String getDepartments (HttpServletRequest request, HttpServletResponse response) {
 		
 		String college = request.getParameter("college");
-		List<Map<String, String>> departments = courseDao.getDepartments(college);
+		System.out.println("college: " + college);
+		List<DeptDto> departments = courseDao.getDepartments(college);
 		
         ObjectMapper mapper = new ObjectMapper();
         String json;
@@ -64,6 +66,7 @@ public class CourseController extends MskimRequestMapping {
 		try {
 			json = mapper.writeValueAsString(departments);
 			request.setAttribute("json", json);
+			System.out.println("deptJson: " + json.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 

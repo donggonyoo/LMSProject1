@@ -33,6 +33,7 @@
   	
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />
+  	<typeAlias type="model.dto.learning_support.DeptDto" alias="DeptDto" />
   	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
   	<typeAlias type="model.dto.learning_support.SearchDto" alias="SearchDto" />
   	<typeAlias type="model.dto.learning_support.RegistrationDto" alias="RegistrationDto" />

@@ -23,30 +23,52 @@ import model.dto.learning_support.RegistrationDto;
 initParams = {@WebInitParam(name="view",value = "/dist/")}
 )
 public class ViewCourseController extends MskimRequestMapping{
+	
 	private CourseDao courseDao = new CourseDao();
 	
 	@RequestMapping("viewCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
-//		String studentId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
 
+		// String studentId = (String) request.getSession().getAttribute("login");
+		// 테스트위한 임시 studentId 지정
+		String studentId = "S001";
+		int totalScore = 0;
+		
 		//화면 로드시 수강신청내역 불러오기
 		List<RegistrationDto> result = courseDao.searchRegistrationCourses(studentId);
+		// 총학점 계산
+		for (RegistrationDto r : result) {
+			totalScore += r.getCourseScore();
+		}
+		
 		request.setAttribute("registration", result);
+		request.setAttribute("totalScore", totalScore);	
 		
 		return "/pages/learning_support/viewCourse";
 	}
 	
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
-
+		
+//		String studentId = (String) request.getSession().getAttribute("login");
+//		테스트위한 임시 studentId 지정
+		String studentId = "S001";
+		int totalScore = 0;
+		
+		// 수강신청내역 삭제
 		String registrationId = request.getParameter("registrationId");
 		String courseId = request.getParameter("courseId");
 		int row = courseDao.deleteCourse(registrationId, courseId);
 		Map<String, Object> result = new HashMap<>();
 		
 		if(row > 0) {
+			//화면 로드시 수강신청내역 불러오기
+			List<RegistrationDto> courseResult = courseDao.searchRegistrationCourses(studentId);
+			// 총학점 계산
+			for (RegistrationDto r : courseResult) {
+				totalScore += r.getCourseScore();
+			}
+			result.put("totalScore", totalScore);
 			result.put("success", "true");
 			result.put("message", "삭제 성공");
 		} else {
