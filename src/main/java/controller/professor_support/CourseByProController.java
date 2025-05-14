@@ -21,12 +21,8 @@ public class CourseByProController extends MskimRequestMapping {
 	
 	@RequestMapping("registCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
-		
 		List<DeptDto> departments = courseDao.getDepartments("");
-		System.out.println(departments.toString());
-		
 		request.setAttribute("departments", departments);
-		
 		return "/pages/professor_support/registCourseByPro";
 	}
 	

@@ -66,7 +66,6 @@ public class CourseController extends MskimRequestMapping {
 		try {
 			json = mapper.writeValueAsString(departments);
 			request.setAttribute("json", json);
-			System.out.println("deptJson: " + json.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 
