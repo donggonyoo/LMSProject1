@@ -40,7 +40,10 @@ button:last-of-type:hover {
 </head>
 <body>
     <h2>변경할 이메일을 입력하세요</h2>
-    <input type="email" id="email">
+    <input type="email" id="email" onkeyup="eChk(this)">
+    <br>
+    <font id="emailValid"></font>
+    <br>
     <button onclick="update()" type="button">변경</button>
     <button onclick="closeWindow()" type="button">취소</button>
 
@@ -59,6 +62,26 @@ button:last-of-type:hover {
     function closeWindow() {
         window.close();
     }
+    
+    function eChk(e){
+    	const emailVal = document.querySelector("#emailValid");
+    	if(!valid(e.value,'email')){
+    		emailVal.innerHTML= '올바른 Email형식작성하세요';
+    		emailVal.style.color='red';
+    	}
+    	else{
+    		emailVal.innerHTML= '유효한E-mail';
+    		emailVal.style.color='green';
+    	}
+    }
+    
+    function valid(text,type){
+    	if(type==='email'){//넘어온값과 name=email의 값이 동일할때
+    		const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$/;
+    		return regex.test(text);
+    	}
+    }
+    
     </script>
 </body>
 </html>

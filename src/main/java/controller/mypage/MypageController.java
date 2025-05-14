@@ -129,29 +129,22 @@ public class MypageController  extends MskimRequestMapping{
 	
 	@RequestMapping("registerUserChk")
 	public String  registerUserChk(HttpServletRequest request , HttpServletResponse response) throws ParseException {
-		
 		String name  = request.getParameter("name");
 		String date = request.getParameter("birth");
 		String pass = request.getParameter("password");
 		String hashpw = BCrypt.hashpw(pass, BCrypt.gensalt());//hashPassword : 암호화 (복호화는불가능)
 		String position = request.getParameter("position");
 		String img = request.getParameter("picture");
-		String major = request.getParameter("major");
+		String deptId = request.getParameter("deptId");
 		String email = request.getParameter("email");
 		String phone = request.getParameter("phone");
 		String id = IdChk(position);//직급에따른 아이디부여해주는 메서드
-		System.out.println("name:"+name);
-		System.out.println("date : "+date);
-		System.out.println("pass : "+pass);
-		System.out.println("hashpw : "+hashpw);
-		System.out.println("id : "+id);
-		System.out.println("major : "+major);
+
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	    Date birthDate = sdf.parse(date); // "YYYY-MM-dd" 형식의 문자열을 Date로 파싱
 	    
-	    DeptDao deptDao = new DeptDao();//DeptDao를이용해 name을 넣어 id를 꺼내 저장
-	    String deptId = deptDao.selectId(major);
+	  
 	    
 	    String msg = name+"님 회원가입성공 id = "+id;
 	    String url = "doLogin";
@@ -169,6 +162,7 @@ public class MypageController  extends MskimRequestMapping{
 			pro.setProfessorPassword(pass);
 			pro.setDeptId(deptId);
 			pro.setProfessorPhone(phone);
+			System.out.println(pro);
 			ProfessorDao pDao = new ProfessorDao();
 			if(!pDao.insert(pro)) {
 				msg = "회원가입실패";
@@ -191,6 +185,7 @@ public class MypageController  extends MskimRequestMapping{
 		    stu.setStudentPhone(deptId);
 		    stu.setStudentPhone(phone);
 		    stu.setStudentStatus("재학");
+		    System.out.println(stu);
 		    
 		    StudentDao sDao = new StudentDao();
 		    if(!sDao.insert(stu)) {
@@ -284,11 +279,11 @@ public class MypageController  extends MskimRequestMapping{
 				} //dbId,dbPw,dbName 꺼내기종료
 					
 				
-				if(pass.equals(dbPw)
-					//BCrypt.checkpw(pass, pro.getProfessorPassword())
-						){//로그인성공
+				//입력한비번과 DB의비번이일치하는가?
+				if(pass.equals(dbPw)){
+					//BCrypt.checkpw(pass, pro.getProfessorPassword())	
 					session.setAttribute("login", dbId);
-					if(dbId.toLowerCase().contains("s")) {
+					/*if(dbId.toLowerCase().contains("s")) {
 						StudentDao dao = new StudentDao();
 						Student student = dao.selectOne(dbId);
 						session.setAttribute("m", student);
@@ -297,7 +292,7 @@ public class MypageController  extends MskimRequestMapping{
 						ProfessorDao dao = new ProfessorDao();
 						Professor professor = dao.selectOne(dbId);
 						session.setAttribute("m", professor);	
-					}
+					}*/
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
 
@@ -316,14 +311,17 @@ public class MypageController  extends MskimRequestMapping{
 	@MSLogin("loginIdCheck")
 	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
 	public String main(HttpServletRequest request , HttpServletResponse response) {
-		String id = (String)request.getSession().getAttribute("login");
-		if(id.contains("p")) {
-			Professor p = (Professor)request.getSession().getAttribute("m");
-			request.getSession().setAttribute("m", p);
+		String dbId = (String)request.getSession().getAttribute("login");
+		HttpSession session = request.getSession();
+		if(dbId.toLowerCase().contains("s")) {
+			StudentDao dao = new StudentDao();
+			Student student = dao.selectOne(dbId);
+			session.setAttribute("m", student);
 		}
-		else {
-			Student p = (Student)request.getSession().getAttribute("m");
-			request.getSession().setAttribute("m", p);
+		else if(dbId.toLowerCase().contains("p")){
+			ProfessorDao dao = new ProfessorDao();
+			Professor professor = dao.selectOne(dbId);
+			session.setAttribute("m", professor);	
 		}
 		
 		return "index"; //forward 됨
@@ -383,10 +381,16 @@ public class MypageController  extends MskimRequestMapping{
 		System.out.println(id);
 		System.out.println(pw);
 		System.out.println(cPw);
-		String msg = "비밀번호변경실패";
+		String msg = "남의 비번을 바꿀수없어요";
+		if(!id.equals(request.getSession().getAttribute("login"))) {
+			request.setAttribute("msg", msg);
+			return "mypage/close";
+		}
+		
 		boolean updatePw = new ProStuDao().updatePw(id,pw,cPw);
 		if(updatePw) {
 			if(request.getSession()!=null) {
+				msg="비밀번호변경실패";
 				request.setAttribute("logout", "logout");
 			}
 			msg = "비밀번호변경완료!!!";
@@ -418,22 +422,17 @@ public class MypageController  extends MskimRequestMapping{
 		String img = request.getParameter("picture");
 		String phone = request.getParameter("phone");
 		String email = request.getParameter("email");
-		System.out.println(id);
-		System.out.println(img);
-		System.out.println(phone);
-		System.out.println(email);
 		String msg="수정실패";
+		request.setAttribute("url", "index");
 		if(ProStuDao.userUpdate(id,img,phone,email)) {
 			msg=id+"님 수정성공";
 			request.setAttribute("msg", msg);
-			return "mypage/close";
+			return "alert";
 		}
 		else {
 			request.setAttribute("msg", msg);
-			return "mypage/close";
+			return "alert";
 		}
-		
-		
 	}
 	
 	
