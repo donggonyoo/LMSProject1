@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">문의게시판</h2>
+        <h2 class="text-center fs-1">문의게시판</h2>
 
         <!-- 에러 메시지 -->
         <c:if test="${not empty error}">
@@ -45,7 +45,7 @@
                                     [공지] ${post.postTitle}
                                 </a>
                             </td>
-                            <td>${post.authorId}</td>
+                            <td>${post.authorName}</td>
                             <td>
                                 <c:set var="todayDate"><fmt:formatDate value="${today}" pattern="yyyy-MM-dd"/></c:set>
                                 <c:set var="createDate"><fmt:formatDate value="${post.postCreatedAt}" pattern="yyyy-MM-dd"/></c:set>
@@ -88,7 +88,7 @@
                                 ${post.postTitle}
                             </a>
                         </td>
-                        <td>${post.authorId}</td>
+                        <td>${post.authorName}</td>
                         <td>
                             <c:set var="todayDate"><fmt:formatDate value="${today}" pattern="yyyy-MM-dd"/></c:set>
                             <c:set var="createDate"><fmt:formatDate value="${post.postCreatedAt}" pattern="yyyy-MM-dd"/></c:set>

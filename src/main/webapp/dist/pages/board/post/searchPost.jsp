@@ -13,19 +13,18 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center">문의게시판 검색</h2>
-
-        <!-- 검색 폼 -->
         <form action="${pageContext.request.contextPath}/post/searchPost" method="get" class="mb-4">
             <div class="row">
                 <div class="col-md-3">
                     <select name="column" class="form-control">
-                        <option value="all" ${column == 'all' ? 'selected' : ''}>전체</option>
-                        <option value="author_id" ${column == 'author_id' ? 'selected' : ''}>작성자</option>
-                        <option value="post_title" ${column == 'post_title' ? 'selected' : ''}>제목</option>
-                        <option value="post_content" ${column == 'post_content' ? 'selected' : ''}>내용</option>
-                        <option value="title_author" ${column == 'title_author' ? 'selected' : ''}>제목+작성자</option>
-                        <option value="title_content" ${column == 'title_content' ? 'selected' : ''}>제목+내용</option>
-                        <option value="author_content" ${column == 'author_content' ? 'selected' : ''}>작성자+내용</option>
+                        <option value="" ${column == '' ? 'selected' : ''}>전체</option>
+                        <option value="authorName" ${column == 'authorName' ? 'selected' : ''}>작성자</option>
+                        <option value="postTitle" ${column == 'postTitle' ? 'selected' : ''}>제목</option>
+                        <option value="postContent" ${column == 'postContent' ? 'selected' : ''}>내용</option>
+                        <option value="postTitle,authorName" ${column == 'postTitle,authorName' ? 'selected' : ''}>제목+작성자</option>
+                        <option value="postTitle,postContent" ${column == 'postTitle,postContent' ? 'selected' : ''}>제목+내용</option>
+                        <option value="authorName,postContent" ${column == 'authorName,postContent' ? 'selected' : ''}>작성자+내용</option>
+                        <option value="postTitle,authorName,postContent" ${column == 'postTitle,authorName,postContent' ? 'selected' : ''}>제목+작성자+내용</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -37,12 +36,10 @@
             </div>
         </form>
 
-        <!-- 에러 메시지 -->
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
         </c:if>
 
-        <!-- 검색 결과 -->
         <c:if test="${not empty list}">
             <table class="table table-bordered">
                 <thead>
@@ -52,6 +49,8 @@
                         <th>작성자</th>
                         <th>작성일</th>
                         <th>조회수</th>
+                        <th>수정</th>
+                        <th>삭제</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,21 +66,27 @@
                                     ${post.postTitle}
                                 </a>
                             </td>
-                            <td>${post.authorId}</td>
+                            <td>${post.authorName}</td>
                             <td><fmt:formatDate value="${post.postCreatedAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                             <td>${post.postReadCount}</td>
+                            <td>
+                                <c:if test="${post.authorId == login}">
+                                    <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-sm btn-warning">수정</a>
+                                </c:if>
+                            </td>
+                            <td>
+                                <c:if test="${post.authorId == login}">
+                                    <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-sm btn-danger">삭제</a>
+                                </c:if>
+                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>
             </table>
-
-            <!-- 페이지네이션 -->
             <nav>
                 <ul class="pagination justify-content-center">
                     <c:if test="${pageNum > 1}">
-                        <li class="page-item">
-                            <a class="page-link" href="?pageNum=${pageNum - 1}&column=${column}&find=${find}">이전</a>
-                        </li>
+                        <li class="page-item"><a class="page-link" href="?pageNum=${pageNum - 1}&column=${column}&find=${find}">이전</a></li>
                     </c:if>
                     <c:forEach begin="${startpage}" end="${endpage}" var="i">
                         <li class="page-item ${i == pageNum ? 'active' : ''}">
@@ -89,9 +94,7 @@
                         </li>
                     </c:forEach>
                     <c:if test="${pageNum < maxpage}">
-                        <li class="page-item">
-                            <a class="page-link" href="?pageNum=${pageNum + 1}&column=${column}&find=${find}">다음</a>
-                        </li>
+                        <li class="page-item"><a class="page-link" href="?pageNum=${pageNum + 1}&column=${column}&find=${find}">다음</a></li>
                     </c:if>
                 </ul>
             </nav>
@@ -99,9 +102,9 @@
         <c:if test="${empty list}">
             <p class="text-center">검색 결과가 없습니다.</p>
         </c:if>
-
         <div class="text-center">
             <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">문의게시판 목록</a>
+            <a href="${pageContext.request.contextPath}/post/createPost" class="btn btn-primary">글쓰기</a>
         </div>
     </div>
 </body>

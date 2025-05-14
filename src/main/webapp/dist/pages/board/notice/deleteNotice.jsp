@@ -1,42 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>게시글 삭제</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-    .label-inline {
-        display: inline;
-        margin-right: 0.5rem;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>게시물 삭제</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<h1 class="fs-1">게시글 삭제</h1>
-<c:if test="${not empty error}">
-    <div class="alert alert-danger">${error}</div>
-</c:if>
-<form action="${pageContext.request.contextPath}/notice/delete" method="post">
-    <input type="hidden" name="noticeId" value="${notice.noticeId}">
-    <div class="mb-3">
-        <label class="form-label label-inline fs-3">작성자:</label>
-        <span class="form-control-plaintext fs-3 d-inline">${notice.writerId}</span>
+    <div class="container mt-5">
+        <h2 class="text-center">게시물 삭제</h2>
+
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
+
+        <form action="${pageContext.request.contextPath}/notice/delete" method="post" class="mt-4">
+            <input type="hidden" name="noticeId" value="${notice.noticeId}">
+            <div class="form-group">
+                <label class="font-weight-bold">작성자:</label>
+                <span class="ml-2">${notice.writerName}</span>
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold">제목:</label>
+                <span class="ml-2">${notice.noticeTitle}</span>
+            </div>
+            <div class="form-group">
+                <label for="pass">비밀번호:</label>
+                <input type="password" name="pass" id="pass" class="form-control" required>
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-danger">삭제</button>
+                <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary ml-2">취소</a>
+            </div>
+        </form>
     </div>
-    <div class="mb-3">
-    	<label class="form-label label-inline fs-3">제목:</label>
-    	<span class="fs-3 ms-2">${notice.noticeTitle}</span> 
-    </div>
-    <div class="mb-3">
-        <label for="pass" class="form-label fs-3">Password:</label>
-        <input type="password" class="form-control " id="pass" name="pass" required>
-    </div>
-    <div class="text-end">
-        <button type="submit" class="btn btn-danger">게시글 삭제</button>
-    </div>
-</form>
 </body>
 </html>

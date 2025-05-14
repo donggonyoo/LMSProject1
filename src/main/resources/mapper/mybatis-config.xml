@@ -28,6 +28,8 @@
   	<typeAlias type="model.dto.mypage.LoginDto" alias="LoginDto" />
   	<typeAlias type="model.dto.mypage.UpdateProPwDto" alias="UpdateProPwDto" />
   	<typeAlias type="model.dto.mypage.UpdateStuPwDto" alias="UpdateStuPwDto" />
+  	<typeAlias type="model.dto.mypage.UpdateStuInfoDto" alias="UpdateStuInfoDto" />
+  	<typeAlias type="model.dto.mypage.UpdateProInfoDto" alias="UpdateProInfoDto" />
   	
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />

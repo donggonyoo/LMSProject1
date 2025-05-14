@@ -203,13 +203,15 @@ ul.timeline::before {
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> <!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
-							<c:set var="img"
+						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
+						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
+						<c:set var="img"
 								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
 							<img src="${path}/dist/assets/picture/${img}"
 							class="user-image rounded-circle shadow" alt="User Image" /> <span
 							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님
 								반갑습니다</span>
+						
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
@@ -288,7 +290,7 @@ ul.timeline::before {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/mypage/logout"
+								<li class="nav-item"><a href="${path}/mypage/userInfo"
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>

@@ -14,39 +14,50 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
-    <h2 class="text-center">공지사항 글쓰기</h2>
-    <c:if test="${not empty error}">
-        <div class="alert alert-danger">${error}</div>
-    </c:if>
-    <form action="${pageContext.request.contextPath}/notice/write" method="post" enctype="multipart/form-data" name="f">
-        <table class="table">
-            <tr>
-                <td>글쓴이</td>
-                <td><input type="text" name="writer_id" class="form-control" value="${param.writer_id}"></td>
-            </tr>
-            <tr>
-                <td>비밀번호</td>
-                <td><input type="password" name="pass" class="form-control"></td>
-            </tr>
-            <tr>
-                <td>제목</td>
-                <td><input type="text" name="notice_title" class="form-control" value="${param.notice_title}"></td>
-            </tr>
-            <tr>
-                <td>내용</td>
-                <td><textarea rows="15" name="notice_content" class="form-control" id="summernote">${param.notice_content}</textarea></td>
-            </tr>
-            <tr>
-                <td>첨부파일</td>
-                <td><input type="file" name="notice_file"></td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button type="button" onclick="inputcheck()" class="btn btn-primary">게시물 등록</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+    <div class="container mt-5">
+        <h2 class="text-center">공지사항 글쓰기</h2>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
+        <form action="${pageContext.request.contextPath}/notice/write" method="post" enctype="multipart/form-data" name="f">
+            <table class="table">
+                <tr>
+                    <td>글쓴이 (ID)</td>
+                    <td>
+                        <input type="text" name="writer_id" class="form-control" value="${sessionScope.login}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>작성자 이름</td>
+                    <td>
+                        <input type="text" class="form-control" value="${writerName}" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>비밀번호</td>
+                    <td><input type="password" name="pass" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td><input type="text" name="notice_title" class="form-control" value="${param.notice_title}"></td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td><textarea rows="15" name="notice_content" class="form-control" id="summernote">${param.notice_content}</textarea></td>
+                </tr>
+                <tr>
+                    <td>첨부파일</td>
+                    <td><input type="file" name="notice_file"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="button" onclick="inputcheck()" class="btn btn-primary">게시물 등록</button>
+                        <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
     <script>
         $(document).ready(function() {
             if (typeof $.fn.summernote === 'undefined') {

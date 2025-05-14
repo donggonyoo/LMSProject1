@@ -6,88 +6,56 @@
     <meta charset="UTF-8">
     <title>게시물 수정</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 </head>
 <body>
-    <h2 class="text-center">게시물 수정</h2>
-    <form action="update" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="postId" value="${p.postId}">
-        <table class="table">
-            <tr>
-                <td>글쓴이</td>
-                <td><input type="text" name="authorId" class="form-control" value="${p.authorId}"></td>
-            </tr>
-            <tr>
-                <td>비밀번호</td>
-                <td><input type="password" name="postPassword" class="form-control"></td>
-            </tr>
-            <tr>
-                <td>제목</td>
-                <td><input type="text" name="postTitle" class="form-control" value="${p.postTitle}"></td>
-            </tr>
-            <tr>
-                <td>내용</td>
-                <td><textarea rows="15" name="postContent" class="form-control" id="summernote">${p.postContent}</textarea></td>
-            </tr>
-            <tr>
-                <td>첨부파일</td>
-                <td>
-                    <input type="file" name="postFile">
-                    <c:if test="${not empty p.postFile}">
-                        <p>현재 파일: ${p.postFile}</p>
-                        <input type="hidden" name="postFile" value="${p.postFile}">
-                    </c:if>
-                </td>
-            </tr>
-            <tr>
-                <td>공지 설정</td>
-                <td>
-                    <input type="checkbox" name="post_notice" value="1" id="post_notice" ${p.postNotice ? 'checked' : ''}>
-                    <label for="post_notice">공지로 설정</label>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <button type="submit" class="btn btn-primary">수정 완료</button>
-                    <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
-                </td>
-            </tr>
-        </table>
-    </form>
-    <script>
-        $(document).ready(function() {
-            $("#summernote").summernote({
-                height: 300,
-                callbacks: {
-                    onImageUpload: function(files) {
-                        for (let i = 0; i < files.length; i++) {
-                            sendFile(files[i]);
-                        }
-                    }
-                }
+    <div class="container mt-5">
+        <h2 class="text-center">게시물 수정</h2>
+        <c:if test="${not empty error}">
+            <div class="alert alert-danger">${error}</div>
+        </c:if>
+        <form action="${pageContext.request.contextPath}/post/update" method="post" enctype="multipart/form-data" class="mt-4">
+            <input type="hidden" name="postId" value="${p.postId}">
+            <div class="form-group">
+                <label for="authorId">작성자:</label>
+                <input type="text" name="authorId" id="authorId" class="form-control" value="${p.authorName}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="postPassword">비밀번호:</label>
+                <input type="password" name="postPassword" id="postPassword" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="postTitle">제목:</label>
+                <input type="text" name="postTitle" id="postTitle" class="form-control" value="${p.postTitle}" required>
+            </div>
+            <div class="form-group">
+                <label for="postContent">내용:</label>
+                <textarea name="postContent" id="postContent" class="form-control">${p.postContent}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="postFile">파일:</label>
+                <input type="file" name="postFile" id="postFile" class="form-control">
+                <c:if test="${not empty p.postFile}">
+                    <p>현재 파일: ${p.postFile} <a href="${pageContext.request.contextPath}/upload/board/${p.postFile}" target="_blank">보기</a></p>
+                    <input type="hidden" name="postFile" value="${p.postFile}">
+                </c:if>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1" ${p.postNotice ? 'checked' : ''}>
+                <label class="form-check-label" for="post_notice">공지사항</label>
+            </div>
+            <button type="submit" class="btn btn-primary">수정</button>
+            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">취소</a>
+        </form>
+        <script>
+            $(document).ready(function() {
+                $('#postContent').summernote({ height: 300 });
+                $('#postContent').summernote('code', '${p.postContent}');
             });
-        });
-
-        function sendFile(file) {
-            let data = new FormData();
-            data.append("file", file);
-            $.ajax({
-                url: "${pageContext.request.contextPath}/post/uploadImage",
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function(url) {
-                    $('#summernote').summernote('insertImage', url);
-                },
-                error: function(e) {
-                    alert("이미지 업로드 실패: " + e.status);
-                }
-            });
-        }
-    </script>
+        </script>
+    </div>
 </body>
 </html>

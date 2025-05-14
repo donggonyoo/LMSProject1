@@ -23,7 +23,7 @@
                 </tr>
                 <tr>
                     <th>작성자</th>
-                    <td>${notice.writerId}</td>
+                    <td>${notice.writerName}</td> 
                 </tr>
                 <tr>
                     <th>작성일</th>
@@ -52,8 +52,10 @@
 
             <div class="text-end mb-5">
                 <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
-                <a href="${pageContext.request.contextPath}/notice/updateNotice?noticeId=${notice.noticeId}" class="btn btn-secondary">수정</a>
-                <a href="${pageContext.request.contextPath}/notice/deleteNotice?noticeId=${notice.noticeId}" class="btn btn-danger">삭제</a>
+                <c:if test="${notice.writerId == sessionScope.login}">
+                    <a href="${pageContext.request.contextPath}/notice/updateNotice?noticeId=${notice.noticeId}" class="btn btn-secondary">수정</a>
+                    <a href="${pageContext.request.contextPath}/notice/deleteNotice?noticeId=${notice.noticeId}" class="btn btn-danger">삭제</a>
+                </c:if>
             </div>
         </c:if>
         <c:if test="${empty notice && empty error}">

@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>    
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -80,9 +83,14 @@
             <label for="major" class="form-label">전공 선택</label>
             <select class="form-select" id="major" name="major">
                 <option selected value="none">전공</option>
-                <option value="Computer Science">컴퓨터공학과</option>
+                <c:forEach items="${dept}" var="s">
+                <option value="${s.deptName}">${s.deptName}</option>
+                </c:forEach>
+                <!-- <option value="Computer Science">컴퓨터공학과</option>
                 <option value="Electrical Engineering">전자공학과</option>
-                <option value="Business Administration">경영학과</option>
+                <option value="Mechanical Engineering">기계공학과</option>
+                <option value="Business Administration">경영학과</option> -->
+                
             </select>
         </div>
         <div class="mb-3">
@@ -99,8 +107,8 @@
         </div>
         <div class="mb-3">
             <label for="phone" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="tel" name="tel" placeholder="전화번호 입력" onkeyup="tChk(this)">
-            <font id='telValid'></font>
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="전화번호 입력" onkeyup="tChk(this)">
+            <font id='phoneValid'></font>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">이메일</label>
@@ -149,8 +157,8 @@
     }
     
     function tChk(t){
-    	const telVal = document.querySelector("#telValid");
-    	if(!valid(t.value,'tel')){
+    	const telVal = document.querySelector("#phoneValid");
+    	if(!valid(t.value,'phone')){
     		telVal.innerHTML= '올바른 휴대폰번호입력바람';
     		telVal.style.color='red';
     	}
@@ -179,7 +187,7 @@
     		const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$/;
     		return regex.test(text);
     	}
-    	else if(type==='tel'){ //넘어온값과 name=tel의 값이 동일할때
+    	else if(type==='phone'){ //넘어온값과 name=tel의 값이 동일할때
     		const regex = /^(01[0126789])[ -]?\d{3,4}[ -]?\d{4}$/;
     		return regex.test(text);
     	}
@@ -218,9 +226,9 @@
 		return false; 
 	}
 
-	if(f.tel.value.trim() == ""){ 
+	if(f.phone.value.trim() == ""){ 
 		alert("전화번호입력바람")
-		f.tel.focus();
+		f.phone.focus();
 		return false; 
 	}
 	if(f.email.value.trim() == ""){ 
@@ -230,7 +238,7 @@
 	}
 	if(!(valid(f.password.value.trim(),'pass') 
 		&& valid(f.email.value.trim(),'email')
-		&& valid(f.tel.value.trim(),'tel'))){ //3개중 한개라도 유효성검사를 실패했다면 실행
+		&& valid(f.phone.value.trim(),'phone'))){ //3개중 한개라도 유효성검사를 실패했다면 실행
 	alert("형식을준수해주세요")
 	return false;
 	}

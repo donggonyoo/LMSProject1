@@ -10,5 +10,5 @@ img.src = "${pageContext.request.contextPath}/dist/assets/picture/${fname}";
 opener.document.f.picture.value = "${fname}";
 //opener : registerImg를 열게만든 창 (ex)registerUser의 picture에 이미지이름을넣는다.
 //self : 현재페이지
-self.close();//창을 닫는다
+window.close();//창을 닫는다
 </script>
