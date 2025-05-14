@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import config.MyBatisConnection;
 import model.dto.learning_support.AttendanceDto;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.DeptDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
 
@@ -30,10 +31,10 @@ public class CourseDao {
 		return result;
 	}
 
-	public List<Map<String, String>> getDepartments(String college) {
+	public List<DeptDto> getDepartments(String college) {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
-		List<Map<String, String>> result = null;
+		List<DeptDto> result = null;
 		
 		try {
 			 result = session.selectList("course.selectDepartments", college);

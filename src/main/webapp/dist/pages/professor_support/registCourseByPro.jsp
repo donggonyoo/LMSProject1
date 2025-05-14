@@ -1,10 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<c:set var="path" value="${pageContext.request.contextPath}" scope="application" />
+
+
+    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>강의등록(교수지원)</title>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
@@ -112,32 +122,33 @@
                 <label for="majorName" class="col-sm-2 col-form-label-custom">전공명</label>
                 <div class="col-sm-10">
                     <select class="form-select form-select-sm" id="majorName">
-                        <option selected>전공을 선택하세요</option>
-                        <option value="컴퓨터공학과">컴퓨터공학과</option>
-                        <option value="전자공학과">전자공학과</option>
-                        <option value="기계공학과">기계공학과</option>
+                    	<option value="" selected>전공을 선택하세요</option>
+                    	<c:forEach var="department" items="${departments}" varStatus="status">
+                        <option value="${department.deptId}">${department.deptName}</option>
+                        </c:forEach>
                         </select>
                 </div>
             </div>
             <div class="mb-3 row">
                 <label for="professorName" class="col-sm-2 col-form-label-custom">교수명</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control form-control-sm" id="professorName" value="홍길동 (예시)" readonly>
+                    <input type="text" class="form-control form-control-sm" 
+                    	id="professorName" value="" placeholder="피카츄(예)">
                 </div>
             </div>
             <div class="mb-3 row">
                 <label class="col-sm-2 col-form-label-custom">이수구분</label>
                 <div class="col-sm-10">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="courseType" id="majorRequired" value="전공필수" checked>
+                        <input class="form-check-input" type="radio" name="courseType" id="majorRequired" value="MajorRequired" checked>
                         <label class="form-check-label" for="majorRequired">전공필수</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="courseType" id="majorSelective" value="전공선택">
+                        <input class="form-check-input" type="radio" name="courseType" id="MajorElective" value="MajorElective">
                         <label class="form-check-label" for="majorSelective">전공선택</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="courseType" id="liberalArts" value="교양">
+                        <input class="form-check-input" type="radio" name="courseType" id="liberalArts" value="liberalArts">
                         <label class="form-check-label" for="liberalArts">교양</label>
                     </div>
                 </div>
@@ -233,6 +244,30 @@
                 if (!isValid) {
                     event.preventDefault();
                     alert('강의 시간을 올바르게 입력해주세요.');
+                    
+                    var majorName = $("#majorName").val();
+                    var professorName = $("#professorName").val();
+                    var creditCategory = $("input[name='courseType']:checked").val();
+                    
+                    var params = {
+						majorName: majorName,
+						professorName: professorName,
+						creditCategory: creditCategory,
+						
+                    }
+                    $.ajax({
+                        url: "${path}/learning_support/deleteCourse",
+                        type: "get",
+                        data: { registrationId: registrationId, courseId: courseId },
+                        dataType: "json",
+                        success: function(data) {
+                        	loadRegistrations(); // 신청 내역 갱신
+                            loadCourses(); // 강의 목록 갱신
+                        },
+                        error: function(xhr) {
+                            alert("과목 삭제에 실패했습니다: " + xhr.responseText);
+                        }
+                    });
                 }
             });
         });
