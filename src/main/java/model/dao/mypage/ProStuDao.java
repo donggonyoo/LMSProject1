@@ -8,17 +8,19 @@ import config.MyBatisConnection;
 import model.dto.mypage.FindIdDto;
 import model.dto.mypage.FindPwDto;
 import model.dto.mypage.LoginDto;
+import model.dto.mypage.UpdateProInfoDto;
 import model.dto.mypage.UpdateProPwDto;
+import model.dto.mypage.UpdateStuInfoDto;
 import model.dto.mypage.UpdateStuPwDto;
 
 public class ProStuDao {
-	
+
 	public Map<String,String> login(String id ) {
 		SqlSession conn = MyBatisConnection.getConnection();
 		LoginDto loginDto = new LoginDto();
 		loginDto.setProfessorId(id);
 		loginDto.setStudentId(id);
-	
+
 		try {
 			Map<String,String>  map = conn.selectOne("prostu.loginChk",loginDto);
 			return map;
@@ -31,8 +33,8 @@ public class ProStuDao {
 		}
 		return null;
 	}
-	
-	
+
+
 	public String findId(String name , String email) {
 		SqlSession conn = MyBatisConnection.getConnection();
 		FindIdDto dto = new FindIdDto();
@@ -40,7 +42,7 @@ public class ProStuDao {
 		dto.setProfessorName(name);
 		dto.setStudentEmail(email);
 		dto.setStudentName(name);
-		
+
 		try {
 			String id = conn.selectOne("prostu.findId",dto);
 			return id;	
@@ -52,9 +54,9 @@ public class ProStuDao {
 			MyBatisConnection.close(conn);
 		}
 		return null;
-		
+
 	}
-	
+
 	public String findPw(String id , String email) {
 		SqlSession connection = MyBatisConnection.getConnection();
 		FindPwDto dto = new FindPwDto();
@@ -79,14 +81,14 @@ public class ProStuDao {
 		SqlSession connection = MyBatisConnection.getConnection();
 		UpdateProPwDto pDto = new UpdateProPwDto();
 		UpdateStuPwDto sDto = new UpdateStuPwDto();
-		
+
 		try {
 			if(id.contains("p")) {
 				pDto.setProfessorId(id);
 				pDto.setProfessorPassword(pw);
 				pDto.setProfessorNewPassword(cPw);
 				if(connection.update("updateProPw",pDto)>0) {
-				connection.commit();
+					connection.commit();
 					return true;
 				}
 			}
@@ -99,7 +101,7 @@ public class ProStuDao {
 					return true;
 				}
 			}
-			
+
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -110,6 +112,65 @@ public class ProStuDao {
 		return false;
 	}
 
-	
+
+
+
+
+	public String selectDeptName(String id) {
+		SqlSession connection = MyBatisConnection.getConnection();
+		try {
+			return connection.selectOne("prostu.selectDeptName",id);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			MyBatisConnection.close(connection);
+		}
+		return null;
+
+	}
+
+
+	public static boolean userUpdate(String id,String img, String phone, String email) {
+		SqlSession conn = MyBatisConnection.getConnection();
+
+		try {
+			if(id.toLowerCase().contains("p")) {
+				UpdateProInfoDto dto = new UpdateProInfoDto();
+				dto.setProfessorId(id);
+				dto.setProfessorEmail(email);
+				dto.setProfessorImg(img);
+				dto.setProfessorPhone(phone);
+				if(conn.update("prostu.updateProInfo",dto)>0) {
+					conn.commit();
+					return true;
+				}
+			}
+			else {
+				UpdateStuInfoDto dto = new UpdateStuInfoDto();
+				dto.setStudentEmail(email);
+				dto.setStudentId(id);
+				dto.setStudentImg(img);
+				dto.setStudentPhone(phone);
+				if(conn.update("prostu.updateStuInfo",dto)>0) {
+					conn.commit();
+					return true;
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			MyBatisConnection.close(conn);
+		}
+		return false;
+
+
+	}
+
+
+
 
 }

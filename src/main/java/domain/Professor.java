@@ -8,7 +8,7 @@ public class Professor {
     private String professorEmail;
     private Date professorBirthday;
     private String professorPhone;
-    private String professorMajor;
+    private String deptId;
     private String professorImg;
     private String professorPassword;
 
@@ -23,18 +23,23 @@ public class Professor {
     public void setProfessorBirthday(Date professorBirthday) { this.professorBirthday = professorBirthday; }
     public String getProfessorPhone() { return professorPhone; }
     public void setProfessorPhone(String professorPhone) { this.professorPhone = professorPhone; }
-    public String getProfessorMajor() { return professorMajor; }
-    public void setProfessorMajor(String professorMajor) { this.professorMajor = professorMajor; }
     public String getProfessorImg() { return professorImg; }
     public void setProfessorImg(String professorImg) { this.professorImg = professorImg; }
     public String getProfessorPassword() { return professorPassword; }
     public void setProfessorPassword(String professorPassword) { this.professorPassword = professorPassword; }
+	public String getDeptId() {
+		return deptId;
+	}
+	public void setDeptId(String deptId) {
+		this.deptId = deptId;
+	}
 	@Override
 	public String toString() {
 		return "Professor [professorId=" + professorId + ", professorName=" + professorName + ", professorEmail="
 				+ professorEmail + ", professorBirthday=" + professorBirthday + ", professorPhone=" + professorPhone
-				+ ", professorMajor=" + professorMajor + ", professorImg=" + professorImg + ", professorPassword="
-				+ professorPassword + "]";
+				+ ", deptId=" + deptId + ", professorImg=" + professorImg + ", professorPassword=" + professorPassword
+				+ "]";
 	}
+
     
 }
