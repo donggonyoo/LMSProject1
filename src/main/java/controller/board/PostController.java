@@ -111,14 +111,8 @@ public class PostController extends MskimRequestMapping {
         int endpage = startpage + 9;
         if (endpage > maxpage) endpage = maxpage;
 
-        // Calculate boardNum correctly
-        int boardNum;
-        if (column != null && !column.trim().isEmpty() && find != null && !find.trim().isEmpty()) {
-            // Calculate the number for the first post on the current page
-            boardNum = boardcount - (pageNum - 1) * limit;
-        } else {
-            boardNum = boardcount - (pageNum - 1) * limit;
-        }
+        // boardNum을 페이지의 첫 번째 게시물 번호로 설정 (1부터 시작)
+        int boardNum = boardcount - (pageNum - 1) * limit + 1;
 
         request.setAttribute("notices", notices);
         request.setAttribute("boardcount", boardcount);

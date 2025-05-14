@@ -19,13 +19,14 @@
             <div class="row">
                 <div class="col-md-3">
                     <select name="column" class="form-control">
-                        <option value="all" ${column == 'all' ? 'selected' : ''}>전체</option>
-                        <option value="writer_id" ${column == 'writer_id' ? 'selected' : ''}>작성자</option>
-                        <option value="notice_title" ${column == 'notice_title' ? 'selected' : ''}>제목</option>
-                        <option value="notice_content" ${column == 'notice_content' ? 'selected' : ''}>내용</option>
-                        <option value="title_author" ${column == 'title_author' ? 'selected' : ''}>제목+작성자</option>
-                        <option value="title_content" ${column == 'title_content' ? 'selected' : ''}>제목+내용</option>
-                        <option value="author_content" ${column == 'author_content' ? 'selected' : ''}>작성자+내용</option>
+                        <option value="" ${column == '' ? 'selected' : ''}>전체</option>
+                        <option value="writerId" ${column == 'writerId' ? 'selected' : ''}>작성자</option>
+                        <option value="noticeTitle" ${column == 'noticeTitle' ? 'selected' : ''}>제목</option>
+                        <option value="noticeContent" ${column == 'noticeContent' ? 'selected' : ''}>내용</option>
+                        <option value="noticeTitle,writerId" ${column == 'noticeTitle,writerId' ? 'selected' : ''}>제목+작성자</option>
+                        <option value="noticeTitle,noticeContent" ${column == 'noticeTitle,noticeContent' ? 'selected' : ''}>제목+내용</option>
+                        <option value="writerId,noticeContent" ${column == 'writerId,noticeContent' ? 'selected' : ''}>작성자+내용</option>
+                        <option value="noticeTitle,writerId,noticeContent" ${column == 'noticeTitle,writerId,noticeContent' ? 'selected' : ''}>제목+작성자+내용</option>
                     </select>
                 </div>
                 <div class="col-md-6">

@@ -85,10 +85,11 @@ public class NoticeController extends MskimRequestMapping {
         String find = request.getParameter("find");
 
         System.out.println("Parameters - column: " + column + ", find: " + find);
-        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty()) {
+        if (column == null || column.trim().isEmpty() || find == null || find.trim().isEmpty() ||
+            !isValidColumn(column)) {
             column = null;
             find = null;
-            request.setAttribute("error", "검색 조건과 검색어를 입력해주세요.");
+            request.setAttribute("error", "유효한 검색 조건과 검색어를 입력해주세요.");
         }
 
         int boardcount = dao.boardCount(column, find);
@@ -116,6 +117,19 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("find", find);
 
         return "notice/searchNotice";
+    }
+
+    private boolean isValidColumn(String column) {
+        if (column == null) return false;
+        String[] validColumns = {
+            "writerId", "noticeTitle", "noticeContent",
+            "noticeTitle,writerId", "noticeTitle,noticeContent",
+            "writerId,noticeContent", "noticeTitle,writerId,noticeContent"
+        };
+        for (String valid : validColumns) {
+            if (valid.equals(column)) return true;
+        }
+        return false;
     }
 
     @RequestMapping("createNotice")
