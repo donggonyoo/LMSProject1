@@ -1,42 +1,70 @@
 package model.dto.professor_support;
 
 public class RegistCourseDto {
-    private String majorName;        // 전공명 (deptId)
+    private String courseId;         // 강의 ID
+    private String deptId;           // 학과 ID
+    private String professorId;      // 교수 ID
     private String courseName;       // 강의명
-    private String professorName;    // 교수명
-    private String creditCategory;       // 이수구분
-    private String courseDay;        // 강의 요일
-    private Integer startTimeHour;   // 시작 시간
-    private Integer endTimeHour;     // 종료 시간
-    private Integer score;           // 학점
-    private String description;      // 강의 설명
+    private String courseStatus;     // 강의 상태
+    private Integer courseMaxCnt;    // 최대 수강 인원
+    private Integer courseScore;     // 학점
+    private String creditCategory;   // 이수구분
+    private String coursePlan;       // 강의 계획
+
+    private String courseTimeId;     // 강의 시간 ID
+    private String courseTimeYoil;   // 요일
+    private String courseTimeLoc;    // 강의 장소
+    private String courseTimeStart;  // 시작 시간 (HH:00 형식)
+    private String courseTimeEnd;    // 종료 시간 (HH:50 형식)
 
     // 기본 생성자
     public RegistCourseDto() {
     }
 
     // 모든 필드를 포함한 생성자
-    public RegistCourseDto(String majorName, String courseName, String professorName, String creditCategory,
-                           String courseDay, Integer startTimeHour, Integer endTimeHour, Integer score,
-                           String description) {
-        this.majorName = majorName;
+    public RegistCourseDto(String courseId, String deptId, String professorId, String courseName, String courseStatus,
+                           Integer courseMaxCnt, Integer courseScore, String creditCategory, String coursePlan,
+                           String courseTimeId, String courseTimeYoil, String courseTimeLoc, String courseTimeStart,
+                           String courseTimeEnd) {
+        this.courseId = courseId;
+        this.deptId = deptId;
+        this.professorId = professorId;
         this.courseName = courseName;
-        this.professorName = professorName;
+        this.courseStatus = courseStatus;
+        this.courseMaxCnt = courseMaxCnt;
+        this.courseScore = courseScore;
         this.creditCategory = creditCategory;
-        this.courseDay = courseDay;
-        this.startTimeHour = startTimeHour;
-        this.endTimeHour = endTimeHour;
-        this.score = score;
-        this.description = description;
+        this.coursePlan = coursePlan;
+        this.courseTimeId = courseTimeId;
+        this.courseTimeYoil = courseTimeYoil;
+        this.courseTimeLoc = courseTimeLoc;
+        this.courseTimeStart = courseTimeStart;
+        this.courseTimeEnd = courseTimeEnd;
     }
 
     // Getter 및 Setter
-    public String getMajorName() {
-        return majorName;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setMajorName(String majorName) {
-        this.majorName = majorName;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getProfessorId() {
+        return professorId;
+    }
+
+    public void setProfessorId(String professorId) {
+        this.professorId = professorId;
     }
 
     public String getCourseName() {
@@ -47,12 +75,28 @@ public class RegistCourseDto {
         this.courseName = courseName;
     }
 
-    public String getProfessorName() {
-        return professorName;
+    public String getCourseStatus() {
+        return courseStatus;
     }
 
-    public void setProfessorName(String professorName) {
-        this.professorName = professorName;
+    public void setCourseStatus(String courseStatus) {
+        this.courseStatus = courseStatus;
+    }
+
+    public Integer getCourseMaxCnt() {
+        return courseMaxCnt;
+    }
+
+    public void setCourseMaxCnt(Integer courseMaxCnt) {
+        this.courseMaxCnt = courseMaxCnt;
+    }
+
+    public Integer getCourseScore() {
+        return courseScore;
+    }
+
+    public void setCourseScore(Integer courseScore) {
+        this.courseScore = courseScore;
     }
 
     public String getCreditCategory() {
@@ -63,68 +107,72 @@ public class RegistCourseDto {
         this.creditCategory = creditCategory;
     }
 
-    public String getCourseDay() {
-        return courseDay;
+    public String getCoursePlan() {
+        return coursePlan;
     }
 
-    public void setCourseDay(String courseDay) {
-        this.courseDay = courseDay;
+    public void setCoursePlan(String coursePlan) {
+        this.coursePlan = coursePlan;
     }
 
-    public Integer getStartTimeHour() {
-        return startTimeHour;
+    public String getCourseTimeId() {
+        return courseTimeId;
     }
 
-    public void setStartTimeHour(Integer startTimeHour) {
-        this.startTimeHour = startTimeHour;
+    public void setCourseTimeId(String courseTimeId) {
+        this.courseTimeId = courseTimeId;
     }
 
-    public Integer getEndTimeHour() {
-        return endTimeHour;
+    public String getCourseTimeYoil() {
+        return courseTimeYoil;
     }
 
-    public void setEndTimeHour(Integer endTimeHour) {
-        this.endTimeHour = endTimeHour;
+    public void setCourseTimeYoil(String courseTimeYoil) {
+        this.courseTimeYoil = courseTimeYoil;
     }
 
-    public Integer getScore() {
-        return score;
+    public String getCourseTimeLoc() {
+        return courseTimeLoc;
     }
 
-    public void setScore(Integer score) {
-        this.score = score;
+    public void setCourseTimeLoc(String courseTimeLoc) {
+        this.courseTimeLoc = courseTimeLoc;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCourseTimeStart() {
+        return courseTimeStart;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCourseTimeStart(String courseTimeStart) {
+        this.courseTimeStart = courseTimeStart;
     }
 
-    // timeSlot 생성 메서드
-    public String getTimeSlot() {
-        if (courseDay == null || startTimeHour == null || endTimeHour == null) {
-            return null;
-        }
-        return courseDay + "/ " + startTimeHour + " - " + endTimeHour;
+    public String getCourseTimeEnd() {
+        return courseTimeEnd;
+    }
+
+    public void setCourseTimeEnd(String courseTimeEnd) {
+        this.courseTimeEnd = courseTimeEnd;
     }
 
     // toString (디버깅 용)
     @Override
     public String toString() {
         return "RegistCourseDto{" +
-                "majorName='" + majorName + '\'' +
+                "courseId='" + courseId + '\'' +
+                ", deptId='" + deptId + '\'' +
+                ", professorId='" + professorId + '\'' +
                 ", courseName='" + courseName + '\'' +
-                ", professorName='" + professorName + '\'' +
+                ", courseStatus='" + courseStatus + '\'' +
+                ", courseMaxCnt=" + courseMaxCnt +
+                ", courseScore=" + courseScore +
                 ", creditCategory='" + creditCategory + '\'' +
-                ", courseDay='" + courseDay + '\'' +
-                ", startTimeHour=" + startTimeHour +
-                ", endTimeHour=" + endTimeHour +
-                ", score=" + score +
-                ", description='" + description + '\'' +
-                ", timeSlot='" + getTimeSlot() + '\'' +
+                ", coursePlan='" + coursePlan + '\'' +
+                ", courseTimeId='" + courseTimeId + '\'' +
+                ", courseTimeYoil='" + courseTimeYoil + '\'' +
+                ", courseTimeLoc='" + courseTimeLoc + '\'' +
+                ", courseTimeStart='" + courseTimeStart + '\'' +
+                ", courseTimeEnd='" + courseTimeEnd + '\'' +
                 '}';
     }
 }
