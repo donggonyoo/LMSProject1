@@ -165,8 +165,9 @@ body::before {
             <form action="userUpdate" class="form-section" name="f" method="post">
                 <div class="profile-section">
                     <c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+                    
                     <img src="${path}/dist/assets/picture/${img}" id="pic" class="profile-img">
-                    <input type="hidden" name="picture" value="">
+                    <input type="hidden" name="picture" value="${img}">
                     <button type="button" class="btn btn-secondary" onclick="win_upload()">이미지 변경</button>
                 </div>
                 <c:choose>
