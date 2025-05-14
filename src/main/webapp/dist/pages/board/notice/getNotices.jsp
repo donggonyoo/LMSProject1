@@ -12,16 +12,17 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">공지사항</h2>
+        <h2 class="text-center fs-1">공지사항</h2>
 
         <!-- 에러 메시지 -->
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
         <!-- 검색 페이지 링크 -->
         <div class="text-right mb-3">
-            <a href="${pageContext.request.contextPath}/notice/searchNotice" class="btn btn-primary">공지사항 검색</a>
+            <a href="searchNotice" class="btn btn-primary">공지사항 검색</a>
         </div>
 
         <!-- 공지사항 목록 -->
@@ -40,7 +41,7 @@
                     <tr>
                         <td>${boardNum - status.index}</td>
                         <td>
-                            <a href="${pageContext.request.contextPath}/notice/getNoticeDetail?notice_id=${notice.noticeId}">
+                            <a href="getNoticeDetail?notice_id=${notice.noticeId}">
                                 ${notice.noticeTitle}
                             </a>
                         </td>
@@ -67,11 +68,11 @@
                 </c:if>
             </tbody>
         </table>
-        <!-- 글쓰기 버튼 -->
         
+        <!-- 글쓰기 버튼 -->
         <div class="text-right">
-        	<c:if test="${not empty login and isProfessor}">	
-            	<a href="${pageContext.request.contextPath}/notice/createNotice" class="btn btn-primary">글쓰기</a>
+            <c:if test="${not empty login and isProfessor}">	
+                <a href="createNotice" class="btn btn-primary">글쓰기</a>
             </c:if>
         </div>
         <!-- 페이지네이션 -->

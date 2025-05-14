@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+
+import com.oreilly.servlet.MultipartRequest;
 
 import domain.Notice;
 import domain.Professor;
@@ -23,12 +23,27 @@ import gdu.mskim.RequestMapping;
 import model.dao.board.NoticeDao;
 
 @WebServlet(urlPatterns = {"/notice/*"}, initParams = {@WebInitParam(name="view", value="/dist/pages/board/")})
-@MultipartConfig
 public class NoticeController extends MskimRequestMapping {
     private NoticeDao dao = new NoticeDao();
+    private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
+
+    // 로그인 체크 메서드
+    private String checkLogin(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        if (login == null) {
+            session.setAttribute("error", "로그인하시오");
+            return "redirect:" + LOGIN_PAGE;
+        }
+        session.removeAttribute("error");
+        return null;
+    }
 
     @RequestMapping("getNotices")
     public String getNotices(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         System.out.println("getNotices called with pageNum: " + request.getParameter("pageNum"));
         int limit = 10;
         int pageNum = 1;
@@ -58,12 +73,12 @@ public class NoticeController extends MskimRequestMapping {
         if (endpage > maxpage) endpage = maxpage;
 
         int boardNum = boardcount - (pageNum - 1) * limit;
-        
+
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
         boolean isProfessor = (user instanceof Professor);
-        
+
         request.setAttribute("login", login);
         request.setAttribute("isProfessor", isProfessor);
         request.setAttribute("boardcount", boardcount);
@@ -73,13 +88,16 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("endpage", endpage);
         request.setAttribute("maxpage", maxpage);
         request.setAttribute("boardNum", boardNum);
-        request.setAttribute("today", new Date()); // 2025-05-14 15:29 KST
+        request.setAttribute("today", new Date());
 
         return "notice/getNotices";
     }
 
     @RequestMapping("searchNotice")
     public String searchNotice(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         System.out.println("searchNotice called with pageNum: " + request.getParameter("pageNum"));
         int limit = 10;
         int pageNum = 1;
@@ -138,9 +156,9 @@ public class NoticeController extends MskimRequestMapping {
     private boolean isValidColumn(String column) {
         if (column == null) return false;
         String[] validColumns = {
-            "writerId", "noticeTitle", "noticeContent",
-            "noticeTitle,writerId", "noticeTitle,noticeContent",
-            "writerId,noticeContent", "noticeTitle,writerId,noticeContent"
+            "writerName", "noticeTitle", "noticeContent", // writerName 추가
+            "noticeTitle,writerName", "noticeTitle,noticeContent",
+            "writerName,noticeContent", "noticeTitle,writerName,noticeContent"
         };
         for (String valid : validColumns) {
             if (valid.equals(column)) return true;
@@ -150,86 +168,78 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("createNotice")
     public String createNotice(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
-        String login = (String) session.getAttribute("login");
-        if (login == null) {
-            request.setAttribute("error", "로그인하시오");
-            return "redirect:/mypage/doLogin";
-        }
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
 
+        HttpSession session = request.getSession();
         Object user = session.getAttribute("m");
         if (user == null) {
-            request.setAttribute("error", "사용자 정보가 없습니다. 다시 로그인해 주세요.");
-            return "redirect:/mypage/doLogin";
+            session.setAttribute("error", "사용자 정보가 없습니다. 다시 로그인해 주세요.");
+            return "redirect:" + LOGIN_PAGE;
         }
 
-        System.out.println("createNotice - User type: " + user.getClass().getName()); 
-        String writerName = user instanceof Professor ? ((Professor) user).getProfessorName() : 
+        System.out.println("createNotice - User type: " + user.getClass().getName());
+        String writerName = user instanceof Professor ? ((Professor) user).getProfessorName() :
                             (user instanceof Student ? ((Student) user).getStudentName() : "Unknown");
         if (!(user instanceof Professor)) {
-            request.setAttribute("error", "공지사항 작성은 교수만 가능합니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "공지사항 작성은 교수만 가능합니다.");
+            return "redirect:getNotices";
         }
 
-        request.setAttribute("writerName", writerName); 
-        System.out.println("createNotice - Login: " + login + ", WriterName: " + writerName);
+        request.setAttribute("writerName", writerName);
+        System.out.println("createNotice - Login: " + session.getAttribute("login") + ", WriterName: " + writerName);
         return "notice/createNotice";
     }
 
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        System.out.println("write method called");
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         HttpSession session = request.getSession();
-        String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
-        String writerName = user != null ? 
+        String writerName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
-        System.out.println("write - Login: " + login + ", WriterName: " + writerName);
-        if (login == null) {
-            request.setAttribute("error", "로그인하시오");
-            return "redirect:/mypage/doLogin";
+        System.out.println("write - Login: " + session.getAttribute("login") + ", WriterName: " + writerName);
+
+        if (writerName == null || writerName.trim().isEmpty()) {
+            session.setAttribute("error", "작성자 이름이 필요합니다.");
+            return "redirect:createNotice";
         }
 
-        Part filePart = null;
-        String noticeFile = null;
-        try {
-            filePart = request.getPart("notice_file");
-            if (filePart != null && filePart.getSize() > 0) {
-                String fileName = filePart.getSubmittedFileName();
-                String uploadPath = request.getServletContext().getRealPath("/upload/board");
-                System.out.println("Upload path: " + uploadPath);
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) uploadDir.mkdirs();
-                noticeFile = System.currentTimeMillis() + "_" + fileName;
-                filePart.write(new File(uploadPath, noticeFile).getPath());
-            }
-        } catch (Exception e) {
-            System.err.println("File upload error: " + e.getMessage());
-            request.setAttribute("error", "파일 업로드 실패: " + e.getMessage());
-            return "notice/createNotice";
+        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+        int maxSize = 10 * 1024 * 1024; // 10MB
+        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
+
+        String noticeFile = multi.getFilesystemName("notice_file");
+        if (noticeFile == null) {
+            noticeFile = "";
         }
 
-        String pass = request.getParameter("pass");
-        String noticeTitle = request.getParameter("notice_title");
-        String noticeContent = request.getParameter("notice_content");
+        String pass = multi.getParameter("pass");
+        String noticeTitle = multi.getParameter("notice_title");
+        String noticeContent = multi.getParameter("notice_content");
 
         System.out.println("pass: " + pass);
         System.out.println("notice_title: " + noticeTitle);
         System.out.println("notice_content: " + noticeContent);
         System.out.println("notice_file: " + noticeFile);
 
+        String login = (String) session.getAttribute("login");
         if (login == null || login.trim().isEmpty() ||
                 pass == null || pass.trim().isEmpty() ||
                 noticeTitle == null || noticeTitle.trim().isEmpty()) {
-            request.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
-            return "notice/createNotice";
+            session.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
+            return "redirect:createNotice";
         }
 
         String newNoticeId = generateNewNoticeId();
         Notice notice = new Notice();
         notice.setNoticeId(newNoticeId);
         notice.setWriterId(login);
-        notice.setWriterName(writerName); // 세션에서 가져온 이름 설정
+        notice.setWriterName(writerName); // 반드시 설정
         notice.setNoticePassword(pass);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
@@ -240,30 +250,34 @@ public class NoticeController extends MskimRequestMapping {
 
         try {
             dao.insert(notice);
-            return "redirect:/LMSProject1/notice/getNotices";
+            return "redirect:getNotices";
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
-            return "notice/createNotice";
+            session.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
+            return "redirect:createNotice";
         }
     }
 
     @RequestMapping("getNoticeDetail")
     public String getNoticeDetail(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         String noticeId = request.getParameter("notice_id");
         String readcnt = request.getParameter("readcnt");
         System.out.println("getNoticeDetail called with notice_id: " + noticeId + ", readcnt: " + readcnt);
 
+        HttpSession session = request.getSession();
         if (noticeId == null || noticeId.trim().isEmpty()) {
-            request.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물 ID가 필요합니다.");
+            return "redirect:getNotices";
         }
 
         try {
             Notice notice = dao.selectOne(noticeId);
             if (notice == null) {
-                request.setAttribute("error", "게시물을 찾을 수 없습니다.");
-                return "notice/getNotices";
+                session.setAttribute("error", "게시물을 찾을 수 없습니다.");
+                return "redirect:getNotices";
             }
 
             if (readcnt == null || !readcnt.trim().equalsIgnoreCase("f")) {
@@ -276,66 +290,74 @@ public class NoticeController extends MskimRequestMapping {
             return "notice/getNoticeDetail";
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
+            return "redirect:getNotices";
         }
     }
 
     @RequestMapping("deleteNotice")
     public String deleteNotice(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         String noticeId = request.getParameter("noticeId");
         System.out.println("deleteNotice called with noticeId: " + noticeId);
 
+        HttpSession session = request.getSession();
         if (noticeId == null || noticeId.trim().isEmpty()) {
-            request.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물 ID가 필요합니다.");
+            return "redirect:getNotices";
         }
 
         try {
             Notice notice = dao.selectOne(noticeId);
             if (notice == null) {
-                request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
-                return "notice/getNotices";
+                session.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
+                return "redirect:getNotices";
             }
             request.setAttribute("notice", notice);
             return "notice/deleteNotice";
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
+            return "redirect:getNotices";
         }
     }
 
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         String noticeId = request.getParameter("noticeId");
         String pass = request.getParameter("pass");
         System.out.println("delete called with noticeId: " + noticeId + ", pass: " + pass);
 
+        HttpSession session = request.getSession();
         if (noticeId == null || noticeId.trim().isEmpty() ||
             pass == null || pass.trim().isEmpty()) {
-            request.setAttribute("error", "게시물 ID와 비밀번호는 필수입니다.");
-            return "notice/deleteNotice?noticeId=" + (noticeId != null ? noticeId : "");
+            session.setAttribute("error", "게시물 ID와 비밀번호는 필수입니다.");
+            return "redirect:deleteNotice?noticeId=" + (noticeId != null ? noticeId : "");
         }
 
         try {
             Notice notice = dao.selectOne(noticeId);
             if (notice == null) {
-                request.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
-                return "notice/deleteNotice?noticeId=" + noticeId;
+                session.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
+                return "redirect:deleteNotice?noticeId=" + noticeId;
             }
 
             if (!notice.getNoticePassword().equals(pass)) {
-                request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-                return "notice/deleteNotice?noticeId=" + noticeId;
+                session.setAttribute("error", "비밀번호가 일치하지 않습니다.");
+                return "redirect:deleteNotice?noticeId=" + noticeId;
             }
 
             dao.delete(noticeId);
-            return "redirect:/LMSProject1/notice/getNotices";
+            return "redirect:getNotices";
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
-            return "notice/deleteNotice?noticeId=" + noticeId;
+            session.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
+            return "redirect:deleteNotice?noticeId=" + noticeId;
         }
     }
 
@@ -361,14 +383,23 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("uploadImage")
     public void uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Part filePart = request.getPart("file");
-        if (filePart != null && filePart.getSize() > 0) {
-            String fileName = filePart.getSubmittedFileName();
-            String uploadPath = request.getServletContext().getRealPath("/upload/board");
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) {
+            response.sendRedirect("/LMSProject1/mypage/doLogin");
+            return;
+        }
+
+        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+        int maxSize = 10 * 1024 * 1024; // 10MB
+        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
+
+        String fileName = multi.getFilesystemName("file");
+        if (fileName != null && !fileName.isEmpty()) {
             String newFileName = System.currentTimeMillis() + "_" + fileName;
-            filePart.write(new File(uploadPath, newFileName).getPath());
+            File oldFile = new File(uploadPath, fileName);
+            if (oldFile.exists()) oldFile.renameTo(new File(uploadPath, newFileName));
             String fileUrl = request.getContextPath() + "/upload/board/" + newFileName;
             response.getWriter().write(fileUrl);
         } else {
@@ -379,32 +410,31 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
-        if (login == null) {
-            request.setAttribute("error", "로그인하시오");
-            return "redirect:/mypage/doLogin";
-        }
-
         String noticeId = request.getParameter("noticeId");
         if (noticeId == null || noticeId.trim().isEmpty()) {
-            request.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물 ID가 필요합니다.");
+            return "redirect:getNotices";
         }
         Notice notice = dao.selectOne(noticeId);
         if (notice == null) {
-            request.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물을 찾을 수 없습니다.");
+            return "redirect:getNotices";
         }
+
         if (!notice.getWriterId().equals(login)) {
-            request.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
+            return "redirect:getNotices";
         }
-        
+
         Object user = session.getAttribute("m");
-        String writerName = user != null ? 
+        String writerName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
-        request.setAttribute("writerName", writerName); // writerName을 요청 속성으로 설정
+        request.setAttribute("writerName", writerName);
         System.out.println("updateNotice - Login: " + login + ", WriterName: " + writerName);
         request.setAttribute("notice", notice);
         return "notice/updateNotice";
@@ -412,68 +442,66 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("update")
     public String update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String loginCheck = checkLogin(request, response);
+        if (loginCheck != null) return loginCheck;
+
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
-        String writerName = user != null ? 
+        String writerName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
         System.out.println("update - Login: " + login + ", WriterName: " + writerName);
-        if (login == null) {
-            request.setAttribute("error", "로그인하시오");
-            return "redirect:/mypage/doLogin";
-        }
 
-        String noticeId = request.getParameter("noticeId");
-        String noticePassword = request.getParameter("noticePassword");
-        String noticeTitle = request.getParameter("noticeTitle");
-        String noticeContent = request.getParameter("noticeContent");
-        String originalFile = request.getParameter("noticeFile");
-        Part filePart = request.getPart("noticeFile");
+        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+        int maxSize = 10 * 1024 * 1024; // 10MB
+        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
+
+        String noticeId = multi.getParameter("noticeId");
+        String noticePassword = multi.getParameter("noticePassword");
+        String noticeTitle = multi.getParameter("noticeTitle");
+        String noticeContent = multi.getParameter("noticeContent");
+        String originalFile = multi.getParameter("noticeFile");
+        String newFile = multi.getFilesystemName("noticeFile");
 
         if (noticeId == null || noticeId.trim().isEmpty() || noticePassword == null || noticePassword.trim().isEmpty() ||
             noticeTitle == null || noticeTitle.trim().isEmpty()) {
-            request.setAttribute("error", "필수 입력값이 누락되었습니다.");
-            request.setAttribute("notice", dao.selectOne(noticeId));
-            return "notice/updateNotice";
+            session.setAttribute("error", "필수 입력값이 누락되었습니다.");
+            return "redirect:updateNotice?noticeId=" + noticeId;
         }
 
         Notice notice = dao.selectOne(noticeId);
         if (notice == null) {
-            request.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "게시물을 찾을 수 없습니다.");
+            return "redirect:notice/getNotices";
         }
 
         if (!notice.getWriterId().equals(login)) {
-            request.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
-            return "notice/getNotices";
+            session.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
+            return "redirect:getNotices";
         }
 
         if (!notice.getNoticePassword().equals(noticePassword)) {
-            request.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-            request.setAttribute("notice", notice);
-            return "notice/updateNotice";
+            session.setAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "redirect:updateNotice?noticeId=" + noticeId;
         }
 
-        String newFile = originalFile;
-        if (filePart != null && filePart.getSize() > 0) {
-            String fileName = filePart.getSubmittedFileName();
-            String uploadPath = request.getServletContext().getRealPath("/upload/board");
-            File uploadDir = new File(uploadPath);
-            if (!uploadDir.exists()) uploadDir.mkdirs();
-            newFile = System.currentTimeMillis() + "_" + fileName;
-            filePart.write(new File(uploadPath, newFile).getPath());
-
+        if (newFile == null || newFile.isEmpty()) {
+            newFile = originalFile;
+        } else {
             if (originalFile != null && !originalFile.isEmpty()) {
                 File oldFile = new File(uploadPath, originalFile);
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
+                if (oldFile.exists()) oldFile.delete();
             }
+            File newFileObject = new File(uploadPath, newFile);
+            newFile = System.currentTimeMillis() + "_" + newFile;
+            newFileObject.renameTo(new File(uploadPath, newFile));
         }
 
         notice.setNoticeId(noticeId);
         notice.setWriterId(login);
-        notice.setWriterName(writerName); // 세션에서 가져온 이름 설정
+        notice.setWriterName(writerName); // 업데이트 시도
         notice.setNoticePassword(noticePassword);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
@@ -482,12 +510,11 @@ public class NoticeController extends MskimRequestMapping {
 
         try {
             dao.update(notice);
-            return "redirect:/LMSProject1/notice/getNotices";
+            return "redirect:notice/getNotices";
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "게시물 수정 실패: " + e.getMessage());
-            request.setAttribute("notice", notice);
-            return "notice/updateNotice";
+            session.setAttribute("error", "게시물 수정 실패: " + e.getMessage());
+            return "redirect:updateNotice?noticeId=" + noticeId;
         }
     }
 }

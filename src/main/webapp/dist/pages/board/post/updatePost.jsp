@@ -16,8 +16,9 @@
         <h2 class="text-center">게시물 수정</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
-        <form action="${pageContext.request.contextPath}/post/update" method="post" enctype="multipart/form-data" class="mt-4">
+        <form action="update" method="post" enctype="multipart/form-data" class="mt-4">
             <input type="hidden" name="postId" value="${p.postId}">
             <div class="form-group">
                 <label for="authorId">작성자:</label>
@@ -39,7 +40,7 @@
                 <label for="postFile">파일:</label>
                 <input type="file" name="postFile" id="postFile" class="form-control">
                 <c:if test="${not empty p.postFile}">
-                    <p>현재 파일: ${p.postFile} <a href="${pageContext.request.contextPath}/upload/board/${p.postFile}" target="_blank">보기</a></p>
+                    <p>현재 파일: ${p.postFile} <a href="/upload/board/${p.postFile}" target="_blank">보기</a></p>
                     <input type="hidden" name="postFile" value="${p.postFile}">
                 </c:if>
             </div>
@@ -48,7 +49,7 @@
                 <label class="form-check-label" for="post_notice">공지사항</label>
             </div>
             <button type="submit" class="btn btn-primary">수정</button>
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">취소</a>
+            <a href="getPosts" class="btn btn-secondary">취소</a>
         </form>
         <script>
             $(document).ready(function() {

@@ -17,11 +17,12 @@
         <!-- 에러 메시지 -->
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
         <!-- 검색 페이지 링크 -->
         <div class="text-right mb-3">
-            <a href="${pageContext.request.contextPath}/post/searchPost" class="btn btn-primary">문의게시판 검색</a>
+            <a href="searchPost" class="btn btn-primary">문의게시판 검색</a>
         </div>
 
         <!-- 공지사항 목록 -->
@@ -41,7 +42,7 @@
                         <tr>
                             <td>공지</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${post.postId}">
+                                <a href="getPostDetail?post_id=${post.postId}">
                                     [공지] ${post.postTitle}
                                 </a>
                             </td>
@@ -84,7 +85,7 @@
                             <c:if test="${post.postGroupLevel > 0}">
                                 <span style="margin-left: ${post.postGroupLevel * 20}px;">↳</span>
                             </c:if>
-                            <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${post.postId}">
+                            <a href="getPostDetail?post_id=${post.postId}">
                                 ${post.postTitle}
                             </a>
                         </td>
@@ -135,7 +136,7 @@
 
         <!-- 글쓰기 버튼 -->
         <div class="text-right">
-            <a href="${pageContext.request.contextPath}/post/createPost" class="btn btn-primary">글쓰기</a>
+            <a href="createPost" class="btn btn-primary">글쓰기</a>
         </div>
     </div>
 </body>

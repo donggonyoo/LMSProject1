@@ -21,7 +21,7 @@
         </where>
     </select>
 
-    <select id="selectNotices" resultType="domain.Post">
+    <select id="selectNotices" resultType="Post">
         SELECT
             post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
@@ -31,7 +31,7 @@
         ORDER BY post_group DESC, post_group_step DESC
     </select>
 
-    <select id="selectList" parameterType="map" resultType="domain.Post">
+    <select id="selectList" parameterType="map" resultType="Post">
         SELECT
             post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
@@ -41,7 +41,7 @@
         <if test="column != null and find != null and find !=''">
             AND
             <choose>
-                <when test="column == 'authorName'">author_name LIKE CONCAT('%', #{find}, '%')</when> <!-- author_id -> author_name 수정 -->
+                <when test="column == 'authorName'">author_name LIKE CONCAT('%', #{find}, '%')</when>
                 <when test="column == 'postTitle'">post_title LIKE CONCAT('%', #{find}, '%')</when>
                 <when test="column == 'postContent'">post_content LIKE CONCAT('%', #{find}, '%')</when>
                 <when test="column == 'postTitle,authorName'">(post_title LIKE CONCAT('%', #{find}, '%') OR author_name LIKE CONCAT('%', #{find}, '%'))</when>
@@ -54,7 +54,7 @@
         LIMIT #{startRow}, #{pageSize}
     </select>
 
-    <select id="selectOne" parameterType="string" resultType="domain.Post">
+    <select id="selectOne" parameterType="string" resultType="Post">
         SELECT
             post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
@@ -80,7 +80,7 @@
         WHERE post_group = #{group} AND post_group_step > #{step}
     </update>
 
-    <insert id="insert" parameterType="domain.Post">
+    <insert id="insert" parameterType="Post">
         INSERT INTO post (
             post_id, author_id, author_name, post_password, post_title, post_content,
             post_created_at, post_updated_at, post_group, post_group_level,
@@ -92,7 +92,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="domain.Post">
+    <update id="update" parameterType="Post">
         UPDATE post SET
             author_id = #{authorId}, author_name = #{authorName}, post_password = #{postPassword},
             post_title = #{postTitle}, post_content = #{postContent}, post_file = #{postFile},
@@ -108,32 +108,32 @@
         DELETE FROM post_comment WHERE post_id = #{postId}
     </delete>
 
-    <insert id="insertComment" parameterType="domain.PostComment">
+    <insert id="insertComment" parameterType="PostComment">
         INSERT INTO post_comment (
             comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id,
-            created_at, updated_at, comment_password
+            created_at, updated_at
         ) VALUES (
             #{commentId}, #{postId}, #{writerId}, #{commentAuthorName}, #{commentContent}, #{parentCommentId},
-            #{createdAt}, #{updatedAt}, #{commentPassword}
+            #{createdAt}, #{updatedAt}
         )
     </insert>
 
-    <select id="selectCommentList" parameterType="string" resultType="domain.PostComment">
+    <select id="selectCommentList" parameterType="string" resultType="PostComment">
         SELECT
             comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id,
-            created_at, updated_at, comment_password
+            created_at, updated_at
         FROM post_comment
         WHERE post_id = #{postId}
         ORDER BY created_at ASC
     </select>
 
-    <select id="selectComment" parameterType="string" resultType="domain.PostComment">
-        SELECT comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id, created_at, updated_at, comment_password
+    <select id="selectComment" parameterType="string" resultType="PostComment">
+        SELECT comment_id, post_id, writer_id, comment_author_name, comment_content, parent_comment_id, created_at, updated_at
         FROM post_comment
         WHERE comment_id = #{commentId}
     </select>
 
-    <update id="updateComment" parameterType="domain.PostComment">
+    <update id="updateComment" parameterType="PostComment">
         UPDATE post_comment
         SET writer_id = #{writerId}, comment_author_name = #{commentAuthorName}, comment_content = #{commentContent}, updated_at = #{updatedAt}
         WHERE comment_id = #{commentId}

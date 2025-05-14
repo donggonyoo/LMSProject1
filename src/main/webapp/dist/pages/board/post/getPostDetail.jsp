@@ -14,6 +14,7 @@
         <h1 class="fs-1">게시물 상세</h1> <br>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
         <table class="table">
             <tr>
@@ -40,18 +41,18 @@
                 <th>첨부파일</th>
                 <td>
                     <c:if test="${not empty post.postFile}">
-                        <a href="${pageContext.request.contextPath}/upload/board/${post.postFile}" download>${post.postFile}</a>
+                        <a href="/upload/board/${post.postFile}" download>${post.postFile}</a>
                     </c:if>
                 </td>
             </tr>
         </table>
 
         <div class="text-end mb-5">
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
+            <a href="getPosts" class="btn btn-secondary">목록</a>
             <c:if test="${isLoggedIn and post.authorId == sessionScope.login}">
-                <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
-                <a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
-                <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
+                <a href="updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
+                <a href="replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
+                <a href="deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
             </c:if>
         </div>
 
@@ -92,7 +93,7 @@
                                             </c:if>
                                         </div>
 
-                                        <form id="editForm-${child.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
+                                        <form id="editForm-${child.commentId}" action="updateComment" method="post" class="mt-2" style="display:none;">
                                             <input type="hidden" name="commentId" value="${child.commentId}">
                                             <input type="hidden" name="postId" value="${post.postId}">
                                             <div class="mb-3">
@@ -103,10 +104,6 @@
                                                 <label for="editCommentContent-${child.commentId}" class="form-label">댓글 내용</label>
                                                 <textarea class="form-control" id="editCommentContent-${child.commentId}" name="commentContent" rows="2">${child.commentContent}</textarea>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="editPassword-${child.commentId}" class="form-label">비밀번호</label>
-                                                <input type="password" class="form-control" id="editPassword-${child.commentId}" name="commentPassword" required>
-                                            </div>
                                             <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
                                             <button type="button" onclick="hideEditForm('${child.commentId}')" class="btn btn-secondary btn-sm">취소</button>
                                         </form>
@@ -116,7 +113,7 @@
                         </c:forEach>
 
                         <c:if test="${isLoggedIn}">
-                            <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
+                            <form id="replyForm-${comment.commentId}" action="writeComment" method="post" class="mt-2" style="display:none;">
                                 <input type="hidden" name="postId" value="${post.postId}">
                                 <input type="hidden" name="parentCommentId" value="${comment.commentId}">
                                 <div class="mb-3">
@@ -126,10 +123,6 @@
                                 <div class="mb-3">
                                     <label for="commentContent-${comment.commentId}" class="form-label">댓글 내용</label>
                                     <textarea class="form-control" id="commentContent-${comment.commentId}" name="commentContent" rows="2"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="password-${comment.commentId}" class="form-label">비밀번호</label>
-                                    <input type="password" class="form-control" id="password-${comment.commentId}" name="commentPassword" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm">대댓글 작성</button>
                             </form>
@@ -149,10 +142,6 @@
                 <div class="mb-3">
                     <label for="commentContent" class="form-label">댓글 내용</label>
                     <textarea class="form-control" id="commentContent" name="commentContent" rows="3"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">비밀번호</label>
-                    <input type="password" class="form-control" id="password" name="commentPassword" required>
                 </div>
                 <button type="submit" class="btn btn-primary">댓글 작성</button>
             </form>
@@ -174,24 +163,22 @@
 
         function confirmDelete(commentId) {
             if (confirm('댓글을 삭제하시겠습니까?')) {
-                let password = prompt('비밀번호를 입력하세요:');
-                if (password) {
-                    $.ajax({
-                        url: '${pageContext.request.contextPath}/post/deleteComment',
-                        type: 'POST',
-                        data: { commentId: commentId, postId: '${post.postId}', password: password },
-                        success: function(response) {
-                            if (response === 'success') {
-                                location.reload();
-                            } else {
-                                alert('삭제 실패: ' + response);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            alert('삭제 중 오류가 발생했습니다: ' + error);
+                $.ajax({
+                    url: 'deleteComment',
+                    type: 'POST',
+                    data: { commentId: commentId, postId: '${post.postId}' },
+                    success: function(response) {
+                        if (response === 'success') {
+                            alert('댓글이 삭제되었습니다.');
+                            window.location.href = 'getPostDetail?post_id=${post.postId}';
+                        } else {
+                            alert('삭제 실패: ' + response);
                         }
-                    });
-                }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('삭제 중 오류가 발생했습니다: ' + error);
+                    }
+                });
             }
         }
     </script>

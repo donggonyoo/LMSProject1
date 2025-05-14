@@ -16,8 +16,9 @@
         <h2 class="text-center">답글 작성</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
-        <form action="${pageContext.request.contextPath}/post/writeReply" method="post" enctype="multipart/form-data" class="mt-4">
+        <form action="writeReply" method="post" enctype="multipart/form-data" class="mt-4">
             <input type="hidden" name="num" value="${board.postId}">
             <input type="hidden" name="grp" value="${board.postGroup}">
             <input type="hidden" name="grplevel" value="${board.postGroupLevel}">
@@ -43,7 +44,7 @@
                 <input type="file" name="post_file" id="post_file" class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">취소</a>
+            <a href="getPosts" class="btn btn-secondary">취소</a>
         </form>
         <script>
             $(document).ready(function() {

@@ -15,7 +15,7 @@
         <h2 class="text-center">공지사항 검색</h2>
 
         <!-- 검색 폼 -->
-        <form action="${pageContext.request.contextPath}/notice/searchNotice" method="get" class="mb-4">
+        <form action="searchNotice" method="get" class="mb-4">
             <div class="row">
                 <div class="col-md-3">
                     <select name="column" class="form-control">
@@ -41,6 +41,7 @@
         <!-- 에러 메시지 -->
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
         <!-- 검색 결과 -->
@@ -62,21 +63,21 @@
                         <tr>
                             <td>${boardNum - status.index}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/notice/getNoticeDetail?notice_id=${notice.noticeId}">${notice.noticeTitle}</a>
+                                <a href="getNoticeDetail?notice_id=${notice.noticeId}">${notice.noticeTitle}</a>
                             </td>
                             <td>${notice.writerName}</td> 
                             <td><fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd HH:mm"/></td>
                             <td>${notice.noticeReadCount}</td>
-                            	<td>
-                            		<c:if test="${notice.writerId == login}">
-                            			<a href="${pageContext.request.contextPath}/notice/updateNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-warning">수정</a>
-                            		</c:if>
-                            	</td>
-                            	<td>
-                            		<c:if test="${notice.writerId == login}">
-                            			<a href="${pageContext.request.contextPath}/notice/deleteNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-danger">삭제</a>
-                            		</c:if>
-                            	</td>
+                            <td>
+                                <c:if test="${notice.writerId == login}">
+                                    <a href="updateNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-warning">수정</a>
+                                </c:if>
+                            </td>
+                            <td>
+                                <c:if test="${notice.writerId == login}">
+                                    <a href="deleteNotice?noticeId=${notice.noticeId}" class="btn btn-sm btn-danger">삭제</a>
+                                </c:if>
+                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -108,7 +109,7 @@
         </c:if>
 
         <div class="text-center">
-            <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">공지사항 목록</a>
+            <a href="getNotices" class="btn btn-secondary">공지사항 목록</a>
         </div>
     </div>
 </body>

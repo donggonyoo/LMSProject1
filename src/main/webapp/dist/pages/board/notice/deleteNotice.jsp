@@ -15,9 +15,10 @@
 
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/notice/delete" method="post" class="mt-4">
+        <form action="delete" method="post" class="mt-4">
             <input type="hidden" name="noticeId" value="${notice.noticeId}">
             <div class="form-group">
                 <label class="font-weight-bold">작성자:</label>
@@ -33,7 +34,7 @@
             </div>
             <div class="text-right">
                 <button type="submit" class="btn btn-danger">삭제</button>
-                <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary ml-2">취소</a>
+                <a href="getNotices" class="btn btn-secondary ml-2">취소</a>
             </div>
         </form>
     </div>
