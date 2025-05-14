@@ -41,7 +41,6 @@ public class ViewCourseController extends MskimRequestMapping{
 			totalScore += r.getCourseScore();
 		}
 		
-		System.out.println("totalScore: " + totalScore);
 		request.setAttribute("registration", result);
 		request.setAttribute("totalScore", totalScore);	
 		

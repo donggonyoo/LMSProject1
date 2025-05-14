@@ -368,7 +368,7 @@ body {
 						</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item"><a
-									href="./layout/unfixed-sidebar.html" class="nav-link"> <i
+									href="${path}/professor_support/registCourse" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>
