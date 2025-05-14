@@ -91,7 +91,6 @@ public class CourseController extends MskimRequestMapping {
 			CourseDto c = iter.next();
 			for (RegistrationDto r : registrationCourses) {
 				if (c.getCourseId().equals(r.getCourseId())) {
-					
 					iter.remove();
 				}
 			}

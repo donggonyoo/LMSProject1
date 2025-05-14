@@ -76,6 +76,7 @@ public class ViewCourseController extends MskimRequestMapping{
 		String studentId = "S001";
 		Map<String, Object> map = new HashMap<>();
 		
+		
 		try {
 			List<AttendanceDto> result = courseDao.viewCourseTime(studentId);
 
@@ -96,8 +97,18 @@ public class ViewCourseController extends MskimRequestMapping{
         	map.put("success", false);
         	map.put("message", "시간표 로드 실패: " + e.getMessage());
         }
-
+		
+		ObjectMapper mapper = new ObjectMapper();
+        String json;
         
+		try {
+			json = mapper.writeValueAsString(map);
+			request.setAttribute("json", json);
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		}
+
 		return "/pages/learning_support/ajax_learning_support";
 	}
 	
