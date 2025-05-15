@@ -299,7 +299,7 @@ ul.timeline::before {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
-								<li class="nav-item"><a href="./index3.jsp"
+								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>시간표조회</p>
 								</a></li>
@@ -321,7 +321,7 @@ ul.timeline::before {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
 								</a></li>
-								<li class="nav-item"><a href="./widgets/cards.html"
+								<li class="nav-item"><a href="#"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>미정</p>
 								</a></li>
@@ -344,7 +344,7 @@ ul.timeline::before {
 										<i class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>
-								<li class="nav-item"><a href="./layout/fixed-sidebar.html"
+								<li class="nav-item"><a href="${path}/professor_support/manage/manageCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>강의관리</p>
 								</a></li>
@@ -591,6 +591,26 @@ ul.timeline::before {
           });
         }
       });
+      
+      $(document).ready(function() {//사이드바 오류수정 ()
+    	    var currentUrl = window.location.pathname;
+    	    //현재 URL(window.location.pathname)과 각 <a>의 href 비교.
+    	    $('.nav-item').removeClass('menu-open');
+    	    $('.nav-link').removeClass('active'); //클릭한 곳 (ex)시간표조회,개인정보 등)
+    	    $('.sidebar-menu .nav-link').each(function() {
+    	        var linkUrl = $(this).attr('href');
+    	        if (!linkUrl || linkUrl === '#') return;
+    	        if (currentUrl.includes(linkUrl)) {
+    	            console.log('Match found:', linkUrl);
+    	            $(this).addClass('active');
+    	            var parentNavItem = $(this).closest('.nav-item');
+    	            parentNavItem.addClass('menu-open'); 
+    	            var topLevelNavItem = $(this).closest('.nav-treeview').closest('.nav-item');
+    	            topLevelNavItem.addClass('menu-open');
+    	            //카테고리(mypage,학습지원 등)에 menu-open클래스추가
+    	        }
+    	    });
+    	});
     </script>
 
 </body>

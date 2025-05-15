@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">공지사항 검색</h2>
+        <h2 class="text-center fs-1">공지사항 검색</h2> <br>
 
         <!-- 검색 폼 -->
         <form action="searchNotice" method="get" class="mb-4">

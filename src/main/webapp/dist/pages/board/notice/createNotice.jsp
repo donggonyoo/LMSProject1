@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">공지사항 글쓰기</h2>
+        <h2 class="text-center fs-1">공지사항 글쓰기</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
             <% session.removeAttribute("error"); %>

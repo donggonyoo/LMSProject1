@@ -77,7 +77,7 @@
 
     <update id="updateGroupStep" parameterType="map">
         UPDATE post SET post_group_step = post_group_step + 1
-        WHERE post_group = #{group} AND post_group_step > #{step}
+       	WHERE post_group = #{postGroup} AND post_group_step > #{postGroupStep}
     </update>
 
     <insert id="insert" parameterType="Post">

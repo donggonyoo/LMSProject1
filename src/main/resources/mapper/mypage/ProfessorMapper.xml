@@ -29,15 +29,8 @@
 		select * from professor where professor_id=#{professorId}
 	</select>
 	
-	<!--  <select id="selectAll" resultType="Professor">
-		select * from professor
-	</select>
-	
-	<select id="select101" parameterType="int" resultType="Professor">
-		select * from professor where deptno=#{val}
-	</select>
-	
-	<select id="selectTimeKim" parameterType="map" resultType="Professor">
-	select * from professor where name like'%${name}%' and position=#{position}
-	</select> -->
+<update id="tempPw" parameterType="UpdateProPwDto">
+	update professor set professor_password=#{professorNewPassword}
+	where professor_id = #{professorId} 
+</update>
 </mapper>

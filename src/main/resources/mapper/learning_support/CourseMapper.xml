@@ -91,7 +91,7 @@
 	    )
 	</insert>
     
-    <!-- 최대 registration_id의 숫자 부분 조회 -->
+    <!-- 최대 attendance_id의 숫자 부분 조회 -->
     <select id="getMaxAttendanceIdNumber" resultType="long">
         SELECT COALESCE(MAX(CAST(SUBSTRING(attendance_id, 2) AS UNSIGNED)), 0) AS max_number
         FROM attendance

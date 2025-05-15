@@ -35,12 +35,12 @@
 	
 	<update id="updateStuPw" parameterType="UpdateStuPwDto" >
 		update student set student_password=#{studentNewPassword}
-		where student_password=#{studentPassword} and student_id=#{studentId}
+		where student_id=#{studentId}
 	</update>
 	
 	<update id="updateProPw" parameterType="UpdateProPwDto">
 		update professor set professor_password=#{professorNewPassword}
-		where professor_password=#{professorPassword} and professor_id=#{professorId}
+		where  professor_id=#{professorId}
 	</update>
 	
 	<select id="selectDeptName" parameterType="String" resultType="String">
@@ -68,5 +68,7 @@
 	student_phone=#{studentPhone}
 	where student_id = #{studentId}
 	</update>
+	
+	
 
 </mapper>

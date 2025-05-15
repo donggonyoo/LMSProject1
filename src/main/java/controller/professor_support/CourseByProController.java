@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
+import model.dao.professor_support.CourseByProDao;
+import model.dao.professor_support.CourseByProDao.DuplicateKeyException;
 import model.dto.learning_support.DeptDto;
+import model.dto.professor_support.RegistCourseDto;
 
 @WebServlet(urlPatterns = {"/professor_support/*"}, 
 			initParams = {@WebInitParam(name="view",value = "/dist/")}
@@ -18,14 +21,64 @@ import model.dto.learning_support.DeptDto;
 public class CourseByProController extends MskimRequestMapping {
 	
 	private CourseDao courseDao = new CourseDao();
+	private CourseByProDao byProDao = new CourseByProDao();
 	
 	@RequestMapping("registCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
 		List<DeptDto> departments = courseDao.getDepartments("");
 		request.setAttribute("departments", departments);
-		return "/pages/professor_support/registCourseByPro";
+		return "pages/professor_support/registCourseByPro";
 	}
 	
+	//redirect 전용
+	@RequestMapping("registCourseByPro")
+	public String registCourseByPro (HttpServletRequest request, HttpServletResponse response) {
+		List<DeptDto> departments = courseDao.getDepartments("");
+		
+		request.setAttribute("departments", departments);
+		request.setAttribute("errorMsg", request.getParameter("errorMsg"));
+		
+		return "pages/professor_support/registCourseByPro";
+	}
 	
+	@RequestMapping("registCourseForm")
+	public String registCourseForm (HttpServletRequest request, HttpServletResponse response) {
+		/*
+		교수id 임시고정. 추후 session에서 받아오기 받아와서 
+		교수명하고 id가 professor테이블 데이터 존재하는지 검증 필요
+		String login = (String) request.getSession().getAttribute("login");
+		*/
+		String errorMsg = "";
+		String professorId = "P001";
+		String courseId = byProDao.getMaxcourseIdNumber();
+		String CourseTimeId = byProDao.getMaxcourseTimeIdNumber();
+		RegistCourseDto dto = new RegistCourseDto();
+		
+		dto.setCourseId(courseId); 
+        dto.setDeptId(request.getParameter("majorName"));
+        dto.setProfessorId(professorId); 
+        dto.setCourseName(request.getParameter("courseName"));
+        dto.setCourseStatus("OPEN");
+        dto.setCourseMaxCnt(Integer.valueOf(request.getParameter("courseMaxCnt")));
+        dto.setCourseScore(Integer.valueOf(request.getParameter("score")));
+        dto.setCreditCategory(request.getParameter("creditCategory"));
+        dto.setCoursePlan(request.getParameter("description"));
+
+        dto.setCourseTimeId(CourseTimeId);
+        dto.setCourseTimeYoil(request.getParameter("courseDay"));
+        dto.setCourseTimeLoc(request.getParameter("courseLoc"));
+        dto.setCourseTimeStart(request.getParameter("startTimeHour") + ":00");
+        dto.setCourseTimeEnd(request.getParameter("endTimeHour") + ":50");
+
+        try {
+        	byProDao.insertCourseInfo(dto);
+        } catch (DuplicateKeyException e){
+        	errorMsg = e.getMessage();
+        } catch (RuntimeException e2) {
+        	errorMsg = e2.getMessage();
+        }
+
+		return "redirect:registCourseByPro?errorMsg=" + errorMsg;
+	}
 	
 }

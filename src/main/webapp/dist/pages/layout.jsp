@@ -332,7 +332,7 @@ body {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
-								<li class="nav-item"><a href="./index3.jsp"
+								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable""
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>시간표조회</p>
 								</a></li>
@@ -352,7 +352,7 @@ body {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
 								</a></li>
-								<li class="nav-item"><a href="./widgets/cards.html"
+								<li class="nav-item"><a href="#"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>미정</p>
 								</a></li>
@@ -374,7 +374,7 @@ body {
 										class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>
-								<li class="nav-item"><a href="./layout/fixed-sidebar.html"
+								<li class="nav-item"><a href="${path}/professor_support/manage/manageCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>강의관리</p>
 								</a></li>
@@ -466,9 +466,25 @@ body {
             },
           });
         }
-        
-      
       });
+      $(document).ready(function() {
+    	    var currentUrl = window.location.pathname;
+    	    console.log('Current URL:', currentUrl);
+    	    $('.nav-item').removeClass('menu-open');
+    	    $('.nav-link').removeClass('active');
+    	    $('.sidebar-menu .nav-link').each(function() {
+    	        var linkUrl = $(this).attr('href');
+    	        if (!linkUrl || linkUrl === '#') return;
+    	        if (currentUrl.includes(linkUrl)) {
+    	            console.log('Match found:', linkUrl);
+    	            $(this).addClass('active');
+    	            var parentNavItem = $(this).closest('.nav-item');
+    	            parentNavItem.addClass('menu-open');
+    	            var topLevelNavItem = $(this).closest('.nav-treeview').closest('.nav-item');
+    	            topLevelNavItem.addClass('menu-open');
+    	        }
+    	    });
+    	});
       
     </script>
 

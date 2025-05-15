@@ -30,6 +30,7 @@
   	<typeAlias type="model.dto.mypage.UpdateStuPwDto" alias="UpdateStuPwDto" />
   	<typeAlias type="model.dto.mypage.UpdateStuInfoDto" alias="UpdateStuInfoDto" />
   	<typeAlias type="model.dto.mypage.UpdateProInfoDto" alias="UpdateProInfoDto" />
+  	<typeAlias type="model.dto.mypage.DeleteUserDto" alias="DeleteUserDto" />
   	
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />
@@ -37,7 +38,9 @@
   	<typeAlias type="model.dto.learning_support.CourseDto" alias="CourseDto" />
   	<typeAlias type="model.dto.learning_support.SearchDto" alias="SearchDto" />
   	<typeAlias type="model.dto.learning_support.RegistrationDto" alias="RegistrationDto" />
-    <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />	
+    <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />
+    
+    <typeAlias type="model.dto.professor_support.RegistCourseDto" alias="RegistCourseDto" />	
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -63,6 +66,9 @@
   	<mapper resource="mapper/mypage/ProStu.xml"/>
   	<mapper resource="mapper/mypage/DeptMapper.xml"/>
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
+	<mapper resource="mapper/professor_support/CourseByProMapper.xml"/>
+
+  	
   </mappers>
 
 </configuration>

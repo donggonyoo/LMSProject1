@@ -1,0 +1,27 @@
+package controller.professor_support;
+
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import gdu.mskim.MskimRequestMapping;
+import gdu.mskim.RequestMapping;
+import model.dao.learning_support.CourseDao;
+import model.dao.professor_support.CourseByProDao;
+
+@WebServlet(urlPatterns = {"/professor_support/manage/*"}, 
+			initParams = {@WebInitParam(name="view",value = "/dist/")}
+)
+public class ManageCourseController extends MskimRequestMapping {
+	
+	private CourseDao courseDao = new CourseDao();
+	private CourseByProDao byProDao = new CourseByProDao();
+	
+	@RequestMapping("manageCourse")
+	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
+		
+		return "pages/professor_support/manageCourse";
+	}
+	
+}
