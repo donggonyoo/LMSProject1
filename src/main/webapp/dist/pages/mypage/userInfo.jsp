@@ -6,168 +6,218 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Academic Management System UI Mockup</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    /* 대체 URL: 서버에 campus-bg.jpg가 없으면 아래 주석 해제 */
-    /* background-image: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0'); */
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    margin: 0;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
 
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.75); /* 반투명 화이트 오버레이로 가독성 유지 */
-    z-index: -1;
-}
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin-bottom: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.card {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-    max-width: 100%;
-    overflow: hidden;
-}
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
 
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
+        .card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
 
-.table th, .table td {
-    border: 1px solid #e2e8f0;
-    padding: 10px;
-    text-align: left;
-}
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+            background: #f7fafc;
+            padding: 16px;
+            border-radius: 12px;
+        }
 
-.table th {
-    background: #edf2f7;
-    font-weight: 600;
-}
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #e2e8f0;
+            transition: border-color 0.3s ease;
+        }
 
-.btn {
-    padding: 8px 16px;
-    border-radius: 4px;
-    transition: background 0.2s;
-}
+        .profile-img:hover {
+            border-color: #3182ce;
+        }
 
-.btn-primary {
-    background: #3182ce;
-    color: white;
-}
+        .form-section {
+            display: grid;
+            gap: 16px;
+        }
 
-.btn-primary:hover {
-    background: #2b6cb0;
-}
+        .form-section div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #edf2f7;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
 
-.btn-secondary {
-    background: #e2e8f0;
-    color: #4a5568;
-}
+        .form-section div:hover {
+            background: #e2e8f0;
+        }
 
-.btn-secondary:hover {
-    background: #cbd5e0;
-}
+        .form-section strong {
+            width: 100px;
+            text-align: right;
+            font-weight: 600;
+            color: #4a5568;
+        }
 
-.profile-section {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 20px;
-}
+        .form-section input {
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            width: 250px;
+            background: #ffffff;
+            font-size: 0.95rem;
+            color: #2d3748;
+            transition: border-color 0.3s ease;
+        }
 
-.profile-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-}
+        .form-section input:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
 
-.form-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+        .form-section input[readonly] {
+            background: #f7fafc;
+            cursor: not-allowed;
+        }
 
-.form-section div {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-.form-section strong {
-    width: 80px;
-    text-align: right;
-    font-weight: 600;
-}
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+            border: none;
+        }
 
-.form-section input {
-    padding: 8px;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    width: 200px;
-}
+        .btn-primary:hover {
+            background: #2b6cb0;
+            transform: translateY(-2px);
+        }
 
-.action-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-    padding-left: 88px;
-}
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+        }
 
-@media (max-width: 640px) {
-    .form-section strong {
-        width: auto;
-        text-align: left;
-    }
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            transform: translateY(-2px);
+        }
 
-    .form-section input {
-        width: 100%;
-    }
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+            border: none;
+        }
 
-    .form-section div {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+        .btn-danger:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
 
-    .action-buttons {
-        padding-left: 0;
-    }
-}
-</style>
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            padding-left: 112px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px auto;
+                padding: 0 16px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+
+            .profile-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-section div {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-section strong {
+                width: auto;
+                text-align: left;
+            }
+
+            .form-section input {
+                width: 100%;
+            }
+
+            .action-buttons {
+                padding-left: 0;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Personal Information -->
         <div class="card">
-            <h2 class="text-xl font-semibold mb-4">개인 정보</h2>
+            <h2>개인 정보</h2>
 
             <form action="userUpdate" class="form-section" name="f" method="post">
                 <div class="profile-section">
-                    <c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
-                    
-                    <img src="${path}/dist/assets/picture/${img}" id="pic" class="profile-img">
-                    <input type="hidden" name="picture" value="${img}">
+                    <%--c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" /> --%>
+                    <img src="${path}/dist/assets/picture/${m.img}" id="pic" class="profile-img" alt="Profile Image">
+                    <input type="hidden" name="picture" value="${m.img}">
                     <button type="button" class="btn btn-secondary" onclick="win_upload()">이미지 변경</button>
                 </div>
                 <c:choose>
@@ -212,12 +262,12 @@ body::before {
                         <c:when test="${fn:contains(sessionScope.login, 's')}">
                             <strong>연락처:</strong>
                             <input type="text" readonly="readonly" value="${m.studentPhone}" name="phone" id="phone">
-                            <button class="btn btn-secondary" type="button" onclick="javascript:updatePhone()">수정</button>
+                            <button class="btn btn-secondary" type="button" onclick="updatePhone()">수정</button>
                         </c:when>
                         <c:when test="${fn:contains(sessionScope.login, 'p')}">
                             <strong>연락처:</strong>
                             <input type="text" readonly="readonly" value="${m.professorPhone}" name="phone" id="phone">
-                            <button class="btn btn-secondary" type="button" onclick="javascript:updatePhone()">수정</button>
+                            <button class="btn btn-secondary" type="button" onclick="updatePhone()">수정</button>
                         </c:when>
                     </c:choose>
                 </div>
@@ -226,50 +276,55 @@ body::before {
                         <c:when test="${fn:contains(sessionScope.login, 's')}">
                             <strong>이메일:</strong>
                             <input type="email" readonly="readonly" value="${m.studentEmail}" name="email" id="email">
-                            <button class="btn btn-secondary" type="button" onclick="javascript:updateEmail()">수정</button>
+                            <button class="btn btn-secondary" type="button" onclick="updateEmail()">수정</button>
                         </c:when>
                         <c:when test="${fn:contains(sessionScope.login, 'p')}">
                             <strong>이메일:</strong>
                             <input type="email" readonly="readonly" value="${m.professorEmail}" name="email" id="email">
-                            <button class="btn btn-secondary" type="button" onclick="javascript:updateEmail()">수정</button>
+                            <button class="btn btn-secondary" type="button" onclick="updateEmail()">수정</button>
                         </c:when>
                     </c:choose>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-primary">수정완료</button>
+                    <button class="btn btn-primary" type="submit">수정완료</button>
                 </div>
             </form>
 
-			
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="javascript:updatePw()">비밀번호 변경</button>
-                <button class="btn btn-secondary text-red-600" onclick="javascript:deleteUser()">퇴학</button>
+                <button class="btn btn-primary" onclick="updatePw()">비밀번호 변경</button>
+                <button class="btn btn-danger" onclick="deleteUser()">퇴학</button>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-    function updateEmail() {
-        let op = "width=500,height=500,top=50,left=150";
-        window.open("updateEmail", "", op);
-    }
+        function updateEmail() {
+            let op = "width=500,height=500,top=50,left=150";
+            window.open("updateEmail", "", op);
+        }
 
-    function updatePhone() {
-        let op = "width=500,height=500,top=50,left=150";
-        window.open("updatePhone", "", op);
-    }
+        function updatePhone() {
+            let op = "width=500,height=500,top=50,left=150";
+            window.open("updatePhone", "", op);
+        }
 
-    function win_upload() {
-        let op = "width=500,height=500,top=50,left=150";
-        window.open("registerImg", "", op);
-    }
-    function updatePw(){
-		let id = "${sessionScope.login}";
-		console.log(id);
-    	let op = "width=500,height=500,top=50,left=150";
-        window.open("pwUpdate?id="+id, "", op);
-    }
-    
+        function win_upload() {
+            let op = "width=500,height=500,top=50,left=150";
+            window.open("registerImg", "", op);
+        }
+
+        function updatePw() {
+            let id = "${sessionScope.login}";
+            console.log(id);
+            let op = "width=500,height=500,top=50,left=150";
+            window.open("pwUpdate?id=" + id, "", op);
+        }
+
+        function deleteUser() {
+            if (confirm("정말 퇴학하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+                window.location.href = "deleteUser";
+            }
+        }
     </script>
 </body>
 </html>

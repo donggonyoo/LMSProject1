@@ -13,7 +13,7 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center">문의게시판 검색</h2>
-        <form action="${pageContext.request.contextPath}/post/searchPost" method="get" class="mb-4">
+        <form action="searchPost" method="get" class="mb-4">
             <div class="row">
                 <div class="col-md-3">
                     <select name="column" class="form-control">
@@ -38,6 +38,7 @@
 
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
         <c:if test="${not empty list}">
@@ -61,7 +62,7 @@
                                 <c:if test="${post.postGroupLevel > 0}">
                                     <span style="margin-left: ${post.postGroupLevel * 20}px;">↳</span>
                                 </c:if>
-                                <a href="${pageContext.request.contextPath}/post/getPostDetail?post_id=${post.postId}">
+                                <a href="getPostDetail?post_id=${post.postId}">
                                     <c:if test="${post.postNotice}">[공지]</c:if>
                                     ${post.postTitle}
                                 </a>
@@ -71,12 +72,12 @@
                             <td>${post.postReadCount}</td>
                             <td>
                                 <c:if test="${post.authorId == login}">
-                                    <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-sm btn-warning">수정</a>
+                                    <a href="updatePost?postId=${post.postId}" class="btn btn-sm btn-warning">수정</a>
                                 </c:if>
                             </td>
                             <td>
                                 <c:if test="${post.authorId == login}">
-                                    <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-sm btn-danger">삭제</a>
+                                    <a href="deletePost?postId=${post.postId}" class="btn btn-sm btn-danger">삭제</a>
                                 </c:if>
                             </td>
                         </tr>
@@ -103,8 +104,8 @@
             <p class="text-center">검색 결과가 없습니다.</p>
         </c:if>
         <div class="text-center">
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">문의게시판 목록</a>
-            <a href="${pageContext.request.contextPath}/post/createPost" class="btn btn-primary">글쓰기</a>
+            <a href="getPosts" class="btn btn-secondary">문의게시판 목록</a>
+            <a href="createPost" class="btn btn-primary">글쓰기</a>
         </div>
     </div>
 </body>

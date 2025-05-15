@@ -18,8 +18,9 @@
         <h2 class="text-center">공지사항 글쓰기</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
-        <form action="${pageContext.request.contextPath}/notice/write" method="post" enctype="multipart/form-data" name="f">
+        <form action="write" method="post" enctype="multipart/form-data" name="f">
             <table class="table">
                 <tr>
                     <td>글쓴이 (ID)</td>
@@ -52,7 +53,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="button" onclick="inputcheck()" class="btn btn-primary">게시물 등록</button>
-                        <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
+                        <a href="getNotices" class="btn btn-secondary">목록</a>
                     </td>
                 </tr>
             </table>
@@ -83,7 +84,7 @@
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "${pageContext.request.contextPath}/notice/uploadImage",
+                url: "uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,

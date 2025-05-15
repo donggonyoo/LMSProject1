@@ -16,8 +16,9 @@
         <h2 class="text-center">게시물 작성</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
-        <form action="${pageContext.request.contextPath}/post/write" method="post" enctype="multipart/form-data" class="mt-4">
+        <form action="write" method="post" enctype="multipart/form-data" class="mt-4">
             <input type="hidden" name="parent_post_id" value="${parent_post_id}">
             <div class="form-group">
                 <label for="authorId">작성자:</label>
@@ -44,7 +45,7 @@
                 <label class="form-check-label" for="post_notice">공지사항</label>
             </div>
             <button type="submit" class="btn btn-primary">등록</button>
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">취소</a>
+            <a href="getPosts" class="btn btn-secondary">취소</a>
         </form>
         <script>
             $(document).ready(function() {

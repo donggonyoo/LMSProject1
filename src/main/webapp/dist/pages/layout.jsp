@@ -242,11 +242,13 @@ body {
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
 						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" /> 
+						<%-- 
+						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+						--%> 
 						<img 
-							src="${path}/dist/assets/picture/${img}"
+							src="${path}/dist/assets/picture/${m.img}"
 							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
+							<span class="d-none d-md-inline">${sessionScope.m.id}님 반갑습니다</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->

@@ -16,6 +16,7 @@
         <h2 class="text-center">게시물 수정</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
         <form action="update" method="post" enctype="multipart/form-data">
             <input type="hidden" name="noticeId" value="${notice.noticeId}">
@@ -58,7 +59,7 @@
                 <tr>
                     <td colspan="2">
                         <button type="submit" class="btn btn-primary">수정 완료</button>
-                        <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
+                        <a href="getNotices" class="btn btn-secondary">목록</a>
                     </td>
                 </tr>
             </table>
@@ -82,7 +83,7 @@
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "${pageContext.request.contextPath}/notice/uploadImage",
+                url: "uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,

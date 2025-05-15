@@ -15,6 +15,9 @@ public class Student {
     private String studentImg;
     
     
+    public String getId() { return studentId; }
+    public String getImg() { return studentImg; }
+    
 	public String getStudentId() {
 		return studentId;
 	}

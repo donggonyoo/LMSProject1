@@ -14,6 +14,7 @@
         <h1 class="fs-1">게시물 상세</h1> <br>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
         <c:if test="${not empty notice}">
             <table class="table">
@@ -41,7 +42,7 @@
                     <th>첨부파일</th>
                     <td>
                         <c:if test="${not empty notice.noticeFile}">
-                            <a href="${pageContext.request.contextPath}/upload/board/${notice.noticeFile}" download>${notice.noticeFile}</a>
+                            <a href="/upload/board/${notice.noticeFile}" download>${notice.noticeFile}</a>
                         </c:if>
                         <c:if test="${empty notice.noticeFile}">
                             없음
@@ -51,10 +52,10 @@
             </table>
 
             <div class="text-end mb-5">
-                <a href="${pageContext.request.contextPath}/notice/getNotices" class="btn btn-secondary">목록</a>
+                <a href="getNotices" class="btn btn-secondary">목록</a>
                 <c:if test="${notice.writerId == sessionScope.login}">
-                    <a href="${pageContext.request.contextPath}/notice/updateNotice?noticeId=${notice.noticeId}" class="btn btn-secondary">수정</a>
-                    <a href="${pageContext.request.contextPath}/notice/deleteNotice?noticeId=${notice.noticeId}" class="btn btn-danger">삭제</a>
+                    <a href="updateNotice?noticeId=${notice.noticeId}" class="btn btn-secondary">수정</a>
+                    <a href="deleteNotice?noticeId=${notice.noticeId}" class="btn btn-danger">삭제</a>
                 </c:if>
             </div>
         </c:if>

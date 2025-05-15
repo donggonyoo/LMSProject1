@@ -15,9 +15,10 @@
 
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% session.removeAttribute("error"); %>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/post/delete" method="post" class="mt-4">
+        <form action="delete" method="post" class="mt-4">
             <input type="hidden" name="postId" value="${post.postId}">
             <div class="form-group">
                 <label class="font-weight-bold">작성자:</label>
@@ -32,7 +33,7 @@
                 <input type="password" name="pass" id="pass" class="form-control" required>
             </div>
             <button type="submit" class="btn btn-danger">삭제</button>
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">취소</a>
+            <a href="getPosts" class="btn btn-secondary">취소</a>
         </form>
     </div>
 </body>
