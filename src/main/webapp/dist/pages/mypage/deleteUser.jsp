@@ -90,8 +90,8 @@
 </head>
 <body>
     <div class="card">
-        <h4 class="text-center mb-4">퇴학 form</h4>
-        <form action="delete" method="post" onsubmit="return input_check(this)">
+        <h4 class="text-center mb-4">자퇴 form</h4>
+        <form action="delete" method="post" >
            <div class="mb-3">
                 <label for="id" class="form-label">아이디</label>
                 <input type="text" class="form-control" id="id" name="id" >
@@ -112,7 +112,7 @@
             </select>
         </div>
             
-            <button class="btn btn-custom w-100 mb-3">퇴학신청</button>
+            <button class="btn btn-custom w-100 mb-3">자퇴신청</button>
             <div class="text-center">
                 <a href="close" class="btn btn-link-custom">취소하고 싶으면 클릭!</a>
             </div>
@@ -120,14 +120,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
-        function input_check(t) {
-            if (t.cPw.value.trim() != t.cPw2.value.trim()) {
-                alert("변경할 비밀번호와 재입력한 비밀번호가 일치하지 않습니다.");
-                t.cPw2.focus();
-                return false;
-            }
-            return true;
-        }
+       
       
 
     </script>
