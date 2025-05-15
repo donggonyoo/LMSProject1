@@ -9,13 +9,6 @@
 <head>
 <meta charset="UTF-8">
 <title>강의등록(교수지원)</title>
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
     body {
         font-family: 'Noto Sans KR', sans-serif;
@@ -90,6 +83,31 @@
     .mb-3.row .col-sm-10 .time-instruction.error { 
         color: red !important;
     }
+    
+    
+    #errorMsg {
+    display: none; /* 기본적으로 숨김 */
+    font-size: 1.25rem;
+    color: #dc3545; /* 에러 색상 */
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 20px;
+    background-color: #fff3f3;
+    border-radius: 5px;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+	}
+	
+	#errorMsg.error {
+	    display: block; /* 에러 클래스 추가 시 표시 */
+	}
+	
+	#errorMsg i {
+	    margin-right: 8px;
+	    vertical-align: middle;
+	    color: #dc3545;
+	}
+
     @media (max-width: 576px) {
         #courseTime .time-input-group {
             flex-direction: column;
@@ -99,16 +117,22 @@
             margin-right: 0;
             margin-bottom: 0.5rem;
         }
+        
+        #errorMsg {
+        font-size: 1rem;
+        padding: 8px 15px;
+    	}
     }
 </style>
 </head>
 <body>
+	<input type="hidden" id="paramError" value="${errorMsg}">
     <form action="${path}/professor_support/registCourseForm" method="post" id="registCourseForm">
         <div class="content">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2><i class="bi bi-pencil-square me-2"></i> 강의 등록</h2>
-            </div>
-
+            <div class="d-flex justify-content-between align-items-center mb-4 position-relative">
+		        <h2><i class="bi bi-pencil-square me-2"></i> 강의 등록</h2>
+		        <h2 id="errorMsg" class="position-absolute top-50 start-50 translate-middle"><i class="bi bi-exclamation-triangle-fill"></i> </h2>
+    		</div>
             <div class="card p-4">
                 <div class="mb-3 row">
                     <label for="majorName" class="col-sm-2 col-form-label-custom">전공명</label>
@@ -135,6 +159,13 @@
                                id="professorName" name="professorName" value="" placeholder="피카츄(예)">
                     </div>
                 </div>
+                <div class="mb-3 row">
+	                    <label for="professorEmail" class="col-sm-2 col-form-label-custom">이메일</label>
+	                    <div class="col-sm-10">
+	                        <input type="text" class="form-control form-control-sm" 
+	                               id="professorEmail" name="professorEmail" value="" placeholder="john.doe@univ.edu(예)">
+	                    </div>
+               	</div>
                 <div class="mb-3 row">
                     <label class="col-sm-2 col-form-label-custom">이수구분</label>
                     <div class="col-sm-10">
@@ -177,6 +208,20 @@
                             </div>
                         </div>
                         <small class="form-text text-muted time-instruction">요일과 시작/종료 시간을 선택하세요 (9~23시)</small>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="courseMaxCnt" class="col-sm-2 col-form-label-custom">정원수</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" 
+                               id="courseMaxCnt" name="courseMaxCnt" value="" placeholder="최대정원 입력">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="courseLoc" class="col-sm-2 col-form-label-custom">강의실</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" 
+                               id="courseLoc" name="courseLoc" value="" placeholder="강의실 입력(예:A302)">
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -240,56 +285,62 @@
             // 전공명 검증
             var majorName = $('#majorName').val();
             if (majorName === "") {
-                $('.time-instruction').text('전공을 선택해주세요.');
-                $('.time-instruction').addClass('error');
+                $('#errorMsg').text('전공을 선택해주세요.');
+                $('#errorMsg').addClass('error');
                 $('#majorName').addClass('is-invalid');
                 isValid = false;
             } else {
-                if (!$('.time-instruction').hasClass('error')) {
-                    $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
-                }
                 $('#majorName').removeClass('is-invalid');
             }
 
             // 강의명 검증
             var courseName = $('#courseName').val().trim();
             if (courseName === "") {
-                $('.time-instruction').text('강의명을 입력해주세요.');
-                $('.time-instruction').addClass('error');
+                $('#errorMsg').text('강의명을 입력해주세요.');
+                $('#errorMsg').addClass('error');
                 $('#courseName').addClass('is-invalid');
                 isValid = false;
             } else {
-                if (!$('.time-instruction').hasClass('error')) {
-                    $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
-                }
                 $('#courseName').removeClass('is-invalid');
             }
 
             // 교수명 검증
             var professorName = $('#professorName').val().trim();
             if (professorName === "") {
-                $('.time-instruction').text('교수명을 입력해주세요.');
-                $('.time-instruction').addClass('error');
+                $('#errorMsg').text('교수명을 입력해주세요.');
+                $('#errorMsg').addClass('error');
                 $('#professorName').addClass('is-invalid');
                 isValid = false;
             } else {
-                if (!$('.time-instruction').hasClass('error')) {
-                    $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
-                }
                 $('#professorName').removeClass('is-invalid');
             }
+            
+         	// 이메일 검증
+            var professorEmail = $('#professorEmail').val().trim();
+		    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		
+		    if (professorEmail === "") {
+		        $('#errorMsg').text('이메일을 입력해주세요.');
+		        $('#errorMsg').addClass('error');
+		        $('#professorEmail').addClass('is-invalid');
+		        isValid = false;
+		    } else if (!emailPattern.test(professorEmail)) {
+		        $('#errorMsg').text('유효한 이메일 형식이 아닙니다. (예: example@domain.com)');
+		        $('#errorMsg').addClass('error');
+		        $('#professorEmail').addClass('is-invalid');
+		        isValid = false;
+		    } else {
+		        $('#professorEmail').removeClass('is-invalid');
+		    }
 
             // 요일 검증
             var courseDay = $('#courseDay').val();
             if (courseDay === "") {
-                $('.time-instruction').text('요일을 선택해주세요.');
-                $('.time-instruction').addClass('error');
+                $('#errorMsg').text('요일을 선택해주세요.');
+                $('#errorMsg').addClass('error');
                 $('#courseDay').addClass('is-invalid');
                 isValid = false;
             } else {
-                if (!$('.time-instruction').hasClass('error')) {
-                    $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
-                }
                 $('#courseDay').removeClass('is-invalid');
             }
 
@@ -301,14 +352,11 @@
             // 학점 검증
             var score = parseInt($('#score').val()) || 0;
             if (score < 1 || score > 6) {
-                $('.time-instruction').text('1~6 사이의 학점을 입력하세요.');
-                $('.time-instruction').addClass('error');
+                $('#errorMsg').text('1~6 사이의 학점을 입력하세요.');
+                $('#errorMsg').addClass('error');
                 $('#score').addClass('is-invalid');
                 isValid = false;
             } else {
-                if (!$('.time-instruction').hasClass('error')) {
-                    $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
-                }
                 $('#score').removeClass('is-invalid');
             }
 
@@ -316,6 +364,11 @@
         }
 
         $(document).ready(function() {
+        	var paramError = $("#paramError").val();
+        	if (paramError) {
+				alert('입력한 강의명이 기존에 존재합니다.');
+        	}
+
             $('#courseTimeList').empty();
 
             $('.start-time-hour, .end-time-hour').on('focusout', function() {
@@ -333,7 +386,9 @@
                 $('#registCourseForm')[0].reset();
                 $('.time-instruction').text('요일과 시작/종료 시간을 선택하세요 (9~23시)');
                 $('.time-instruction').removeClass('error');
-                $('.start-time-hour, .end-time-hour, #courseDay, #majorName, #courseName, #professorName, #score').removeClass('is-invalid');
+                $('#errorMsg').removeClass('error');
+                $('#errorMsg').text('');
+                $('.start-time-hour, .end-time-hour, #courseDay, #majorName, #courseName, #professorName, #professorEmail, #score').removeClass('is-invalid');
             });
         });
     </script>

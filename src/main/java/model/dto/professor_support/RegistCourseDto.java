@@ -16,32 +16,7 @@ public class RegistCourseDto {
     private String courseTimeLoc;    // 강의 장소
     private String courseTimeStart;  // 시작 시간 (HH:00 형식)
     private String courseTimeEnd;    // 종료 시간 (HH:50 형식)
-
-    // 기본 생성자
-    public RegistCourseDto() {
-    }
-
-    // 모든 필드를 포함한 생성자
-    public RegistCourseDto(String courseId, String deptId, String professorId, String courseName, String courseStatus,
-                           Integer courseMaxCnt, Integer courseScore, String creditCategory, String coursePlan,
-                           String courseTimeId, String courseTimeYoil, String courseTimeLoc, String courseTimeStart,
-                           String courseTimeEnd) {
-        this.courseId = courseId;
-        this.deptId = deptId;
-        this.professorId = professorId;
-        this.courseName = courseName;
-        this.courseStatus = courseStatus;
-        this.courseMaxCnt = courseMaxCnt;
-        this.courseScore = courseScore;
-        this.creditCategory = creditCategory;
-        this.coursePlan = coursePlan;
-        this.courseTimeId = courseTimeId;
-        this.courseTimeYoil = courseTimeYoil;
-        this.courseTimeLoc = courseTimeLoc;
-        this.courseTimeStart = courseTimeStart;
-        this.courseTimeEnd = courseTimeEnd;
-    }
-
+    
     // Getter 및 Setter
     public String getCourseId() {
         return courseId;
@@ -87,8 +62,8 @@ public class RegistCourseDto {
         return courseMaxCnt;
     }
 
-    public void setCourseMaxCnt(Integer courseMaxCnt) {
-        this.courseMaxCnt = courseMaxCnt;
+    public void setCourseMaxCnt(Integer string) {
+        this.courseMaxCnt = string;
     }
 
     public Integer getCourseScore() {

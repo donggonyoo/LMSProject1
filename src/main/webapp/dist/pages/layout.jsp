@@ -352,7 +352,7 @@ body {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
 								</a></li>
-								<li class="nav-item"><a href="./widgets/cards.html"
+								<li class="nav-item"><a href="#"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>미정</p>
 								</a></li>
@@ -374,7 +374,7 @@ body {
 										class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
 								</a></li>
-								<li class="nav-item"><a href="./layout/fixed-sidebar.html"
+								<li class="nav-item"><a href="${path}/professor_support/manage/manageCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>강의관리</p>
 								</a></li>

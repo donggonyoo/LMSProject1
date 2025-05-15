@@ -8,5 +8,60 @@
 	    
 	</select>
 	
-	
+	<!-- 최대 course_id의 숫자 부분 조회 -->
+    <select id="getMaxcourseIdNumber" resultType="long">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(course_id, 2) AS UNSIGNED)), 0) AS max_number
+        FROM course
+    </select>
+    
+    <!-- 최대 courseTime_id의 숫자 부분 조회 -->
+    <select id="getMaxcourseTimeIdNumber" resultType="long">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(course_time_id, 3) AS UNSIGNED)), 0) AS max_number
+        FROM course_time
+    </select>
+    
+    <insert id="insertCourseInfo" parameterType="RegistCourseDto">
+        INSERT INTO course (
+            course_id,
+            dept_id,
+            professor_id,
+            course_name,
+            course_status,
+            course_max_cnt,
+            course_score,
+            credit_category,
+            course_plan
+        ) VALUES (
+            #{courseId},
+            #{deptId},
+            #{professorId},
+            #{courseName},
+            #{courseStatus},
+            #{courseMaxCnt},
+            #{courseScore},
+            #{creditCategory},
+            #{coursePlan}
+        )
+    </insert>
+
+    <insert id="insertCourseTime" parameterType="RegistCourseDto">
+        INSERT INTO course_time (
+            course_time_id,
+            professor_id,
+            course_id,
+            course_time_yoil,
+            course_time_loc,
+            course_time_start,
+            course_time_end
+        ) VALUES (
+            #{courseTimeId},
+            #{professorId},
+            #{courseId},
+            #{courseTimeYoil},
+            #{courseTimeLoc},
+            #{courseTimeStart},
+            #{courseTimeEnd}
+        )
+    </insert>
+    
 </mapper>
