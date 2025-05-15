@@ -132,7 +132,11 @@ public class MypageController  extends MskimRequestMapping{
 	}
 	
 	
-	@RequestMapping("registerUserChk")
+	
+	    
+	
+	 //회원가입버튼을 누르면 동작하게됨 ( 인증번호를 넘겨 인증번호가맞아야회원가입이완료됨)
+	@RequestMapping("registerNumChk")
 	public String  registerUserChk(HttpServletRequest request , HttpServletResponse response) throws ParseException {
 		String name  = request.getParameter("name");
 		String date = request.getParameter("birth");
@@ -148,12 +152,7 @@ public class MypageController  extends MskimRequestMapping{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	    Date birthDate = sdf.parse(date); // "YYYY-MM-dd" 형식의 문자열을 Date로 파싱
-	    
-	  
-	    
-	    String msg = name+"님 회원가입성공 id = "+id;
-	    String url = "doLogin";
-	    
+
 	  //객체에 값 넣어주는과정 (교수 , 학생 따로)
 	    //직급 = 교수일경우
 		if(id.contains("p")) {
@@ -168,13 +167,13 @@ public class MypageController  extends MskimRequestMapping{
 			pro.setDeptId(deptId);
 			pro.setProfessorPhone(phone);
 			System.out.println(pro);
-			ProfessorDao pDao = new ProfessorDao();
-			if(!pDao.insert(pro)) {
-				msg = "회원가입실패";
-				url = "registerUser";
-			}	
+			request.setAttribute("id", id);
+			request.getSession().setAttribute("mem", pro);
+			String num = EmailUtil.sendNum(email, name, id);
+			request.setAttribute("num", num);
+			System.out.println("인증번호 : "+num);
+			
 		}
-		
 		//학생일경우
 		else {
 			Student stu = new Student();
@@ -190,18 +189,57 @@ public class MypageController  extends MskimRequestMapping{
 		    stu.setStudentPhone(deptId);
 		    stu.setStudentPhone(phone);
 		    stu.setStudentStatus("재학");
+		   
 		    System.out.println(stu);
-		    
-		    StudentDao sDao = new StudentDao();
-		    if(!sDao.insert(stu)) {
-		    	msg = "회원가입실패";
-				url = "registerUser";
-		    }  
+		    request.setAttribute("id", id);
+		    request.getSession().setAttribute("mem", stu);
+		    String num = EmailUtil.sendNum(email, name, id);
+			request.setAttribute("num", num);
+			System.out.println("인증번호 : "+num);
 		}
 		
-		
-		request.setAttribute("msg", msg);
-		request.setAttribute("url", url);
+
+		return "mypage/registerNumChk";
+	}
+	
+	//인증번호가 정상적으로 입력되었다면 넘어오는 곳 (페이지는없음)
+	@RequestMapping("registerSuccess")
+	public String  registerSuccess(HttpServletRequest request , HttpServletResponse response) throws ParseException {
+		String id = request.getParameter("id");
+		String msg = "회원가입성공 id = "+id;
+	    String url = "doLogin";
+		if(id.toLowerCase().contains("s")) {
+			Student stu = (Student)request.getSession().getAttribute("mem");
+			StudentDao sDao = new StudentDao();
+			if(!sDao.insert(stu)) {
+				msg = "회원가입실패";
+				url = "registerUser";
+			}
+			else {
+				String email = stu.getStudentEmail();
+				String name = stu.getStudentName();
+				EmailUtil.sendIdEmail(email, name, id);
+				request.setAttribute("msg", msg);
+				request.setAttribute("url", url);
+			}
+		}
+		else {
+			Professor pro = (Professor)request.getSession().getAttribute("mem");
+			ProfessorDao pDao = new ProfessorDao();
+			if(!pDao.insert(pro)) {
+				msg = "회원가입실패";
+				url = "registerUser";
+			}
+			else {
+				String email = pro.getProfessorEmail();
+				String name = pro.getProfessorName();
+				EmailUtil.sendIdEmail(email, name, id);
+				request.setAttribute("msg", msg);
+				request.setAttribute("url", url);
+				
+			}
+			
+		}
 		return "alert";
 	}
 	
@@ -247,7 +285,9 @@ public class MypageController  extends MskimRequestMapping{
 	
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		HttpSession session = request.getSession(); 
+		
+		HttpSession session = request.getSession();
+		session.setMaxInactiveInterval(5400); // 1시간 30분(5400초)으로 세션 타임아웃 설정
 		//session정보를 얻음(session영역 속성 등록을위해)
 
 		String id = request.getParameter("id");
@@ -283,8 +323,8 @@ public class MypageController  extends MskimRequestMapping{
 				} //dbId,dbPw,dbName 꺼내기종료
 					
 				//입력한비번과 DB의비번이일치하는가?
-				
 				//pass.equalas(dbPw)
+				//Bcrypt.checkpw(입력,검증) : 입력과 검증(암호화된비번) 을 비교할수있음
 				if(BCrypt.checkpw(pass, dbPw) ){
 					if(dbId.toLowerCase().contains("s")) { //학생 중 퇴학상태인 학생을 검증하는 단계
 						if(new StudentDao().selectStatus(dbId)) { 
@@ -292,10 +332,8 @@ public class MypageController  extends MskimRequestMapping{
 							request.setAttribute("url","doLogin");
 							return "alert";
 						}
-						
 					}
-					
-						
+
 					session.setAttribute("login", dbId.toLowerCase());
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
