@@ -169,7 +169,7 @@
     // 정렬 기능
     $(".sort-link").click(function(e) {
         e.preventDefault();
-        var sortField = $(this).attr("data-sort");
+        var sortField = $(this).attr("data-sort");// courseName or courseScore
         var currentUrl = new URL(window.location.href);
         var currentSort = currentUrl.searchParams.get("sort") || "";
         var newSort = currentSort === sortField ? sortField + "-desc" : sortField;

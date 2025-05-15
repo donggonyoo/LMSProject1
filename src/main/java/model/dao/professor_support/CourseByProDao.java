@@ -64,14 +64,14 @@ public class CourseByProDao {
 				 insertCourseTime(dto, session);
 				 session.commit();
 			 } else  {
-				 throw new RuntimeException("강의 등록 실패");
+				 throw new RuntimeException("fail registcourse");
 			 }
 		} catch (PersistenceException e) {
 			// 중복 키 오류 확인 (MyBatis는 SQL 상태 코드를 제공하지 않으므로 직접 확인 어려움)
 	        if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
 	            throw new DuplicateKeyException("Duplicate", e);
 	        }
-	        throw new RuntimeException("데이터베이스 오류", e);
+	        throw new RuntimeException("DBERROR", e);
 	    } finally {
 			session.close();
 		}
@@ -81,11 +81,11 @@ public class CourseByProDao {
 		
 		try {
 			 if (session.insert("insertCourseTime",dto) < 1) {
-				 throw new RuntimeException("강의시간 데이터 등록 실패");
+				 throw new RuntimeException("fail registcoursetime");
 			 }
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("강의시간 데이터 등록 실패");
+			throw new RuntimeException("DBERROR");
 		}
 	}
 

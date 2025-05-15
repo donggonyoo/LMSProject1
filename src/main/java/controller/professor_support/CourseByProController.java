@@ -62,6 +62,7 @@ public class CourseByProController extends MskimRequestMapping {
         dto.setCourseMaxCnt(Integer.valueOf(request.getParameter("courseMaxCnt")));
         dto.setCourseScore(Integer.valueOf(request.getParameter("score")));
         dto.setCreditCategory(request.getParameter("creditCategory"));
+        dto.setCoursePeriod(request.getParameter("coursePeriod"));
         dto.setCoursePlan(request.getParameter("description"));
 
         dto.setCourseTimeId(CourseTimeId);
@@ -69,7 +70,7 @@ public class CourseByProController extends MskimRequestMapping {
         dto.setCourseTimeLoc(request.getParameter("courseLoc"));
         dto.setCourseTimeStart(request.getParameter("startTimeHour") + ":00");
         dto.setCourseTimeEnd(request.getParameter("endTimeHour") + ":50");
-
+        
         try {
         	byProDao.insertCourseInfo(dto);
         } catch (DuplicateKeyException e){
