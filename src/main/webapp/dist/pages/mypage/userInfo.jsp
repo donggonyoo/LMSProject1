@@ -322,7 +322,8 @@
 
         function deleteUser() {
             if (confirm("정말 퇴학하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-                window.location.href = "deleteUser";
+            	let op = "width=500,height=500,top=50,left=150";
+                window.open("deleteUser", "", op);
             }
         }
     </script>

@@ -65,7 +65,10 @@
   	<mapper resource="mapper/mypage/ProStu.xml"/>
   	<mapper resource="mapper/mypage/DeptMapper.xml"/>
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
-  	<mapper resource="mapper/professor_support/CourseByProMapper.xml"/>
+  	<!--
+  		<mapper resource="mapper/learning_support/CourseByProMapper.xml"/>
+  	  -->
+  	
   </mappers>
 
 </configuration>

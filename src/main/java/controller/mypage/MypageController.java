@@ -40,6 +40,8 @@ public class MypageController  extends MskimRequestMapping{
 	
 	
 	
+	private static final String String = null;
+
 	public String IdChk(String a) { //아이디를 만들어줌 교수는 pxxxx , 학생은 sxxxx
 		String num = null;
 		if(a.equals("pro")) {
@@ -433,6 +435,22 @@ public class MypageController  extends MskimRequestMapping{
 			request.setAttribute("msg", msg);
 			return "alert";
 		}
+	}
+	
+	@MSLogin("loginIdCheck")
+	@RequestMapping("deleteUser")
+	public String deleteUser(HttpServletRequest request, HttpServletResponse response) { 
+		List<Dept> list = new DeptDao().selectAll();
+		request.setAttribute("dept", list);
+		return "mypage/deleteUser";
+	}
+	
+	@RequestMapping("delete")
+	public String delete(HttpServletRequest request, HttpServletResponse response) { 
+		String id = (String)request.getSession().getAttribute("login");
+		String inputId= request.getParameter("id");
+		String pw = request.getParameter("pw");
+		return null;
 	}
 	
 	
