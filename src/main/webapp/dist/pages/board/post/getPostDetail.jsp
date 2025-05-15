@@ -14,6 +14,7 @@
         <h1 class="fs-1">게시물 상세</h1> <br>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
+            <% System.out.println("Error displayed: " + session.getAttribute("error")); %>
             <% session.removeAttribute("error"); %>
         </c:if>
         <table class="table">
