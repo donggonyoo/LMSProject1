@@ -699,31 +699,33 @@ public class PostController extends MskimRequestMapping {
     }
 
     @RequestMapping("deleteComment")
-    public String deleteComment(HttpServletRequest request, HttpServletResponse response) {
+    public void deleteComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
+        if (loginCheck != null) {
+            response.getWriter().write("error: " + loginCheck);
+            return;
+        }
         HttpSession session = request.getSession();
 
         String commentId = request.getParameter("commentId");
         if (commentId == null || commentId.trim().isEmpty()) {
-            session.setAttribute("error", "댓글 ID가 필요합니다.");
-            return "redirect:getPostDetail?post_id=" + request.getParameter("postId");
+            response.getWriter().write("error: 댓글 ID가 필요합니다.");
+            return;
         }
 
         String login = (String) request.getSession().getAttribute("login");
         PostComment comment = dao.selectComment(commentId);
         if (comment == null || !comment.getWriterId().equals(login)) {
-            session.setAttribute("error", "자신의 댓글만 삭제할 수 있습니다.");
-            return "redirect:getPostDetail?post_id=" + request.getParameter("postId");
+            response.getWriter().write("error: 자신의 댓글만 삭제할 수 있습니다.");
+            return;
         }
 
         try {
             dao.deleteComment(commentId);
-            return "redirect:getPostDetail?post_id=" + comment.getPostId();
+            response.getWriter().write("success");
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "댓글 삭제 실패: " + e.getMessage());
-            return "redirect:getPostDetail?post_id=" + comment.getPostId();
+            response.getWriter().write("error: 댓글 삭제 실패: " + e.getMessage());
         }
     }
 }

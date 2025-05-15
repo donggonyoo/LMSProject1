@@ -149,38 +149,44 @@
     </div>
 
     <script>
-        function showReplyForm(commentId) {
-            document.getElementById('replyForm-' + commentId).style.display = 'block';
-        }
+    function showReplyForm(commentId) {
+        document.getElementById('replyForm-' + commentId).style.display = 'block';
+    }
 
-        function showEditForm(commentId) {
-            document.getElementById('editForm-' + commentId).style.display = 'block';
-        }
+    function showEditForm(commentId) {
+        document.getElementById('editForm-' + commentId).style.display = 'block';
+    }
 
-        function hideEditForm(commentId) {
-            document.getElementById('editForm-' + commentId).style.display = 'none';
-        }
+    function hideEditForm(commentId) {
+        document.getElementById('editForm-' + commentId).style.display = 'none';
+    }
 
-        function confirmDelete(commentId) {
-            if (confirm('댓글을 삭제하시겠습니까?')) {
-                $.ajax({
-                    url: 'deleteComment',
-                    type: 'POST',
-                    data: { commentId: commentId, postId: '${post.postId}' },
-                    success: function(response) {
-                        if (response === 'success') {
-                            alert('댓글이 삭제되었습니다.');
-                            window.location.href = 'getPostDetail?post_id=${post.postId}';
-                        } else {
-                            alert('삭제 실패: ' + response);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('삭제 중 오류가 발생했습니다: ' + error);
+    function confirmDelete(commentId) {
+        if (confirm('댓글을 삭제하시겠습니까?')) {
+            $.ajax({
+                url: '${pageContext.request.contextPath}/post/deleteComment', 
+                type: 'POST',
+                data: { commentId: commentId, postId: '${post.postId}' },
+                success: function(response) {
+                    console.log('Server response:', response);
+                    if (response === 'success') {
+                        alert('댓글이 삭제되었습니다.');
+                        window.location.href = 'getPostDetail?post_id=${post.postId}';
+                    } else if (response.startsWith('error:')) {
+                        alert(response.substring(6));
+                    } else {
+                        alert('삭제 실패: 알 수 없는 오류');
                     }
-                });
-            }
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error - xhr:', xhr);
+                    console.log('AJAX Error - status:', status);
+                    console.log('AJAX Error - error:', error);
+                    alert('삭제 중 오류가 발생했습니다: ' + xhr.status + ' ' + xhr.statusText);
+                }
+            });
         }
+    }
     </script>
 </body>
 </html>
