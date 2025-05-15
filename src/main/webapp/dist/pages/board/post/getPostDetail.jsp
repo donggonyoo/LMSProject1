@@ -111,9 +111,9 @@
 
         <div class="text-end mb-5">
             <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
+           	<a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
             <c:if test="${isLoggedIn and post.authorId == sessionScope.login}">
                 <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
-                <a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
                 <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
             </c:if>
         </div>

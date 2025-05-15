@@ -90,7 +90,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("boardNum", boardNum);
         request.setAttribute("today", new Date());
 
-        return "/pages/board/notice/getNotices"; // 수정됨
+        return "/pages/board/notice/getNotices"; 
     }
 
     @RequestMapping("searchNotice")
@@ -150,7 +150,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("column", column);
         request.setAttribute("find", find);
 
-        return "/pages/board/notice/searchNotice"; // 수정됨
+        return "/pages/board/notice/searchNotice"; 
     }
 
     private boolean isValidColumn(String column) {
@@ -210,7 +210,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String noticeFile = multi.getFilesystemName("notice_file");
@@ -287,7 +287,7 @@ public class NoticeController extends MskimRequestMapping {
 
             System.out.println("getNoticeDetail - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
             request.setAttribute("notice", notice);
-            return "/pages/board/notice/getNoticeDetail"; // 수정됨
+            return "/pages/board/notice/getNoticeDetail"; 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
@@ -316,7 +316,7 @@ public class NoticeController extends MskimRequestMapping {
                 return "redirect:getNotices";
             }
             request.setAttribute("notice", notice);
-            return "/pages/board/notice/deleteNotice"; // 수정됨
+            return "/pages/board/notice/deleteNotice"; 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
@@ -392,7 +392,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String fileName = multi.getFilesystemName("file");
@@ -437,7 +437,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("writerName", writerName);
         System.out.println("updateNotice - Login: " + login + ", WriterName: " + writerName);
         request.setAttribute("notice", notice);
-        return "/pages/board/notice/updateNotice"; // 수정됨
+        return "/pages/board/notice/updateNotice"; 
     }
 
     @RequestMapping("update")
@@ -455,7 +455,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String noticeId = multi.getParameter("noticeId");

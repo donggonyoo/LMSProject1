@@ -142,7 +142,7 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("boardNum", boardNum);
         request.setAttribute("today", new Date());
 
-        return "/pages/board/post/getPosts"; // 수정됨
+        return "pages/board/post/getPosts"; 
     }
 
     @RequestMapping("searchPost")
@@ -198,7 +198,7 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("find", find);
         request.setAttribute("login", (String) request.getSession().getAttribute("login"));
 
-        return "/pages/board/post/searchPost"; // 수정됨
+        return "pages/board/post/searchPost";
     }
 
     @RequestMapping("createPost")
@@ -216,7 +216,7 @@ public class PostController extends MskimRequestMapping {
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
         request.setAttribute("login", (String) session.getAttribute("login"));
         request.setAttribute("userName", userName);
-        return "/pages/board/post/createPost"; // 수정됨
+        return "pages/board/post/createPost"; 
     }
 
     @RequestMapping("write")
@@ -233,7 +233,7 @@ public class PostController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postFile = multi.getFilesystemName("post_file");
@@ -288,11 +288,11 @@ public class PostController extends MskimRequestMapping {
 
         try {
             dao.insert(post);
-            return "redirect:getPosts"; // 리다이렉트 경로는 수정하지 않음
+            return "redirect:getPosts"; 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
-            return "redirect:createPost"; // 리다이렉트 경로는 수정하지 않음
+            return "redirect:createPost"; 
         }
     }
 
@@ -321,7 +321,7 @@ public class PostController extends MskimRequestMapping {
         }
 
         List<PostComment> commentList = dao.selectCommentList(postId);
-        // 중복 제거
+
         List<PostComment> uniqueCommentList = commentList.stream()
             .distinct()
             .collect(Collectors.toList());
@@ -342,7 +342,7 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("commentList", uniqueCommentList);
         request.setAttribute("authorName", authorName);
         request.setAttribute("isLoggedIn", login != null);
-        return "/pages/board/post/getPostDetail"; // 수정됨
+        return "pages/board/post/getPostDetail"; 
     }
 
     @RequestMapping("replyPost")
@@ -370,7 +370,7 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("board", parentPost);
         request.setAttribute("login", (String) session.getAttribute("login"));
         request.setAttribute("userName", userName);
-        return "/pages/board/post/replyPost"; // 수정됨
+        return "pages/board/post/replyPost"; 
     }
 
     @RequestMapping("writeReply")
@@ -387,7 +387,7 @@ public class PostController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postId = multi.getParameter("num");
@@ -459,7 +459,7 @@ public class PostController extends MskimRequestMapping {
         }
 
         request.setAttribute("p", post);
-        return "/pages/board/post/updatePost"; // 수정됨
+        return "pages/board/post/updatePost"; 
     }
 
     @RequestMapping("update")
@@ -476,7 +476,7 @@ public class PostController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postId = multi.getParameter("postId");
@@ -559,7 +559,7 @@ public class PostController extends MskimRequestMapping {
             return "redirect:getPosts";
         }
         request.setAttribute("post", post);
-		return "/pages/board/post/deletePost"; // 수정됨
+		return "pages/board/post/deletePost"; 
     }
 
     @RequestMapping("delete")
@@ -711,7 +711,7 @@ public class PostController extends MskimRequestMapping {
                 result.put("message", "댓글 ID 또는 게시물 ID가 누락되었습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "/pages/board/post/ajax_post_support";
+                return "pages/board/post/ajax_post_support";
             }
 
             // 댓글 조회 및 작성자 확인
@@ -721,7 +721,7 @@ public class PostController extends MskimRequestMapping {
                 result.put("message", "삭제할 댓글이 존재하지 않습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "/pages/board/post/ajax_post_support";
+                return "pages/board/post/ajax_post_support";
             }
 
             if (!comment.getWriterId().equals(login)) {
@@ -729,7 +729,7 @@ public class PostController extends MskimRequestMapping {
                 result.put("message", "자신의 댓글만 삭제할 수 있습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "/pages/board/post/ajax_post_support";
+                return "pages/board/post/ajax_post_support";
             }
 
             // 댓글 삭제
@@ -751,6 +751,6 @@ public class PostController extends MskimRequestMapping {
             }
         }
 
-        return "/pages/board/post/ajax_post_support";
+        return "pages/board/post/ajax_post_support";
     }
 }

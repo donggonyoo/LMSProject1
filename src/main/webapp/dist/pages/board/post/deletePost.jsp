@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">게시물 삭제</h2>
+        <h2 class="text-center fs-1">게시물 삭제</h2>
 
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
