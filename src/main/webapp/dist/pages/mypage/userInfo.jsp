@@ -289,11 +289,15 @@
                     <button class="btn btn-primary" type="submit">수정완료</button>
                 </div>
             </form>
-
-            <div class="action-buttons">
-                <button class="btn btn-primary" onclick="updatePw()">비밀번호 변경</button>
-                <button class="btn btn-danger" onclick="deleteUser()">퇴학</button>
-            </div>
+             <form id="pwForm" action="${path}/mypage/pwUpdate" method="post" target="pwUpdateWindow" name="f">
+                <input type="hidden" name="id" value="${sessionScope.login}">
+                <input type="hidden" name="email" value="${fn:contains(sessionScope.login, 's') ? m.studentEmail : m.professorEmail}">           
+                <div class="action-buttons">
+                    <button class="btn btn-primary" type="button" onclick="updatePw()">비밀번호 변경</button>
+                </div>
+            </form>
+               
+            <button class="btn btn-danger" onclick="deleteUser()">자퇴신청</button>
         </div>
     </div>
 
@@ -314,15 +318,29 @@
         }
 
         function updatePw() {
-            let id = "${sessionScope.login}";
-            console.log(id);
+            let loginId = "${sessionScope.login}";
+            let email = "${fn:contains(sessionScope.login, 's') ? m.studentEmail : m.professorEmail}";
+            if (!loginId) {
+                alert("로그인이 필요합니다.");
+                return;
+            }
+            if (!email) {
+                alert("이메일 정보가 없습니다.");
+                return;
+            }
+
+            // 새 창 열기
             let op = "width=500,height=500,top=50,left=150";
-            window.open("pwUpdate?id=" + id, "", op);
+            window.open("", "pwUpdateWindow", op); //target으로보내서 action에 해당하는 창을 열게됨
+
+            // 폼 제출
+            document.getElementById("pwForm").submit();
         }
 
         function deleteUser() {
             if (confirm("정말 퇴학하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
-                window.location.href = "deleteUser";
+            	let op = "width=500,height=500,top=50,left=150";
+                window.open("deleteUser", "", op);
             }
         }
     </script>
