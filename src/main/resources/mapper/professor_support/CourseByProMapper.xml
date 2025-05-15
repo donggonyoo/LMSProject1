@@ -30,6 +30,7 @@
             course_max_cnt,
             course_score,
             credit_category,
+            course_period,
             course_plan
         ) VALUES (
             #{courseId},
@@ -40,6 +41,7 @@
             #{courseMaxCnt},
             #{courseScore},
             #{creditCategory},
+            #{coursePeriod},
             #{coursePlan}
         )
     </insert>
@@ -63,5 +65,19 @@
             #{courseTimeEnd}
         )
     </insert>
+    
+    <select id="countRows" resultType="int" parameterType="PagenationDto">
+    	select count(*)
+		  from course c,
+			   course_time ct
+	     where 1=1
+		   and c.professor_id = #{professorId}
+		   and c.professor_id = ct.professor_id
+		   and c.course_id = ct.course_id
+	   	<if test="search != null and search != ''">
+           and courseName LIKE '%${search}%'
+	    </if>
+    </select>
+    
     
 </mapper>

@@ -183,6 +183,18 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="mb-3 row">
+                    <label for="coursePeriod" class="col-sm-2 col-form-label-custom">강의기간</label>
+                    <div class="col-sm-10">
+                        <select class="form-select form-select-sm" id="coursePeriod" name="coursePeriod">
+                            <option value="1학기" selected>1학기</option>
+                            <option value="2학기">2학기</option>
+                        </select>
+                    </div>
+                </div>
+                
+                
                 <div class="mb-3 row align-items-center" id="courseTime">
                     <label for="courseDay" class="col-sm-2 col-form-label-custom">강의시간</label>
                     <div class="col-sm-10">
@@ -365,8 +377,10 @@
 
         $(document).ready(function() {
         	var paramError = $("#paramError").val();
-        	if (paramError) {
+        	if (paramError == 'Duplicate') {
 				alert('입력한 강의명이 기존에 존재합니다.');
+        	} else if (paramError == 'DBERROR') {
+        		alert('데이터 입력시 오류발생. 관리자에게 문의하세요.');
         	}
 
             $('#courseTimeList').empty();
