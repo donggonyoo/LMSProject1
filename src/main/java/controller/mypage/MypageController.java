@@ -292,7 +292,9 @@ public class MypageController  extends MskimRequestMapping{
 							request.setAttribute("url","doLogin");
 							return "alert";
 						}
+						
 					}
+					
 						
 					session.setAttribute("login", dbId.toLowerCase());
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
@@ -315,6 +317,7 @@ public class MypageController  extends MskimRequestMapping{
 	public String main(HttpServletRequest request , HttpServletResponse response) {
 		String dbId = (String)request.getSession().getAttribute("login");
 		HttpSession session = request.getSession();
+		
 		if(dbId.toLowerCase().contains("s")) {
 			StudentDao dao = new StudentDao();
 			Student student = dao.selectOne(dbId);
@@ -324,6 +327,7 @@ public class MypageController  extends MskimRequestMapping{
 			ProfessorDao dao = new ProfessorDao();
 			Professor professor = dao.selectOne(dbId);
 			session.setAttribute("m", professor);	
+			
 		}
 		
 		return "index"; //forward 됨

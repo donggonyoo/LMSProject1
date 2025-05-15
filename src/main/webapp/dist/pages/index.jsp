@@ -210,7 +210,7 @@ ul.timeline::before {
  --%>
  							<img src="${path}/dist/assets/picture/${m.img}"
 							class="user-image rounded-circle shadow" alt="User Image" /> <span
-							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.m.id}님
+							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님
 								반갑습니다</span>
 						
 					</a>

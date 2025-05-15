@@ -248,7 +248,7 @@ body {
 						<img 
 							src="${path}/dist/assets/picture/${m.img}"
 							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">${sessionScope.m.id}님 반갑습니다</span>
+							<span class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
