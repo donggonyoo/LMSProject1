@@ -41,12 +41,15 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 				.addExcludedPath("/mypage/registerImg*")
 				.addExcludedPath("/mypage/pwUpdate*")
 				.addExcludedPath("/mypage/updateEmail*")
-				.addExcludedPath("/mypage/updatePhone*");
+				.addExcludedPath("/mypage/updatePhone*")
+				
+				.addExcludedPath("/post/deleteComment*");
 				
 				
 		builder.addDecoratorPath("/professor_support/*", "/dist/pages/layout.jsp");	
 		
 		builder.addDecoratorPath("/post/*","/dist/pages/layout.jsp");
+	
 		
 		
 		builder.addDecoratorPath("/notice/*","/dist/pages/layout.jsp");
