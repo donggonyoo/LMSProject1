@@ -12,7 +12,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center">문의게시판 검색</h2>
+        <h2 class="text-center fs-1">문의게시판 검색</h2> <br>
         <form action="searchPost" method="get" class="mb-4">
             <div class="row">
                 <div class="col-md-3">

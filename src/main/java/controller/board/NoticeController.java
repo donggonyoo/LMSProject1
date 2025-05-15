@@ -22,7 +22,7 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.board.NoticeDao;
 
-@WebServlet(urlPatterns = {"/notice/*"}, initParams = {@WebInitParam(name="view", value="/dist/pages/board/")})
+@WebServlet(urlPatterns = {"/notice/*"}, initParams = {@WebInitParam(name="view", value="/dist/")})
 public class NoticeController extends MskimRequestMapping {
     private NoticeDao dao = new NoticeDao();
     private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
@@ -90,7 +90,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("boardNum", boardNum);
         request.setAttribute("today", new Date());
 
-        return "notice/getNotices";
+        return "/pages/board/notice/getNotices"; 
     }
 
     @RequestMapping("searchNotice")
@@ -150,13 +150,13 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("column", column);
         request.setAttribute("find", find);
 
-        return "notice/searchNotice";
+        return "/pages/board/notice/searchNotice"; 
     }
 
     private boolean isValidColumn(String column) {
         if (column == null) return false;
         String[] validColumns = {
-            "writerName", "noticeTitle", "noticeContent", // writerName 추가
+            "writerName", "noticeTitle", "noticeContent",
             "noticeTitle,writerName", "noticeTitle,noticeContent",
             "writerName,noticeContent", "noticeTitle,writerName,noticeContent"
         };
@@ -180,7 +180,7 @@ public class NoticeController extends MskimRequestMapping {
 
         System.out.println("createNotice - User type: " + user.getClass().getName());
         String writerName = user instanceof Professor ? ((Professor) user).getProfessorName() :
-                            (user instanceof Student ? ((Student) user).getStudentName() : "Unknown");
+                                    (user instanceof Student ? ((Student) user).getStudentName() : "Unknown");
         if (!(user instanceof Professor)) {
             session.setAttribute("error", "공지사항 작성은 교수만 가능합니다.");
             return "redirect:getNotices";
@@ -188,7 +188,7 @@ public class NoticeController extends MskimRequestMapping {
 
         request.setAttribute("writerName", writerName);
         System.out.println("createNotice - Login: " + session.getAttribute("login") + ", WriterName: " + writerName);
-        return "notice/createNotice";
+        return "/pages/board/notice/createNotice";
     }
 
     @RequestMapping("write")
@@ -210,7 +210,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String noticeFile = multi.getFilesystemName("notice_file");
@@ -250,11 +250,11 @@ public class NoticeController extends MskimRequestMapping {
 
         try {
             dao.insert(notice);
-            return "redirect:getNotices";
+            return "redirect:getNotices"; // 리다이렉트 경로는 변경하지 않아도 됨
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
-            return "redirect:createNotice";
+            return "redirect:createNotice"; // 리다이렉트 경로는 변경하지 않아도 됨
         }
     }
 
@@ -287,7 +287,7 @@ public class NoticeController extends MskimRequestMapping {
 
             System.out.println("getNoticeDetail - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
             request.setAttribute("notice", notice);
-            return "notice/getNoticeDetail";
+            return "/pages/board/notice/getNoticeDetail"; 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
@@ -316,7 +316,7 @@ public class NoticeController extends MskimRequestMapping {
                 return "redirect:getNotices";
             }
             request.setAttribute("notice", notice);
-            return "notice/deleteNotice";
+            return "/pages/board/notice/deleteNotice"; 
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 조회 실패: " + e.getMessage());
@@ -353,7 +353,7 @@ public class NoticeController extends MskimRequestMapping {
             }
 
             dao.delete(noticeId);
-            return "redirect:getNotices";
+            return "redirect:getNotices"; // 리다이렉트 경로는 변경하지 않아도 됨
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
@@ -392,7 +392,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String fileName = multi.getFilesystemName("file");
@@ -437,7 +437,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("writerName", writerName);
         System.out.println("updateNotice - Login: " + login + ", WriterName: " + writerName);
         request.setAttribute("notice", notice);
-        return "notice/updateNotice";
+        return "/pages/board/notice/updateNotice"; 
     }
 
     @RequestMapping("update")
@@ -455,7 +455,7 @@ public class NoticeController extends MskimRequestMapping {
         String uploadPath = request.getServletContext().getRealPath("/upload/board");
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 10MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String noticeId = multi.getParameter("noticeId");

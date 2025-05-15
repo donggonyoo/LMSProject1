@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpSession;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -28,18 +31,20 @@ import domain.Student;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import model.dao.learning_support.CourseDao;
 import model.dao.mypage.DeptDao;
 import model.dao.mypage.ProStuDao;
 import model.dao.mypage.ProfessorDao;
 import model.dao.mypage.StudentDao;
+import model.dto.learning_support.AttendanceDto;
 //http://localhost:8080/LMSProject1/dist/pages/mypage/registerUserChk
 @WebServlet(urlPatterns = {"/mypage/*"},
 initParams = {@WebInitParam(name="view", value="/dist/pages/")}
 )
 public class MypageController  extends MskimRequestMapping{
-	
-	
-	
+
+	private static final String String = null;
+
 	public String IdChk(String a) { //아이디를 만들어줌 교수는 pxxxx , 학생은 sxxxx
 		String num = null;
 		if(a.equals("pro")) {
@@ -158,8 +163,8 @@ public class MypageController  extends MskimRequestMapping{
 			pro.setProfessorName(name);
 			pro.setProfessorBirthday(birthDate);
 			pro.setProfessorEmail(email);
-			//pro.setProfessorPassword(hashpw);
-			pro.setProfessorPassword(pass);
+			pro.setProfessorPassword(hashpw);
+			//pro.setProfessorPassword(pass);
 			pro.setDeptId(deptId);
 			pro.setProfessorPhone(phone);
 			System.out.println(pro);
@@ -180,8 +185,8 @@ public class MypageController  extends MskimRequestMapping{
 		    stu.setStudentBirthday(birthDate);
 		    stu.setStudentEmail(email);
 		    stu.setStudentImg(img);
-		    //stu.setStudentPassword(hashpw);
-		    stu.setStudentPassword(pass);
+		    stu.setStudentPassword(hashpw);
+		    //stu.setStudentPassword(pass);
 		    stu.setStudentPhone(deptId);
 		    stu.setStudentPhone(phone);
 		    stu.setStudentStatus("재학");
@@ -255,7 +260,6 @@ public class MypageController  extends MskimRequestMapping{
 		}
 		//student or professor의 id,pw,name을가지고있는 map
 		Map<String,String> map = new ProStuDao().login(id); 
-			
 			if(map==null){
 				request.setAttribute("msg", "아이디 확인하세요");
 				request.setAttribute("url","doLogin");
@@ -278,21 +282,19 @@ public class MypageController  extends MskimRequestMapping{
 					}
 				} //dbId,dbPw,dbName 꺼내기종료
 					
-				
 				//입력한비번과 DB의비번이일치하는가?
-				if(pass.equals(dbPw)){
-					//BCrypt.checkpw(pass, pro.getProfessorPassword())	
-					session.setAttribute("login", dbId);
-					/*if(dbId.toLowerCase().contains("s")) {
-						StudentDao dao = new StudentDao();
-						Student student = dao.selectOne(dbId);
-						session.setAttribute("m", student);
+				
+				//pass.equalas(dbPw)
+				if(BCrypt.checkpw(pass, dbPw) ){
+					if(dbId.toLowerCase().contains("s")) { //학생 중 퇴학상태인 학생을 검증하는 단계
+						if(new StudentDao().selectStatus(dbId)) { 
+							request.setAttribute("msg","퇴학한사람은 로그인할수없어요");
+							request.setAttribute("url","doLogin");
+							return "alert";
+						}
 					}
-					else if(dbId.toLowerCase().contains("p")){
-						ProfessorDao dao = new ProfessorDao();
-						Professor professor = dao.selectOne(dbId);
-						session.setAttribute("m", professor);	
-					}*/
+						
+					session.setAttribute("login", dbId.toLowerCase());
 					request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 					request.setAttribute("url","index");
 
@@ -361,14 +363,26 @@ public class MypageController  extends MskimRequestMapping{
 		String pw = new ProStuDao().findPw(id,email);
 		if(pw==null) {
 			request.setAttribute("msg", "입력된정보가없어요");			
-			return "close";
+			return "mypage/close";
 		}
 		else {
-			request.setAttribute("msg", "비밀번호는"+pw+"입니다");
-			request.setAttribute("id", id);
-			request.setAttribute("pw", pw);
-			//return "mypage/pwUpdate";
-			return "mypage/alertPw";
+			String tempPw = UUID.randomUUID().toString().substring(1, 5);
+			String hashpw = BCrypt.hashpw(tempPw, BCrypt.gensalt());
+			if(new ProStuDao().updateTempPw(hashpw,id)) {
+				request.setAttribute("msg", "임시 비밀번호는"+tempPw+"입니다");
+				request.setAttribute("id", id);
+				request.setAttribute("pw", tempPw);
+				request.setAttribute("email", email);
+				
+				//return "mypage/pwUpdate";
+				return "mypage/alertPw";
+			}
+			else {
+				request.setAttribute("msg", "오류발생");
+				return "mypage/close";
+			}
+			
+			
 		}
 	}
 	
@@ -378,26 +392,33 @@ public class MypageController  extends MskimRequestMapping{
 		String id = request.getParameter("id");
 		String pw = request.getParameter("pw");
 		String cPw = request.getParameter("cPw");
+		String email = request.getParameter("email");
+		
 		System.out.println(id);
-		System.out.println(pw);
-		System.out.println(cPw);
-		String msg = "남의 비번을 바꿀수없어요";
-		if(!id.equals(request.getSession().getAttribute("login"))) {
-			request.setAttribute("msg", msg);
-			return "mypage/close";
-		}
-		
-		boolean updatePw = new ProStuDao().updatePw(id,pw,cPw);
-		if(updatePw) {
-			if(request.getSession()!=null) {
-				msg="비밀번호변경실패";
-				request.setAttribute("logout", "logout");
+		System.out.println(email);
+		System.out.println("pw"+pw);
+
+
+		String msg=null;
+	
+		String hashPw = new ProStuDao().findPw(id, email);
+		System.out.println(hashPw);
+		//pw.equals(hashPw)
+		if(BCrypt.checkpw(pw, hashPw)) {
+			String hashpw2 = BCrypt.hashpw(cPw, BCrypt.gensalt());
+			boolean updatePw = new ProStuDao().updatePw(id,hashpw2);
+			if(updatePw) {
+				if(request.getSession()!=null) {
+					msg="비밀번호변경실패";
+					request.setAttribute("logout", "logout");
+				}
+				msg = "비밀번호변경완료!!!";
 			}
-			msg = "비밀번호변경완료!!!";
 		}
-		
 		request.setAttribute("msg",msg);
 		return "mypage/close";
+		
+		
 	}
 	
 	@RequestMapping("close")
@@ -434,6 +455,87 @@ public class MypageController  extends MskimRequestMapping{
 			return "alert";
 		}
 	}
+	
+	@MSLogin("loginIdCheck")
+	@RequestMapping("deleteUser")
+	public String deleteUser(HttpServletRequest request, HttpServletResponse response) { 
+		List<Dept> list = new DeptDao().selectAll();
+		request.setAttribute("dept", list);
+		return "mypage/deleteUser";
+	}
+	
+	@RequestMapping("delete")
+	public String delete(HttpServletRequest request, HttpServletResponse response) { 
+		String id = (String)request.getSession().getAttribute("login");
+		String inputId= request.getParameter("id");
+		String pw = request.getParameter("pw");
+		String deptId = request.getParameter("deptId");
+		if(id.toLowerCase().contains("p")) {
+			request.setAttribute("msg", "교수는 자퇴가 없어요");
+		}
+		else if(id.equals(inputId)) {
+			boolean result = new StudentDao().deleteUser(inputId,pw,deptId);
+			System.out.println("result : "+result);
+			if(result) {
+				request.setAttribute("logout", "logout");
+				request.setAttribute("msg", "자퇴성공");
+			}
+			else {
+				request.setAttribute("msg", "변경실패");
+			}
+		}
+		else {
+			request.setAttribute("msg", "입력한 아이디가 로그인한 아이디와 일치하지않아요");				
+		}
+		return "mypage/close";
+		
+	}
+	
+	@RequestMapping("viewCourseTimetable")
+	public String viewCourseTime (HttpServletRequest request, HttpServletResponse response) {
+//		String studentId = (String) request.getSession().getAttribute("login");
+//		테스트위한 임시 studentId 지정
+		String studentId = "S001";
+		Map<String, Object> map = new HashMap<>();
+		
+		
+		try {
+			CourseDao courseDao = new CourseDao();
+			List<AttendanceDto> result = courseDao.viewCourseTime(studentId);
+
+            // 시간 포맷팅
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            for (AttendanceDto item : result) {
+                if (item.getCourseTimeStart() != null) {
+                    item.setCourseTimeStartFormatted(timeFormat.format(item.getCourseTimeStart()));
+                }
+                if (item.getCourseTimeEnd() != null) {
+                    item.setCourseTimeEndFormatted(timeFormat.format(item.getCourseTimeEnd()));
+                }
+            }
+
+            map.put("success", true);
+            map.put("timetable", result);
+        } catch (Exception e) {
+        	map.put("success", false);
+        	map.put("message", "시간표 로드 실패: " + e.getMessage());
+        }
+		
+		ObjectMapper mapper = new ObjectMapper();
+        String json;
+        
+		try {
+			json = mapper.writeValueAsString(map);
+			request.setAttribute("json", json);
+			System.out.println(json);
+		} catch (IOException e) {
+			e.printStackTrace();
+
+		}
+
+		return "mypage/ajax_mypage_support";
+	}
+	
 	
 	
 	

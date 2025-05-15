@@ -28,4 +28,19 @@
 <select id="selectOne" parameterType="String" resultType="Student">
 select * from student where student_id=#{val}
 </select>
+
+<update id="deleteUser" parameterType="DeleteUserDto">
+	update student set student_status=#{studentStatus}
+	where student_id = #{studentId} and dept_id = #{deptId} and student_password=#{studentPassword}
+</update>
+
+<select id="selectStatus" parameterType="String" resultType="String">
+	select student_status from student where student_id=#{val}
+</select>
+
+<update id="tempPw" parameterType="UpdateStuPwDto">
+	update student set student_password=#{studentNewPassword}
+	where student_id = #{studentId} 
+</update>
+
 </mapper>

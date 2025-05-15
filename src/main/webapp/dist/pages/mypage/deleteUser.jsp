@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>    
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -87,43 +90,37 @@
 </head>
 <body>
     <div class="card">
-        <h4 class="text-center mb-4">비밀번호 변경</h4>
-        <form action="pw" method="post" onsubmit="return input_check(this)">
-           
-            <input type="hidden" value="${param.id}" name="id">
-            <input type="hidden" value="${param.email}" name="email">
+        <h4 class="text-center mb-4">자퇴 form</h4>
+        <form action="delete" method="post" >
+           <div class="mb-3">
+                <label for="id" class="form-label">아이디</label>
+                <input type="text" class="form-control" id="id" name="id" >
+            </div> 
             <!-- 현재비밀번호는 비밀번호찾기가성공적으로됐다면 자동으로 입력될것임 -->
             <div class="mb-3">
-                <label for="pw" class="form-label">현재 비밀번호</label>
-                <input type="password" class="form-control" id="pw" name="pw" value="${param.pw}">
-            </div>
+                <label for="pw" class="form-label">비밀번호</label>
+                <input type="password" class="form-control" id="pw" name="pw" >
+            </div>        
             
-            <div class="mb-3">
-                <label for="cPw" class="form-label">변경할 비밀번호</label>
-                <input type="password" class="form-control" id="cPw" name="cPw" placeholder="변경할 비밀번호">
-            </div>
+           <div class="mb-3">
+            <label for="major" class="form-label">전공선택</label>
+            <select class="form-select" id="major" name="deptId">
+                <option selected value="none">전공</option>
+                <c:forEach items="${dept}" var="s">
+                <option value="${s.deptId}">${s.deptName}</option>
+                </c:forEach>   
+            </select>
+        </div>
             
-            <div class="mb-3">
-                <label for="cPw2" class="form-label">변경할 비밀번호 재입력</label>
-                <input type="password" class="form-control" id="cPw2" placeholder="재입력">
-            </div>
-            
-            <button class="btn btn-custom w-100 mb-3">비밀번호 변경</button>
+            <button class="btn btn-custom w-100 mb-3">자퇴신청</button>
             <div class="text-center">
-                <a href="close" class="btn btn-link-custom">비밀번호를 나중에 바꾸고 싶으면 클릭!</a>
+                <a href="close" class="btn btn-link-custom">취소하고 싶으면 클릭!</a>
             </div>
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
-        function input_check(t) {
-            if (t.cPw.value.trim() != t.cPw2.value.trim()) {
-                alert("변경할 비밀번호와 재입력한 비밀번호가 일치하지 않습니다.");
-                t.cPw2.focus();
-                return false;
-            }
-            return true;
-        }
+       
       
 
     </script>

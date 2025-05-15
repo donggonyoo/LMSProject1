@@ -18,8 +18,8 @@ public class ProStuDao {
 	public Map<String,String> login(String id ) {
 		SqlSession conn = MyBatisConnection.getConnection();
 		LoginDto loginDto = new LoginDto();
-		loginDto.setProfessorId(id);
-		loginDto.setStudentId(id);
+		loginDto.setProfessorId(id.toUpperCase());
+		loginDto.setStudentId(id.toUpperCase());
 
 		try {
 			Map<String,String>  map = conn.selectOne("prostu.loginChk",loginDto);
@@ -77,7 +77,7 @@ public class ProStuDao {
 	}
 
 
-	public boolean updatePw(String id, String pw, String cPw) {
+	public boolean updatePw(String id, String cPw) {
 		SqlSession connection = MyBatisConnection.getConnection();
 		UpdateProPwDto pDto = new UpdateProPwDto();
 		UpdateStuPwDto sDto = new UpdateStuPwDto();
@@ -85,18 +85,16 @@ public class ProStuDao {
 		try {
 			if(id.contains("p")) {
 				pDto.setProfessorId(id);
-				pDto.setProfessorPassword(pw);
 				pDto.setProfessorNewPassword(cPw);
-				if(connection.update("updateProPw",pDto)>0) {
+				if(connection.update("prostu.updateProPw",pDto)>0) {
 					connection.commit();
 					return true;
 				}
 			}
 			else {
 				sDto.setStudentId(id);
-				sDto.setStudentPassword(pw);
 				sDto.setStudentNewPassword(cPw);
-				if(connection.update("updateStuPw",sDto)>0) {
+				if(connection.update("prostu.updateStuPw",sDto)>0) {
 					connection.commit();
 					return true;
 				}
@@ -168,6 +166,39 @@ public class ProStuDao {
 		return false;
 
 
+	}
+
+
+	public boolean updateTempPw(String tempPw, String id) {
+		SqlSession connection = MyBatisConnection.getConnection();
+		try {
+			if(id.toLowerCase().contains("p")) {
+				UpdateProPwDto dto = new UpdateProPwDto();
+				dto.setProfessorId(id);
+				dto.setProfessorNewPassword(tempPw);
+				if(connection.update("professor.tempPw",dto)>0) {
+					connection.commit();
+					return true;
+				}
+				
+			}
+			else if(id.toLowerCase().contains("s")){
+				UpdateStuPwDto dto = new UpdateStuPwDto();
+				dto.setStudentId(id);
+				dto.setStudentNewPassword(tempPw);
+				if(connection.update("student.tempPw",dto)>0) {
+					connection.commit();
+					return true;
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			MyBatisConnection.close(connection);
+		}
+		return false;
 	}
 
 
