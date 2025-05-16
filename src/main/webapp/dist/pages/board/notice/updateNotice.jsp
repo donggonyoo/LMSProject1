@@ -1,19 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>게시물 수정</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+   	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center fs-1">게시물 수정</h2>
+        <h2 class="text-center fs-1">공지사항 게시물 수정</h2>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
             <% session.removeAttribute("error"); %>
@@ -76,14 +74,14 @@
                         }
                     }
                 }
-            }).summernote('code', '${notice.noticeContent}'); // 초기값 로드
+            });
         });
 
         function sendFile(file) {
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "uploadImage",
+                url: "${path}/notice/uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,
@@ -93,6 +91,7 @@
                 },
                 error: function(e) {
                     alert("이미지 업로드 실패: " + e.status);
+                    console.error("Error details: ", e);
                 }
             });
         }
