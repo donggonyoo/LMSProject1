@@ -7,7 +7,10 @@
 <div class="container">
     <!-- 제목 및 검색 영역 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-book me-2"></i> 강의관리</h2>
+        <h2>
+        	<i class="bi bi-book me-2"></i>
+    		<a href="#" onclick="window.location.href = window.location.origin + window.location.pathname;">강의관리</a>
+		</h2>
         <div class="d-flex align-items-center gap-2">
             <!-- 검색 -->
             <div class="search-bar">
@@ -31,6 +34,7 @@
                         </a>
                     </th>
                     <th>강의기간</th>
+                    <th>강의실</th>
                     <th>전공여부</th>
                     <th>강의시간</th>
                     <th>수강인원</th>
@@ -47,6 +51,7 @@
             </thead>
             <tbody>
                 <c:forEach var="course" items="${courses}" varStatus="status">
+                
                     <tr>
                         <td>
                             <span data-bs-toggle="tooltip" title="${course.coursePlan}">
@@ -54,6 +59,7 @@
                             </span>
                         </td>
                         <td>${course.coursePeriod}</td>
+                        <td>${course.courseTimeLoc}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${course.creditCategory == 'MajorRequired' || course.creditCategory == 'MajorElective'}">
@@ -64,12 +70,12 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td>${course.courseTimeYoil} ${course.courseTimeStart} - ${course.courseTimeEnd}</td>
-                        <td>${course.currentEnrollment} / ${course.courseMaxCnt}</td>
+                        <td>${course.courseTimeYoil} / ${course.courseTimeStart} - ${course.courseTimeEnd}</td>
+                        <td>${course.courseCurrentEnrollment} / ${course.courseMaxCnt}</td>
                         <td>${course.courseScore}</td>
                         <td>
-                            <span class="badge ${course.courseStatus == 'OPEN' ? 'text-bg-success' : 'text-bg-danger'}">
-                                ${course.courseStatus == 'OPEN' ? '개설됨' : '종료됨'}
+                            <span class="badge ${fn:toUpperCase(course.courseStatus) == 'OPEN' ? 'text-bg-success' : 'text-bg-danger'}">
+                                ${fn:toUpperCase(course.courseStatus) == 'OPEN' ? '개설됨' : '종료됨'}
                             </span>
                         </td>
                         <td>
@@ -86,11 +92,18 @@
                                onclick="return confirm('정말 삭제하시겠습니까?');">
                                 <i class="bi bi-trash"></i> 삭제
                             </a>
-                            <c:if test="${course.courseStatus == 'OPEN'}">
-                                <button class="btn btn-danger btn-sm ms-1 close-course" data-course-id="${course.courseId}">
+                            <c:if test="${fn:toUpperCase(course.courseStatus) == 'OPEN'}">
+                                <button class="btn btn-danger btn-sm ms-1 chg-course" 
+                                	data-course-id="${course.courseId}" data-course-status="${fn:toUpperCase(course.courseStatus)}">
                                     <i class="bi bi-x-circle"></i> 종료
                                 </button>
                             </c:if>
+                            <c:if test="${fn:toUpperCase(course.courseStatus) == 'CLOSED'}">
+						        <button class="btn btn-success btn-sm ms-1 chg-course" 
+						        	data-course-id="${course.courseId}" data-course-status="${fn:toUpperCase(course.courseStatus)}">
+						            <i class="bi bi-check-circle"></i> 개설
+						        </button>
+						    </c:if>
                         </td>
                     </tr>
                 </c:forEach>
@@ -105,19 +118,19 @@
         <!-- Pagination -->
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                <c:if test="${currentPage > 1}">
+                <c:if test="${pagination.currentPage > 1}">
                     <li class="page-item">
-                        <a class="page-link" href="${path}/professor_support/manage/manageCourse?page=${currentPage - 1}&search=${param.search}">이전</a>
+                        <a class="page-link" href="${path}/professor_support/manage/manageCourse?page=${pagination.currentPage - 1}&search=${param.search}">이전</a>
                     </li>
                 </c:if>
-                <c:forEach begin="1" end="${totalPages}" var="page">
-                    <li class="page-item ${currentPage == page ? 'active' : ''}">
+                <c:forEach begin="1" end="${pagination.totalPages}" var="page">
+                    <li class="page-item ${pagination.currentPage == page ? 'active' : ''}">
                         <a class="page-link" href="${path}/professor_support/manage/manageCourse?page=${page}&search=${param.search}">${page}</a>
                     </li>
                 </c:forEach>
-                <c:if test="${currentPage < totalPages}">
+                <c:if test="${pagination.currentPage < pagination.totalPages}">
                     <li class="page-item">
-                        <a class="page-link" href="${path}/professor_support/manage/manageCourse?page=${currentPage + 1}&search=${param.search}">다음</a>
+                        <a class="page-link" href="${path}/professor_support/manage/manageCourse?page=${pagination.currentPage + 1}&search=${param.search}">다음</a>
                     </li>
                 </c:if>
             </ul>
@@ -136,6 +149,7 @@
             <div class="modal-body">
                 <p><strong>강의명:</strong> <span id="modalCourseName"></span></p>
                 <p><strong>강의기간:</strong> <span id="modalCoursePeriod"></span></p>
+                <p><strong>강의실:</strong> <span id="modalcourseTimeLoc"></span></p>
                 <p><strong>전공여부:</strong> <span id="modalCreditCategory"></span></p>
                 <p><strong>강의시간:</strong> <span id="modalCourseTime"></span></p>
                 <p><strong>수강인원:</strong> <span id="modalEnrollment"></span></p>
@@ -153,9 +167,13 @@
 <script>
     // 검색 기능
     $("#searchBtn").click(function() {
+		var page = $(".page-item.active")
         var keyword = $("#searchInput").val();
         if (keyword) {
-            window.location.href = '${path}/professor_support/manage/manageCourse?search=' + encodeURIComponent(keyword);
+            window.location.href = '${path}/professor_support/manage/manageCourse?page=${pagination.currentPage}&search=' + encodeURIComponent(keyword);
+        }else {
+            // 검색어가 공백인 경우 전체 검색 (search 파라미터 없이 이동)
+            window.location.href = '${path}/professor_support/manage/manageCourse?page=${pagination.currentPage}';
         }
     });
 
@@ -174,6 +192,8 @@
         var currentSort = currentUrl.searchParams.get("sort") || "";
         var newSort = currentSort === sortField ? sortField + "-desc" : sortField;
         currentUrl.searchParams.set("sort", newSort);
+        currentUrl.searchParams.set("page", "${pagination.currentPage}");
+        currentUrl.searchParams.set("search", "${param.search}");
         window.location.href = currentUrl.toString();
     });
 
@@ -183,15 +203,17 @@
         var row = $(this).closest("tr");
         var courseName = row.find("td:eq(0)").text().trim();
         var coursePeriod = row.find("td:eq(1)").text().trim();
-        var creditCategory = row.find("td:eq(2)").text().trim();
-        var courseTime = row.find("td:eq(3)").text().trim();
-        var enrollment = row.find("td:eq(4)").text().trim();
-        var courseScore = row.find("td:eq(5)").text().trim();
-        var courseStatus = row.find("td:eq(6)").text().trim();
-        var coursePlan = row.find("td:eq(0) span").attr("title") || "없음";
-
+        var modalcourseTimeLoc = row.find("td:eq(2)").text().trim();
+        var creditCategory = row.find("td:eq(3)").text().trim();
+        var courseTime = row.find("td:eq(4)").text().trim();
+        var enrollment = row.find("td:eq(5)").text().trim();
+        var courseScore = row.find("td:eq(6)").text().trim();
+        var courseStatus = row.find("td:eq(7)").text().trim();
+        var coursePlan = row.find("td:eq(0) span").attr("data-bs-original-title") || "없음";
+		
         $("#modalCourseName").text(courseName);
         $("#modalCoursePeriod").text(coursePeriod);
+        $("#modalcourseTimeLoc").text(modalcourseTimeLoc);
         $("#modalCreditCategory").text(creditCategory);
         $("#modalCourseTime").text(courseTime);
         $("#modalEnrollment").text(enrollment);
@@ -200,23 +222,30 @@
         $("#modalCoursePlan").text(coursePlan);
     });
 
-    // 강의 종료 처리
-    $(".close-course").click(function() {
+    // 강의 상태 변경 처리
+    $(".chg-course").click(function() {
         var courseId = $(this).attr("data-course-id");
-        if (confirm("이 강의를 종료하시겠습니까?")) {
+        var courseStatus = $(this).attr("data-course-status");
+        
+        if (confirm("강의를 개설or종료 하시겠습니까?")) {
             $.ajax({
-                url: '${path}/courseClose?courseId=' + courseId,
+                url: '${path}/professor_support/manage/changeCourse',
                 type: 'POST',
+                data: {
+						courseId: courseId,
+						courseStatus: courseStatus,
+				},
+                dataType: 'json',
                 success: function(response) {
-                    if (response === "success") {
+                    if (response.result === "success") {
                         window.location.reload();
-                    } else {
-                        alert("강의 종료에 실패했습니다.");
+                    } else if (response.result == "fail") {
+                        alert(response.errorMsg);
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error:", error);
-                    alert("강의 종료 중 오류가 발생했습니다.");
+                    alert("강의 상태변경 중 오류가 발생했습니다.");
                 }
             });
         }

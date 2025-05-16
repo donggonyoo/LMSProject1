@@ -66,7 +66,7 @@
         )
     </insert>
     
-    <select id="countRows" resultType="int" parameterType="PagenationDto">
+    <select id="getCourseCountRows" resultType="int" parameterType="java.util.Map">
     	select count(*)
 		  from course c,
 			   course_time ct
@@ -79,5 +79,60 @@
 	    </if>
     </select>
     
-    
+    <select id="searchCourseInfo" parameterType="PaginationDto" resultType="RegistCourseDto">
+        SELECT
+        c.professor_id,
+        c.dept_id,
+        c.course_id,
+        c.course_name,
+        upper(c.course_status) course_status,
+        c.course_current_enrollment,
+        c.course_max_cnt,
+        c.course_score,
+        c.credit_category,
+        c.course_period,
+        c.course_plan,
+		
+  		ct.course_time_id,
+  		ct.course_time_loc,	        
+        ct.course_time_yoil,
+        ct.course_time_start,
+        ct.course_time_end
+        FROM
+        course c
+        INNER JOIN course_time ct
+        ON c.course_id = ct.course_id 
+        WHERE c.professor_id = #{professorId}
+        <if test="search != null and search != ''">
+            AND c.course_name LIKE '%${search}%'
+        </if>
+        <if test="sortDirection == null or sortDirection == ''">
+        	ORDER BY c.course_name
+        </if>
+        <if test="sortDirection != null and sortDirection != ''">
+            ORDER BY
+            <choose>
+                <when test="sortDirection.startsWith('courseName')">c.course_name</when>
+                <when test="sortDirection.startsWith('courseScore')">c.course_score</when>
+                <otherwise>c.course_name</otherwise>
+            </choose>
+            <if test="sortDirection.endsWith('-desc')">DESC</if>
+        </if>
+        LIMIT #{offset}, #{itemsPerPage}
+	</select>
+	
+	<update id="changeCourse" parameterType="java.util.Map">
+		UPDATE course
+	    <set>
+	        <choose>
+	            <when test="courseStatus == 'CLOSED'">
+	                course_status = 'OPEN',
+	            </when>
+	            <when test="courseStatus == 'OPEN'">
+	                course_status = 'CLOSED',
+	            </when>
+	        </choose>
+	        </set>
+	    WHERE course_id = #{courseId}
+	</update>
 </mapper>

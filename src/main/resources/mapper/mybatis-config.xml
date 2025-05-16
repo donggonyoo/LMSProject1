@@ -8,6 +8,7 @@
 	<!-- 설정 추가 -->
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
     </settings>
   
   <!-- 별명들 -->
@@ -41,7 +42,7 @@
     <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />
     
     <typeAlias type="model.dto.professor_support.RegistCourseDto" alias="RegistCourseDto" />
-    <typeAlias type="model.dto.professor_support.PagenationDto" alias="PagenationDto" />	
+    <typeAlias type="model.dto.professor_support.PaginationDto" alias="PaginationDto" />	
   </typeAliases>
   
   <!-- Connection 객체  -->
