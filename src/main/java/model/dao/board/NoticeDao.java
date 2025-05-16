@@ -11,14 +11,16 @@ import domain.Notice;
 
 public class NoticeDao {
 
-    public void insert(Notice notice) {
+	public boolean insert(Notice notice) {
         SqlSession session = MyBatisConnection.getConnection();
         try {
-            session.insert("notice.insert", notice);
+            int result = session.insert("notice.insert", notice);
             session.commit();
+            return result > 0; // 삽입 성공 여부 반환
         } catch (Exception e) {
             session.rollback();
-            throw e;
+            e.printStackTrace();
+            return false;
         } finally {
             MyBatisConnection.close(session);
         }

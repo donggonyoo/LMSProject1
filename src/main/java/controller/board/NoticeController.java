@@ -177,8 +177,6 @@ public class NoticeController extends MskimRequestMapping {
             session.setAttribute("error", "사용자 정보가 없습니다. 다시 로그인해 주세요.");
             return "redirect:" + LOGIN_PAGE;
         }
-
-        System.out.println("createNotice - User type: " + user.getClass().getName());
         String writerName = user instanceof Professor ? ((Professor) user).getProfessorName() :
                                     (user instanceof Student ? ((Student) user).getStudentName() : "Unknown");
         if (!(user instanceof Professor)) {
@@ -187,77 +185,63 @@ public class NoticeController extends MskimRequestMapping {
         }
 
         request.setAttribute("writerName", writerName);
-        System.out.println("createNotice - Login: " + session.getAttribute("login") + ", WriterName: " + writerName);
         return "/pages/board/notice/createNotice";
     }
 
     @RequestMapping("write")
-    public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String write(HttpServletRequest request, HttpServletResponse response) {
+
         String loginCheck = checkLogin(request, response);
         if (loginCheck != null) return loginCheck;
+
+        String uploadPath = request.getServletContext().getRealPath("/") + "upload/board/";
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs(); 
+        }
+        int maxSize = 20 * 1024 * 1024; 
+
+        MultipartRequest multi = null;
+        try {
+            multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Notice notice = new Notice();
+        notice.setWriterId((String) request.getSession().getAttribute("login")); 
+        notice.setNoticePassword(multi.getParameter("pass"));
+        notice.setNoticeTitle(multi.getParameter("notice_title"));
+        notice.setNoticeContent(multi.getParameter("notice_content"));
+        notice.setNoticeFile(multi.getFilesystemName("notice_file")); 
+
+        String noticeId = generateNewNoticeId(); 
+        notice.setNoticeId(noticeId);
+
+        if (notice.getNoticeFile() == null) {
+            notice.setNoticeFile("");
+        }
 
         HttpSession session = request.getSession();
         Object user = session.getAttribute("m");
         String writerName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
-        System.out.println("write - Login: " + session.getAttribute("login") + ", WriterName: " + writerName);
-
-        if (writerName == null || writerName.trim().isEmpty()) {
-            session.setAttribute("error", "작성자 이름이 필요합니다.");
-            return "redirect:createNotice";
-        }
-
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 10MB
-        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
-
-        String noticeFile = multi.getFilesystemName("notice_file");
-        if (noticeFile == null) {
-            noticeFile = "";
-        }
-
-        String pass = multi.getParameter("pass");
-        String noticeTitle = multi.getParameter("notice_title");
-        String noticeContent = multi.getParameter("notice_content");
-
-        System.out.println("pass: " + pass);
-        System.out.println("notice_title: " + noticeTitle);
-        System.out.println("notice_content: " + noticeContent);
-        System.out.println("notice_file: " + noticeFile);
-
-        String login = (String) session.getAttribute("login");
-        if (login == null || login.trim().isEmpty() ||
-                pass == null || pass.trim().isEmpty() ||
-                noticeTitle == null || noticeTitle.trim().isEmpty()) {
-            session.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
-            return "redirect:createNotice";
-        }
-
-        String newNoticeId = generateNewNoticeId();
-        Notice notice = new Notice();
-        notice.setNoticeId(newNoticeId);
-        notice.setWriterId(login);
-        notice.setWriterName(writerName); // 반드시 설정
-        notice.setNoticePassword(pass);
-        notice.setNoticeTitle(noticeTitle);
-        notice.setNoticeContent(noticeContent);
-        notice.setNoticeFile(noticeFile);
+        notice.setWriterName(writerName);
         notice.setNoticeCreatedAt(new Date());
         notice.setNoticeUpdatedAt(new Date());
         notice.setNoticeReadCount(0);
 
-        try {
-            dao.insert(notice);
-            return "redirect:getNotices"; // 리다이렉트 경로는 변경하지 않아도 됨
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
-            return "redirect:createNotice"; // 리다이렉트 경로는 변경하지 않아도 됨
-        }
-    }
+        String msg = "게시물 등록 실패";
+        String url = "createNotice";
 
+        if (dao.insert(notice)) { 
+            return "redirect:getNotices"; 
+        }
+
+        request.setAttribute("msg", msg);
+        request.setAttribute("url", url);
+        return "alert"; 
+    }
     @RequestMapping("getNoticeDetail")
     public String getNoticeDetail(HttpServletRequest request, HttpServletResponse response) {
         String loginCheck = checkLogin(request, response);
@@ -381,32 +365,7 @@ public class NoticeController extends MskimRequestMapping {
         }
     }
 
-    @RequestMapping("uploadImage")
-    public void uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) {
-            response.sendRedirect("/LMSProject1/mypage/doLogin");
-            return;
-        }
-
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 20MB
-        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
-
-        String fileName = multi.getFilesystemName("file");
-        if (fileName != null && !fileName.isEmpty()) {
-            String newFileName = System.currentTimeMillis() + "_" + fileName;
-            File oldFile = new File(uploadPath, fileName);
-            if (oldFile.exists()) oldFile.renameTo(new File(uploadPath, newFileName));
-            String fileUrl = request.getContextPath() + "/upload/board/" + newFileName;
-            response.getWriter().write(fileUrl);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("파일 업로드 실패");
-        }
-    }
+   
 
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {

@@ -1,17 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>공지사항 등록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+   	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
 </head>
 <body>
     <div class="container mt-5">
@@ -60,31 +57,24 @@
         </form>
     </div>
     <script>
-        $(document).ready(function() {
-            if (typeof $.fn.summernote === 'undefined') {
-                console.error("Summernote is not loaded!");
-                return;
-            }
-            $("#summernote").summernote({
-                height: 300,
-                callbacks: {
-                    onImageUpload: function(files) {
-                        for (let i = 0; i < files.length; i++) {
-                            sendFile(files[i]);
-                        }
+    $(document).ready(function() {
+        $("#summernote").summernote({
+            height: 300,
+            callbacks: {
+                onImageUpload: function(files) {
+                    for (let i = 0; i < files.length; i++) {
+                        sendFile(files[i]);
                     }
                 }
-            });
-            <c:if test="${not empty param.notice_content}">
-                $('#summernote').summernote('code', "${fn:escapeXml(param.notice_content)}");
-            </c:if>
+            }
         });
+    });
 
         function sendFile(file) {
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "uploadImage",
+                url: "${path}/notice/uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,
@@ -94,6 +84,7 @@
                 },
                 error: function(e) {
                     alert("이미지 업로드 실패: " + e.status);
+                    console.error("Error details: ", e);
                 }
             });
         }
