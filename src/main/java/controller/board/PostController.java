@@ -457,7 +457,6 @@ public class PostController extends MskimRequestMapping {
             session.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
             return "redirect:getPosts";
         }
-
         request.setAttribute("p", post);
         return "pages/board/post/updatePost"; 
     }

@@ -40,32 +40,39 @@ button:last-of-type:hover {
 </head>
 <body>
     <h2>변경할 이메일을 입력하세요</h2>
-    <input type="email" id="email" onkeyup="eChk(this)">
+    <input type="email" id="email" onkeyup="emailChk(this)">
     <br>
-    <font id="emailValid"></font>
+    <span id="emailValid"></span>
     <br>
     <button onclick="update()" type="button">변경</button>
     <button onclick="closeWindow()" type="button">취소</button>
 
     <script type="text/javascript">
     function update() {
-  
             // 부모 창의 #email 요소 찾기
             const parentEmailInput = window.opener.document.querySelector("#email");
             const newEmail = document.querySelector("#email").value;
+            console.log("parentEmailInput : ",parentEmailInput)
+            console.log("newEmail : ",newEmail)
 
-            // 부모 창의 이메일 값 변경
-            parentEmailInput.value = newEmail;
-            window.close();
+            if(valid(document.querySelector("#email").value.trim(),'email')){
+            	// 부모 창의 이메일 값 변경
+                parentEmailInput.value = newEmail;
+                window.close();
+            }
+            else{
+				alert("!! 형식을 지키지않아 적용 X !!");
+            	window.close();
+            }      
     }
 
     function closeWindow() {
         window.close();
     }
     
-    function eChk(e){
+    function emailChk(e){
     	const emailVal = document.querySelector("#emailValid");
-    	if(!valid(e.value,'email')){
+    	if(!(valid(e.value,'email'))){
     		emailVal.innerHTML= '올바른 Email형식작성하세요';
     		emailVal.style.color='red';
     	}

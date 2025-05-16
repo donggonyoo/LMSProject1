@@ -40,25 +40,52 @@ button:last-of-type:hover {
 </head>
 <body>
     <h2>변경할 핸드폰번호를 입력</h2>
-    <input type="text" id="phone">
+    <input type="text" id="phone" name="phone" onkeyup="phoneChk(this)">
+    <span id="phoneValid"></span>
     <button onclick="update()" type="button">변경</button>
     <button onclick="closeWindow()" type="button">취소</button>
 
     <script type="text/javascript">
     function update() {
-  
             // 부모 창의 #email 요소 찾기
-            const parentEmailInput = window.opener.document.querySelector("#phone");
-            const newEmail = document.querySelector("#phone").value;
+      const parentEmailInput = window.opener.document.querySelector("#phone");
+       const newEmail = document.querySelector("#phone").value;
 
-            // 부모 창의 이메일 값 변경
-            parentEmailInput.value = newEmail;
-            window.close();
+       if(valid(document.querySelector("#phone").value, 'phone')){
+    	   // 부모 창의 이메일 값 변경
+           parentEmailInput.value = newEmail;
+           window.close();
+       }
+       else{
+			alert("!! 형식을 지키지않아 적용되지않음 !!")
+			window.close();
+       }
+           
     }
 
     function closeWindow() {
         window.close();
     }
+    function phoneChk(p){
+    	const phoneVal = document.querySelector("#phoneValid");
+    	if(!valid(p.value,'phone')){
+    		phoneVal.innerHTML= '올바른 휴대폰번호입력바람';
+    		phoneVal.style.color='red';
+    	}
+    	else{
+    		phoneVal.innerHTML= '유효한 번호';
+    		phoneVal.style.color='green';
+    	}
+    }
+    
+    function valid(text,type){
+    	 if(type==='phone'){ //넘어온값과 name=tel의 값이 동일할때
+    		const regex = /^(01[0126789])[ -]?\d{3,4}[ -]?\d{4}$/;
+    		return regex.test(text);
+    	}
+    	
+    }
+    
     </script>
 </body>
 </html>

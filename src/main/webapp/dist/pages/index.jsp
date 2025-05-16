@@ -63,7 +63,78 @@
 	crossorigin="anonymous" />
 <style>
 ul.timeline::before {
-	content: none !important;
+    content: none !important;
+}
+
+/* 기본 배경 스타일 */
+body {
+ 	background-image: url('${path}/dist/assets/picture/backWon2.jpg');
+    /*background-image: url('${path}/dist/assets/picture/back.jpg');*/
+    background-size: contain; /* 이미지가 화면 안에 전체가 보이도록 설정 */
+    background-position: center; /* 중앙 정렬 */
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* 스크롤 시 고정 */
+    min-height: 100vh; /* 화면 높이 전체 채움 */
+    margin: 0; /* 불필요한 여백 제거 */
+    background-color: #f0f0f0; /* 이미지가 화면을 덮지 못할 경우 대비 배경색 */
+}
+
+/* body의 배경에 직접 적용되는 wrapper 스타일 */
+.app-wrapper {
+    background: rgba(255, 255, 255, 0.85);
+    min-height: 100vh;
+}
+
+/* 카드와 사이드바 스타일 유지 */
+.card {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.app-sidebar, .app-header {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* 반응형 설정 */
+@media (max-width: 768px) {
+    body {
+        background-image: url('${path}/dist/assets/picture/backWon2.jpg');
+        /*background-image: url('${path}/dist/assets/picture/back.jpg');*/
+        background-size: contain; /* 모바일에서도 전체 이미지 표시 */
+        background-position: top center; /* 상단 중앙 정렬 */
+        background-attachment: scroll; /* 모바일 성능 최적화 */
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+    body {
+        background-size: contain; /* 태블릿에서도 전체 이미지 표시 */
+        background-position: center;
+    }
+}
+
+@media (min-width: 1201px) {
+    body {
+        background-size: contain; /* 데스크톱에서도 전체 이미지 표시 */
+        background-position: center;
+    }
+}
+
+/* 화면 비율에 따라 조정 */
+@media (max-aspect-ratio: 736/1103) { /* 화면이 이미지보다 세로로 더 긴 경우 */
+    body {
+        background-size: contain; /* 전체 이미지가 보이도록 */
+        background-position: center;
+    }
+}
+
+@media (min-aspect-ratio: 736/1103) { /* 화면이 이미지보다 가로로 더 긴 경우 */
+    body {
+        background-size: contain; /* 전체 이미지가 보이도록 */
+        background-position: center;
+    }
+}
+.app-content{
+	margin-top: 100px;
 }
 </style>
 
@@ -209,8 +280,8 @@ ul.timeline::before {
 								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
  --%>
  							<img src="${path}/dist/assets/picture/${m.img}"
-							class="user-image rounded-circle shadow" alt="User Image" /> <span
-							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.m.id}님
+							class="user-image rounded-circle shadow" alt="User Image" style=" height: 40px; width: 40px"/> <span
+							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님
 								반갑습니다</span>
 						
 					</a>
@@ -401,10 +472,58 @@ ul.timeline::before {
 			<div class="app-content">
 				<div class="container-fluid">
 					<!--begin::Row 1 - Welcome & Quick Actions-->
+					
 					<div class="row">
 						<!-- Welcome Card -->
 						<div class="col-md-6">
+							<!-- 
 							<div class="card card-primary card-outline">
+								<div class="card-header">
+									<h5 class="card-title">
+										환영합니다,
+										 ${user.name} 
+										<strong>임주한(포켓몬마스터)</strong>님!
+									</h5>
+								</div>
+								<div class="card-body">
+									<p>
+										<strong>역할:</strong> ${user.role}
+									</p>
+									<p>
+										<strong>현재 학기:</strong> 2025년 1학기
+									</p>
+									<p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
+								</div>
+							</div>
+							-->
+							
+							 
+						</div>
+						<!-- Quick Actions -->
+						<div class="col-md-6">
+							<div class="card card-info card-outline">
+								<div class="card-header">
+									<h5 class="card-title">빠른 액세스</h5>
+								</div>
+								<div class="card-body">
+									<div class="d-flex flex-wrap">
+										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
+										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> <a
+											href="${path}/mypage/getCourseTimetable" class="btn btn-warning m-1">시간표조회</a> <a
+											href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!--end::Row 1-->
+
+					<!--begin::Row 2 - Notices & Schedule-->
+					<div class="row">
+						<!-- Recent Notices -->
+						<div class="col-md-6">
+						<div class="card card-primary card-outline">
 								<div class="card-header">
 									<h5 class="card-title">
 										환영합니다,
@@ -422,30 +541,6 @@ ul.timeline::before {
 									<p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
 								</div>
 							</div>
-						</div>
-						<!-- Quick Actions -->
-						<div class="col-md-6">
-							<div class="card card-info card-outline">
-								<div class="card-header">
-									<h5 class="card-title">빠른 액세스</h5>
-								</div>
-								<div class="card-body">
-									<div class="d-flex flex-wrap">
-										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
-										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> <a
-											href="timetable.jsp" class="btn btn-warning m-1">시간표조회</a> <a
-											href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 1-->
-
-					<!--begin::Row 2 - Notices & Schedule-->
-					<div class="row">
-						<!-- Recent Notices -->
-						<div class="col-md-6">
 							<div class="card card-warning card-outline">
 								<div class="card-header">
 									<h5 class="card-title">최신 공지사항</h5>
