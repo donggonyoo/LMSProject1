@@ -39,12 +39,14 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 				.addExcludedPath("/mypage/findPw*")
 				.addExcludedPath("/mypage/findId*")
 				.addExcludedPath("/mypage/registerImg*")
+				.addExcludedPath("/mypage/picture*")
 				.addExcludedPath("/mypage/pwUpdate*")
 				.addExcludedPath("/mypage/updateEmail*")
 				.addExcludedPath("/mypage/updatePhone*")
 				.addExcludedPath("/mypage/deleteUser*")
 				.addExcludedPath("/mypage/viewCourseTimetable*")
 				.addExcludedPath("/mypage/registerNumChk*")
+				
 		
 				.addExcludedPath("/post/deleteComment*");
 				

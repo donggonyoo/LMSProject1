@@ -31,7 +31,7 @@ select * from student where student_id=#{val}
 
 <update id="deleteUser" parameterType="DeleteUserDto">
 	update student set student_status=#{studentStatus}
-	where student_id = #{studentId} and dept_id = #{deptId} and student_password=#{studentPassword}
+	where student_id = #{studentId} and dept_id = #{deptId}  and student_name = #{studentName}
 </update>
 
 <select id="selectStatus" parameterType="String" resultType="String">

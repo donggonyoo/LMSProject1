@@ -64,16 +64,15 @@ public class StudentDao {
 		
 	}
 
-	public boolean deleteUser(String inputId, String pw, String deptId) {
+	public boolean deleteUser(String inputId, String deptId, String name) {
 		SqlSession connection = MyBatisConnection.getConnection();
 		try {
 			DeleteUserDto dto = new DeleteUserDto();
 			System.out.println(inputId);
-			System.out.println(pw);
 			System.out.println(deptId);
 			dto.setDeptId(deptId);
 			dto.setStudentId(inputId);
-			dto.setStudentPassword(pw);
+			dto.setStudentName(name);
 			dto.setStudentStatus("퇴학");
 			System.out.println(dto);
 			if(connection.update("student.deleteUser",dto)>0) {				

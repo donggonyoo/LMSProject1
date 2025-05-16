@@ -221,8 +221,9 @@
 
             <form action="userUpdate" class="form-section" name="f" method="post">
                 <div class="profile-section">
-                    <img src="${path}/dist/assets/picture/${m.img}" id="pic" class="profile-img" alt="Profile Image">
+                    
                     <input type="hidden" name="picture" value="${m.img}">
+                    <img src="${path}/dist/assets/picture/${m.img}" id="pic" class="profile-img" alt="Profile Image">
                     <button type="button" class="btn btn-secondary" onclick="win_upload()">이미지 변경</button>
                 </div>
                 <c:choose>
@@ -296,7 +297,7 @@
                     <button class="btn btn-danger" type="button" onclick="deleteUser()">자퇴신청</button>
                 </div>
             </form>
-            <form id="pwForm" action="${path}/mypage/pwUpdate" method="post" target="pwUpdateWindow" name="f">
+            <form id="pwForm" action="pwUpdate" method="post" target="pwUpdateWindow" name="c">
                 <input type="hidden" name="id" value="${sessionScope.login}">
                 <input type="hidden" name="email" value="${fn:contains(sessionScope.login, 's') ? m.studentEmail : m.professorEmail}">
             </form>

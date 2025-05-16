@@ -95,24 +95,24 @@
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호 입력"  onkeyup="pChk(this)">
+            <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호 입력"  onkeyup="passwordChk(this)">
              <font id="passValid"></font>
             
         </div>
         <div class="mb-3">
             <label for="confirmPassword" class="form-label">비밀번호 확인</label>
-            <input type="password" class="form-control" id="confirmPassword" placeholder="비밀번호 확인" onkeyup="cpChk(this)">
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="비밀번호 확인" onkeyup="re_passwordChk(this)">
             <font id="pEqulasCp"></font>
            
         </div>
         <div class="mb-3">
             <label for="phone" class="form-label">전화번호</label>
-            <input type="text" class="form-control" id="phone" name="phone" placeholder="전화번호 입력" onkeyup="tChk(this)">
+            <input type="text" class="form-control" id="phone" name="phone" placeholder="전화번호 입력" onkeyup="phoneChk(this)">
             <font id='phoneValid'></font>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">이메일</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="이메일 입력" onkeyup="eChk(this)">
+            <input type="email" class="form-control" id="email" name="email" placeholder="이메일 입력" onkeyup="emailChk(this)">
             <font id='emailValid'></font>
         </div>
 
@@ -132,11 +132,11 @@
     function win_upload(){
     	let op = "width=500,height=500 ,top=50 ,left=150";
     	open("registerImg","",op);
-    	//pictureForm.jsp를 연다
+    	
     }
     
     
-   /* function pChk(p){
+   function passwordChk(p){
     	const passVal = document.querySelector("#passValid");
     	if(!valid(p.value,'pass')){
     		passVal.innerHTML= '특수문자,영어,숫자포함 8~16자리';
@@ -148,7 +148,7 @@
     	}
     }
     
-    function cpChk(cp){ //비밀번호와 재입력한비밀번호가 같은지?
+    function re_passwordChk(cp){ //비밀번호와 재입력한비밀번호가 같은지?
 		let  p = document.querySelector("#password").value;
 		let  pEqulasCp = document.querySelector("#pEqulasCp");
 		if(!(p===cp.value)){
@@ -160,18 +160,18 @@
 
     }
     
-    function tChk(t){
-    	const telVal = document.querySelector("#phoneValid");
+    function phoneChk(t){
+    	const phoneVal = document.querySelector("#phoneValid");
     	if(!valid(t.value,'phone')){
-    		telVal.innerHTML= '올바른 휴대폰번호입력바람';
-    		telVal.style.color='red';
+    		phoneVal.innerHTML= '올바른 휴대폰번호입력바람';
+    		phoneVal.style.color='red';
     	}
     	else{
-    		telVal.innerHTML= '유효한 번호';
-    		telVal.style.color='green';
+    		phoneVal.innerHTML= '유효한 번호';
+    		phoneVal.style.color='green';
     	}
     }
-    function eChk(e){
+    function emailChk(e){
     	const emailVal = document.querySelector("#emailValid");
     	if(!valid(e.value,'email')){
     		emailVal.innerHTML= '올바른 Email형식작성하세요';
@@ -202,53 +202,67 @@
     		return regex.test(text);
     	}
     }
-    */
+ 
     
     //폼검증
     function input_check(f){
     	//f : <form...>
     	//f.pass : <input name="id">name이 pass인태그
-    	/*
+    	
     	if(f.password.value.trim() == ""){ 
 		alert("비밀번호입력")
 		f.password.focus();
 		return false; 
-	}
-	if(f.confirmPassword.value.trim() == ""){ 
+		}
+    	else if(f.confirmPassword.value.trim() == ""){ 
 		alert("비밀번호재입력")
 		f.confirmPassword.focus();
 		return false; 
 	}
-	if(f.name.value.trim() == ""){ 
+    	else if (f.password.value.trim() != f.confirmPassword.value.trim()) {
+        alert("비밀번호와 재입력한 비밀번호가 일치하지 않습니다.");
+        f.confirmPassword.focus();
+        return false;
+        }
+    	else if(f.name.value.trim() == ""){ 
 		alert("이름입력")
 		f.name.focus();
 		return false; 
 	}
-	if(f.major.value.trim() == "none"){ 
+    	else if(f.birth.value.trim() == ""){
+			alert("생년월일입력바람");
+
+			return false;
+    	}
+    	else if(f.major.value.trim() == "none"){ 
 		alert("전공선택")
 		f.major.focus();
 		return false; 
 	}
 
-	if(f.phone.value.trim() == ""){ 
+    	else if(f.phone.value.trim() == ""){ 
 		alert("전화번호입력바람")
 		f.phone.focus();
 		return false; 
 	}
-	if(f.email.value.trim() == ""){ 
+    	else if(f.email.value.trim() == ""){ 
 		alert("email입력바람")
 		f.email.focus();
 		return false; 
 	}
-	if(!(valid(f.password.value.trim(),'pass') 
+    	else if(!(
+    	valid(f.password.value.trim(),'pass') 
 		&& valid(f.email.value.trim(),'email')
-		&& valid(f.phone.value.trim(),'phone'))){ //3개중 한개라도 유효성검사를 실패했다면 실행
-	alert("형식을준수해주세요")
-	return false;
+		&& valid(f.phone.value.trim(),'phone')
+			)){ //3개중 한개라도 유효성검사를 실패했다면 실행
+			alert("형식을준수해주세요")
+			return false;
+		}
+    	else{
+			return true;
 	}
-    	*/
-    	
-    	return true;//아이디비번이름이 입력됐다면 true
+
+    
     }
     
     </script>

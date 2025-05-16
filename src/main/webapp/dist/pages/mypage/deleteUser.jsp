@@ -92,15 +92,26 @@
     <div class="card">
         <h4 class="text-center mb-4">자퇴 form</h4>
         <form action="delete" method="post" >
+        
            <div class="mb-3">
                 <label for="id" class="form-label">아이디</label>
                 <input type="text" class="form-control" id="id" name="id" >
             </div> 
-            <!-- 현재비밀번호는 비밀번호찾기가성공적으로됐다면 자동으로 입력될것임 -->
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" id="name" name="name" >
+            </div>
+            
             <div class="mb-3">
                 <label for="pw" class="form-label">비밀번호</label>
                 <input type="password" class="form-control" id="pw" name="pw" >
-            </div>        
+            </div>  
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" class="form-control" id="email" name="email" >
+            </div>       
             
            <div class="mb-3">
             <label for="major" class="form-label">전공선택</label>

@@ -3,7 +3,7 @@ package model.dto.mypage;
 public class DeleteUserDto {
 	private String studentId;
 	private String deptId;
-	private String studentPassword;
+	private String studentName;
 	private String studentStatus;
 	
 	public String getStudentStatus() {
@@ -24,17 +24,18 @@ public class DeleteUserDto {
 	public void setDeptId(String deptId) {
 		this.deptId = deptId;
 	}
-	public String getStudentPassword() {
-		return studentPassword;
+	public String getStudentName() {
+		return studentName;
 	}
-	public void setStudentPassword(String studentPassword) {
-		this.studentPassword = studentPassword;
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 	@Override
 	public String toString() {
-		return "DeleteUserDto [studentId=" + studentId + ", deptId=" + deptId + ", studentPassword=" + studentPassword
+		return "DeleteUserDto [studentId=" + studentId + ", deptId=" + deptId + ", studentName=" + studentName
 				+ ", studentStatus=" + studentStatus + "]";
 	}
+	
 	
 	
 	
