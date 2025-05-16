@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>    
 <!DOCTYPE html>
 <html>
 <head>
@@ -84,7 +85,7 @@
             let data = new FormData();
             data.append("file", file);
             $.ajax({
-                url: "uploadImage",
+                url: "${path}/notice/uploadImage",
                 type: "POST",
                 data: data,
                 processData: false,
@@ -94,6 +95,7 @@
                 },
                 error: function(e) {
                     alert("이미지 업로드 실패: " + e.status);
+                    console.error("Error details: ", e);
                 }
             });
         }

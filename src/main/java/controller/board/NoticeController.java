@@ -384,6 +384,8 @@ public class NoticeController extends MskimRequestMapping {
     @RequestMapping("uploadImage")
     public void uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String loginCheck = checkLogin(request, response);
+        System.out.println("uploadImage 메서드가 호출되었습니다: " + new Date());
+        response.getWriter().write("테스트 성공");
         if (loginCheck != null) {
             response.sendRedirect("/LMSProject1/mypage/doLogin");
             return;
