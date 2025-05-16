@@ -381,34 +381,7 @@ public class NoticeController extends MskimRequestMapping {
         }
     }
 
-    @RequestMapping("uploadImage")
-    public void uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        System.out.println("uploadImage 메서드가 호출되었습니다: " + new Date());
-        response.getWriter().write("테스트 성공");
-        if (loginCheck != null) {
-            response.sendRedirect("/LMSProject1/mypage/doLogin");
-            return;
-        }
-
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 20MB
-        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
-
-        String fileName = multi.getFilesystemName("file");
-        if (fileName != null && !fileName.isEmpty()) {
-            String newFileName = System.currentTimeMillis() + "_" + fileName;
-            File oldFile = new File(uploadPath, fileName);
-            if (oldFile.exists()) oldFile.renameTo(new File(uploadPath, newFileName));
-            String fileUrl = request.getContextPath() + "/upload/board/" + newFileName;
-            response.getWriter().write(fileUrl);
-        } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("파일 업로드 실패");
-        }
-    }
+   
 
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {
