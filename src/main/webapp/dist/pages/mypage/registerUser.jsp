@@ -50,7 +50,7 @@
 <body>
     <div class="card">
         <h4 class="text-center mb-4">회원가입</h4>
-        <form action="registerUserChk" name="f" method="post" onsubmit="return input_check(this)">
+        <form action="registerNumChk" name="f" method="post" onsubmit="return input_check(this)">
                 <input type="hidden" name="picture" value=""><!-- 업로드된 이미지의 이름이 들어갈태그 -->
         <div class="mb-3">
             <img src="" width="100" height="120"  id="pic"><br>
@@ -115,16 +115,20 @@
             <input type="email" class="form-control" id="email" name="email" placeholder="이메일 입력" onkeyup="eChk(this)">
             <font id='emailValid'></font>
         </div>
+
         <button class="btn btn-custom w-100 mb-3">가입</button>
+        </form>
+        
         <div class="text-center">
             <a href="doLogin" class="btn-link-custom">로그인 화면으로 돌아가기</a>
         </div> 
-        </form>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
+  
+
     function win_upload(){
     	let op = "width=500,height=500 ,top=50 ,left=150";
     	open("registerImg","",op);
