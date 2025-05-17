@@ -4,5 +4,17 @@
 
 <mapper namespace="ScoreMng">
 
-	
+	<select id="getCoursesInfo" parameterType="string" resultType="java.util.Map">
+    SELECT
+        c.course_name,
+        c.course_id,
+        c.course_current_enrollment
+    FROM
+        course c
+    WHERE
+        1 = 1
+        AND c.professor_id = #{professorId}
+	</select>
+    
+    
 </mapper>

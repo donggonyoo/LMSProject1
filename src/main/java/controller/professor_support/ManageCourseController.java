@@ -34,8 +34,8 @@ public class ManageCourseController extends MskimRequestMapping {
 	
 	@RequestMapping("manageCourse")
 	public String searchCourseInfo (HttpServletRequest request, HttpServletResponse response) {
-//		String professorId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 professorId 지정
+		// 작업 완료시 주석풀고 교체
+		//String professorId = (String) request.getSession().getAttribute("login");
 		String professorId = "P001";
 		String search = request.getParameter("search");
 		String errorMsg = request.getParameter("errorMsg");
@@ -113,8 +113,8 @@ public class ManageCourseController extends MskimRequestMapping {
 	@RequestMapping("updateCourseInfo")
 	public String updateCourseInfo (HttpServletRequest request, HttpServletResponse response) {
 		
+		// 작업 완료시 주석풀고 교체
 		//String professorId = (String) request.getSession().getAttribute("login");
-		//테스트위한 임시 professorId 지정
 		String professorId = "P001";
 		String errorMsg = "";
 		// 기존 페이지정보 전달

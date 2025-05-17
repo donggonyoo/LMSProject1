@@ -75,9 +75,8 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("searchCourse")
 	public String searchCourse (HttpServletRequest request, HttpServletResponse response) {
-//		String studentId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
+		
+		String studentId = (String) request.getSession().getAttribute("login");
 		
 		SearchDto searchDto = new SearchDto();
 		searchDto.setCollege(request.getParameter("college"));
@@ -116,9 +115,8 @@ public class CourseController extends MskimRequestMapping {
 		
 		ObjectMapper mapper = new ObjectMapper();
         String json;
-		//		String studentId = (String) request.getSession().getAttribute("login");
-		// 테스트위한 임시 studentId 지정
-		String studentId = "S001";
+	
+        String studentId = (String) request.getSession().getAttribute("login");
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("studentId", studentId);
@@ -134,9 +132,8 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("searchRegistrationCourses")
 	public String searchRegistrationCourses (HttpServletRequest request, HttpServletResponse response) {
-//		String studentId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
+		
+		String studentId = (String) request.getSession().getAttribute("login");
 		
 		List<RegistrationDto> result = courseDao.searchRegistrationCourses(studentId);
 		ObjectMapper mapper = new ObjectMapper();
@@ -154,11 +151,13 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
-
+		
+		String studentId = (String) request.getSession().getAttribute("login");
+		
 		String registrationId = request.getParameter("registrationId");
 		String courseId = request.getParameter("courseId");
 		
-		courseDao.deleteCourse(registrationId,courseId);
+		courseDao.deleteCourse(registrationId,courseId, studentId);
 		
 		return "/pages/dummy";
 	}

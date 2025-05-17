@@ -91,6 +91,41 @@
 	    )
 	</insert>
     
+    <insert id="addScore" parameterType="java.util.Map">
+	    INSERT INTO score (
+			score_id,	        
+	        student_id,
+	        course_id,
+            professor_id,
+	        dept_id,
+	        score_mid,
+	        score_final
+	    )
+	    VALUES (
+	        #{scoreId},
+	        #{studentId},
+	        #{courseId},
+            #{professorId},
+	        #{deptId},
+	        0,
+	        0
+	    )
+	</insert>
+    
+    <!-- 학생정보 조회 -->
+    <select id="getStudentInfo" resultType="java.util.Map">
+        select student_name,
+        	   dept_id	 
+		  from student
+		 where student_id = #{studentId} 
+    </select>
+    
+    <!-- 최대 score_id의 숫자 부분 조회 -->
+    <select id="getScoreIdNumber" resultType="long">
+        SELECT COALESCE(MAX(CAST(SUBSTRING(score_id, 2) AS UNSIGNED)), 0) AS max_number
+        FROM score
+    </select>
+    
     <!-- 최대 attendance_id의 숫자 부분 조회 -->
     <select id="getMaxAttendanceIdNumber" resultType="long">
         SELECT COALESCE(MAX(CAST(SUBSTRING(attendance_id, 2) AS UNSIGNED)), 0) AS max_number
@@ -132,6 +167,12 @@
     <delete id="deleteAttendance" parameterType="string">
         DELETE FROM attendance
         WHERE course_id = #{courseId}
+    </delete>
+    
+    <delete id="deleteScore" parameterType="java.util.Map">
+        DELETE FROM score
+        WHERE student_id = #{studentId}
+        AND   course_id = #{courseId}
     </delete>
 	
 	<select id="viewCourseTime" resultType="AttendanceDto" parameterType="string">

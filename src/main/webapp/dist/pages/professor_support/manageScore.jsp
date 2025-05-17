@@ -178,8 +178,8 @@
                     <thead>
                         <tr>
                             <th data-sort="courseName">과목명 <i class="fas fa-sort"></i></th>
-                            <th data-sort="courseCode">과목 코드 <i class="fas fa-sort"></i></th>
-                            <th data-sort="studentCount">수강생 수 <i class="fas fa-sort"></i></th>
+                            <th data-sort="courseId">과목 코드 <i class="fas fa-sort"></i></th>
+                            <th data-sort="courseCurrentnrollment">수강생 수 <i class="fas fa-sort"></i></th>
                             <th>성적 관리</th>
                         </tr>
                     </thead>
@@ -227,15 +227,24 @@
         </div>
     </div>
 
-    <!-- JavaScript 코드 -->
     <script>
         $(document).ready(function() {
-            // 더미 데이터: 과목 목록
-            var coursesData = [
-                {courseId: "CS301", courseName: "알고리즘", courseCode: "CS301", studentCount: 50},
-                {courseId: "CS302", courseName: "데이터베이스", courseCode: "CS302", studentCount: 40},
-                {courseId: "CS401", courseName: "인공지능", courseCode: "CS401", studentCount: 30}
-            ];
+
+            var coursesData = []; 
+            // 페이지 로드시 해당교수의 과목 로드
+            $.ajax({
+                url: '${path}/professor_support/score/getCoursesInfo', 
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                	coursesData = data; 
+                 	// 초기 과목 목록 렌더링
+                    renderCourses(coursesData);
+                },
+                error: function (xhr, status, error) {
+                    console.error('과목 목록 데이터를 가져오는 데 실패했습니다.', error);
+                }
+            }); 
 
             // 성적 데이터 배열
             var gradesData = [];
@@ -266,19 +275,33 @@
                     ]
                 }
             };
-
+			
+            $.ajax({
+                url: '${path}/professor_support/score/getScoreInfo', 
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                	gradeDetails = data; 
+                 	// 초기 과목 목록 렌더링
+                    renderCourses(coursesData);
+                },
+                error: function (xhr, status, error) {
+                    console.error('과목 목록 데이터를 가져오는 데 실패했습니다.', error);
+                }
+            });
+            
             // 과목 목록 렌더링 함수
             function renderCourses(data) {
                 var courseList = $('#courseList');
-                courseList.empty(); // 기존 목록 비우기
+                courseList.empty();
                 // 데이터 순회하며 테이블 행 추가
                 $.each(data, function(index, course) {
                     courseList.append(
                         '<tr>' +
-                        '<td>' + course.courseName + '</td>' +
-                        '<td>' + course.courseCode + '</td>' +
-                        '<td>' + course.studentCount + '</td>' +
-                        '<td><a href="#" class="btn-link-custom manage-link" data-course="' + course.courseId + '">관리</a></td>' +
+                        '<td>' + course.course_name + '</td>' +
+                        '<td>' + course.course_id + '</td>' +
+                        '<td>' + course.course_current_enrollment + '</td>' +
+                        '<td><a href="#" class="btn-link-custom manage-link" data-course="' + course.course_id + '">관리</a></td>' +
                         '</tr>'
                     );
                 });
@@ -391,6 +414,7 @@
                 });
                 $(this).toggleClass('sort-asc').siblings().removeClass('sort-asc');
                 $('#gradeList').empty();
+                
                 // 정렬된 데이터 렌더링
                 for (var i = 0; i < gradesData.length; i++) {
                     var grade = gradesData[i];
@@ -403,7 +427,7 @@
                         '<td><input type="number" class="editable-score final-exam-score" value="' + grade.finalExam + '" data-index="' + i + '"></td>' +
                         '<td class="total-score">' + grade.total + '</td>' +
                         '<td class="grade">' + grade.grade + '</td>' +
-                        '<td><a href="#" class="btn-link-custom">[신청]</a></td>' +
+                        '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
                         '</tr>'
                     );
                 }
@@ -420,9 +444,9 @@
                 }, 500);
             });
 
-            // 초기 과목 목록 렌더링
-            renderCourses(coursesData);
+            
         });
+        
     </script>
 </body>
 </html>

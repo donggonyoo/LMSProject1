@@ -42,7 +42,8 @@
     <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />
     
     <typeAlias type="model.dto.professor_support.RegistCourseDto" alias="RegistCourseDto" />
-    <typeAlias type="model.dto.professor_support.PaginationDto" alias="PaginationDto" />	
+    <typeAlias type="model.dto.professor_support.PaginationDto" alias="PaginationDto" />
+    <typeAlias type="model.dto.professor_support.ScoreMngDto" alias="ScoreMngDto" />	
   </typeAliases>
   
   <!-- Connection 객체  -->

@@ -1,8 +1,10 @@
 package model.dao.learning_support;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
@@ -77,7 +79,8 @@ public class CourseDao {
 		try {
 			session.insert("course.addCourse", map);
 			map.remove("registrationId");
-			addAttendance(map, session);		
+			addAttendance(map, session);
+			addScore(map, session);
 			session.commit();
 			result = 1;
 		} catch (Exception e) {
@@ -108,6 +111,30 @@ public class CourseDao {
 			throw new RuntimeException("시간표 데이터 등록 실패; " + e.getMessage(), e);
 		}	
 	}
+	
+	public void addScore(Map<String, Object> map, SqlSession session) {
+		
+		// 학점Id 세팅
+		long maxId = session.selectOne("getScoreIdNumber");
+		String scoreId = "SC" + (++maxId);
+		
+		Map<String, String> studentInfo = session.selectOne("getStudentInfo", map);
+		String studentName = studentInfo.get("studentName");
+		String deptId = studentInfo.get("dept_id");
+				
+		map.put("scoreId", scoreId);
+		map.put("studentName", studentName);
+		map.put("deptId", deptId);
+		
+		try { 
+	        if (session.insert("course.addScore", map) <= 0) {
+	            throw new RuntimeException("Failed to update course info");
+	        }
+
+	    } catch (PersistenceException e) {
+	        throw new RuntimeException("ScoreTb insert failed: " + e.getMessage(), e);
+	    }	
+	}
 
 	public List<RegistrationDto> searchRegistrationCourses(String studentId) {
 		
@@ -125,7 +152,7 @@ public class CourseDao {
 		return result;
 	}
 
-	public int deleteCourse(String registrationId, String courseId) {
+	public int deleteCourse(String registrationId, String courseId, String studentId) {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
 		int num = 0;
@@ -133,6 +160,7 @@ public class CourseDao {
 		try {
 			session.delete("course.deleteCourse", registrationId);
 			deleteAttendance(courseId, session);
+			deleteScore(studentId, courseId, session);
 			MyBatisConnection.close(session);
 			num=1;
 		} catch (Exception e) {	
@@ -152,6 +180,23 @@ public class CourseDao {
 			e.printStackTrace();
 			throw new RuntimeException("시간표 데이터 삭제 실패; " + e.getMessage(), e);
 		}	
+	}
+	
+	public void deleteScore(String studentId, String courseId, SqlSession session) {
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		map.put("studentId", studentId);
+		map.put("courseId", courseId);
+		
+		try { 
+	        if (session.insert("course.deleteScore", map) <= 0) {
+	            throw new RuntimeException("Failed to delete ScoreTb");
+	        }
+
+	    } catch (PersistenceException e) {
+	        throw new RuntimeException("ScoreTb delete failed: " + e.getMessage(), e);
+	    }	
 	}
 	
 	public List<AttendanceDto> viewCourseTime(String studentId) {

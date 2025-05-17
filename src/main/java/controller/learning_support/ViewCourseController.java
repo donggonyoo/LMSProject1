@@ -29,9 +29,7 @@ public class ViewCourseController extends MskimRequestMapping{
 	@RequestMapping("viewCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
 
-		// String studentId = (String) request.getSession().getAttribute("login");
-		// 테스트위한 임시 studentId 지정
-		String studentId = "S001";
+		String studentId = (String) request.getSession().getAttribute("login");
 		int totalScore = 0;
 		
 		//화면 로드시 수강신청내역 불러오기
@@ -50,15 +48,13 @@ public class ViewCourseController extends MskimRequestMapping{
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 		
-//		String studentId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
+		String studentId = (String) request.getSession().getAttribute("login");
 		int totalScore = 0;
 		
 		// 수강신청내역 삭제
 		String registrationId = request.getParameter("registrationId");
 		String courseId = request.getParameter("courseId");
-		int row = courseDao.deleteCourse(registrationId, courseId);
+		int row = courseDao.deleteCourse(registrationId, courseId, studentId);
 		Map<String, Object> result = new HashMap<>();
 		
 		if(row > 0) {
@@ -93,11 +89,9 @@ public class ViewCourseController extends MskimRequestMapping{
 	
 	@RequestMapping("viewCourseTime")
 	public String viewCourseTime (HttpServletRequest request, HttpServletResponse response) {
-//		String studentId = (String) request.getSession().getAttribute("login");
-//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
-		Map<String, Object> map = new HashMap<>();
 		
+		String studentId = (String) request.getSession().getAttribute("login");		
+		Map<String, Object> map = new HashMap<>();
 		
 		try {
 			List<AttendanceDto> result = courseDao.viewCourseTime(studentId);
