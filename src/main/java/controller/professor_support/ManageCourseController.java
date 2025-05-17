@@ -1,6 +1,7 @@
 package controller.professor_support;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,6 +38,7 @@ public class ManageCourseController extends MskimRequestMapping {
 //		테스트위한 임시 professorId 지정
 		String professorId = "P001";
 		String search = request.getParameter("search");
+		String errorMsg = request.getParameter("errorMsg");
 		
 		Map<String, String> map = new HashMap<>();
 		map.put("professorId", professorId);
@@ -42,26 +46,34 @@ public class ManageCourseController extends MskimRequestMapping {
 		
 		//페이징 처리
 	    PaginationDto dto = new PaginationDto();
+
 		String pageParam = request.getParameter("page");
 		Integer currentPage = 
 				(pageParam != null && !pageParam.isEmpty()) ? Integer.parseInt(pageParam) : 1;
 		Integer offset = (currentPage - 1) * dto.getItemsPerPage();
-		Integer totalRows = mDao.getCourseCountRows(map);
+		Integer totalRows = mDao.getCourseCountRows(map); // 데이터 총갯수 
 		Integer totalPages = (int) Math.ceil((double)totalRows / dto.getItemsPerPage());
-		String sortDirection = request.getParameter("sort");
-		
-		dto.setProfessorId(professorId);
-		dto.setSearch(search);
-		dto.setCurrentPage(currentPage);
-		dto.setTotalRows(totalRows);
-		dto.setOffset(offset);
-		dto.setTotalPages(totalPages);
-		dto.setSortDirection(sortDirection);
+		System.out.println("sort: " + request.getParameter("sortDirection"));
+		try {
+		    BeanUtils.populate(dto, request.getParameterMap());
+		    
+		    dto.setProfessorId(professorId);
+		    dto.setCurrentPage(currentPage);
+		    dto.setTotalRows(totalRows);
+		    dto.setTotalPages(totalPages);
+		    dto.setOffset(offset);
+		    
+		} catch (RuntimeException e2) {
+        	errorMsg = e2.getMessage();
+        } catch (Exception e) {
+		    e.printStackTrace();
+		} 
 		
 		List<RegistCourseDto> result =  mDao.searchCourseInfo(dto);
 		
 		request.setAttribute("courses", result);
 		request.setAttribute("pagination", dto);
+		request.setAttribute("errorMsg", errorMsg);
 		
 		return "pages/professor_support/manageCourse";
 	}
@@ -96,6 +108,50 @@ public class ManageCourseController extends MskimRequestMapping {
 			e.printStackTrace();
 		}
 		return "/pages/returnAjax";
+	}
+	
+	@RequestMapping("updateCourseInfo")
+	public String updateCourseInfo (HttpServletRequest request, HttpServletResponse response) {
+		
+		//String professorId = (String) request.getSession().getAttribute("login");
+		//테스트위한 임시 professorId 지정
+		String professorId = "P001";
+		String errorMsg = "";
+		// 기존 페이지정보 전달
+		String search = request.getParameter("search");
+		String page = request.getParameter("page");
+		
+		//파라미터 세팅
+		RegistCourseDto dto = new RegistCourseDto();
+		
+		try {
+		    BeanUtils.populate(dto, request.getParameterMap());
+		    dto.setProfessorId(professorId);
+		    mDao.updateCourseInfo(dto);
+		} catch (RuntimeException e2) {
+        	errorMsg = e2.getMessage();
+        } catch (Exception e) {
+		    e.printStackTrace();
+		} 
+		request.setAttribute("errorMsg", errorMsg);
+		
+		return "redirect:manageCourse?page=" + page + "&search=" + search;
+	}
+	
+	@RequestMapping("deleteCourseInfo")
+	public String deleteCourseInfo (HttpServletRequest request, HttpServletResponse response) {
+		
+		String errorMsg = "";
+		// 기존 페이지정보 전달
+		String search = request.getParameter("search");
+		String page = request.getParameter("page");
+		
+		String courseId = request.getParameter("courseId");
+		
+		mDao.deleteCourseInfo(courseId);
+		request.setAttribute("errorMsg", errorMsg);
+		
+		return "redirect:manageCourse?page=" + page + "&search=" + search;
 	}
 	
 }

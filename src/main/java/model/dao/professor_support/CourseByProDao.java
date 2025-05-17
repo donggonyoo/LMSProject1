@@ -9,16 +9,14 @@ import model.dto.professor_support.RegistCourseDto;
 
 public class CourseByProDao {
 	
-	// 커스텀 예외 클래스 정의
-	public class DuplicateKeyException extends RuntimeException {
-	    public DuplicateKeyException(String message) {
-	        super(message);
-	    }
-
-	    public DuplicateKeyException(String message, Throwable cause) {
-	        super(message, cause);
-	    }
-	}
+	// 커스텀 예외 클래스 정의(강의명 중복허용으로인한 주석처리)
+	/*
+	 * public class DuplicateKeyException extends RuntimeException { public
+	 * DuplicateKeyException(String message) { super(message); }
+	 * 
+	 * public DuplicateKeyException(String message, Throwable cause) {
+	 * super(message, cause); } }
+	 */
 
 	public String getMaxcourseIdNumber() {
 		SqlSession session = MyBatisConnection.getConnection(); 
@@ -67,10 +65,12 @@ public class CourseByProDao {
 				 throw new RuntimeException("fail registcourse");
 			 }
 		} catch (PersistenceException e) {
+			/* 강의명 중복 허용으로인한 해당 오류 제거
 			// 중복 키 오류 확인 (MyBatis는 SQL 상태 코드를 제공하지 않으므로 직접 확인 어려움)
 	        if (e.getCause() != null && e.getCause().getMessage().contains("Duplicate entry")) {
 	            throw new DuplicateKeyException("Duplicate", e);
 	        }
+	        */
 	        throw new RuntimeException("DBERROR", e);
 	    } finally {
 			session.close();
@@ -88,9 +88,5 @@ public class CourseByProDao {
 			throw new RuntimeException("DBERROR");
 		}
 	}
-
-	
-
-	
 
 }
