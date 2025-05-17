@@ -98,8 +98,7 @@ h4 {
 			<!-- 현재비밀번호는 비밀번호찾기가성공적으로됐다면 자동으로 입력될것임 -->
 			<div class="mb-3">
 				<label for="pw" class="form-label">현재 비밀번호</label> <input
-					type="password" class="form-control" id="pw" name="pw"
-					value="${param.pw}">
+					type="password" class="form-control" id="pw" name="pw">
 			</div>
 
 			<div class="mb-3">

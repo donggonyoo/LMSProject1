@@ -10,7 +10,6 @@
     <form action="pwUpdate" name="f" method="post">
         <input type="hidden" name="id" value="${requestScope.id}">
         <input type="hidden" name="email" value="${requestScope.email}">
-        <input type="hidden" name="pw" value="${requestScope.pw}">
     </form>
 
     <script>

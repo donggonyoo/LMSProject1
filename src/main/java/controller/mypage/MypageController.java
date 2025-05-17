@@ -4,11 +4,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.annotation.WebInitParam;
@@ -51,10 +55,103 @@ public class MypageController  extends MskimRequestMapping{
 		}
 		return null; //정상인경우
 	}
+	
+	public  String IdChk(String a) { 
+		String num = null;
+		if(a.equals("pro")) {
+			num = createProfessorId();	
+		}
+		else if(a.equals("stu")) {
+			num = createStudentId();
+		}
 
+		return num;
+	}
+	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
+		public  String getTempPw() {
+			List<String> list = Arrays.asList
+					("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
+					
+					List<String> list2 = new ArrayList<>();
+					for (String string : list) {
+						list2.add(string.toUpperCase());
+					}	
+
+					List<Object> combineList = new ArrayList<>();
+					combineList.addAll(list);
+					combineList.addAll(list2);
+					for (int i = 0; i < 15; i++) { //랜덤한0~9 숫자 10개집어넣기
+						 combineList.add(new Random().nextInt(10)); 
+					}
+					Collections.shuffle(combineList);
+					String tempNum = "";
+					for (int i = 0; i < 6; i++) {
+						int num = new Random().nextInt(combineList.size());
+						tempNum += combineList.get(num);
+					}
+					
+					return tempNum;
+				}
+	
+		
+	
+	//교수의아이디를 자동생성하는 메서드(p000)
+	private  String createProfessorId() {
+		int[] num = {0,1,2,3,4,5,6,7,8,9}; 
+
+		String sNum="";
+		for(int i=0;i<3;i++) {
+			//0 ~ (num.length-1)의 랜덤한숫자반환
+			int ranNum = new Random().nextInt(num.length);
+			sNum+=num[ranNum]; //랜덤한 3개의숫자
+		}
+		ProfessorDao dao = new ProfessorDao();
+
+		while(true) { 
+			if(dao.idchk("p"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
+				break;
+			}
+			else {
+				int iNum = Integer.parseInt(sNum);//sNum을 Integer로형변환 
+				iNum +=1; // 1 증가
+				sNum = String.valueOf(iNum); // sNum으로 다시넣기
+			}
+		}
+		//p0000 형식
+		return "p"+sNum;
+
+	}
+	//학생의아이디를 자동생성하는 메서드(s00000)
+	private   String createStudentId() {
+		int[] num = {0,1,2,3,4,5,6,7,8,9};
+		String sNum="";
+
+		for(int i=0;i<5;i++) {
+			//0 ~ (num.length-1)의 랜덤한숫자반환
+			int ranNum = new Random().nextInt(num.length);
+			sNum+=num[ranNum]; //랜덤한 5개의숫자
+		}
+		StudentDao memberDao = new StudentDao();
+
+		while(true) { 
+			if(memberDao.idchk("s"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
+				break;
+			}
+			else {
+				int iNum = Integer.parseInt(sNum);//sNum을 Integer로형변환 
+				iNum +=1; // 1 증가
+				sNum = String.valueOf(iNum); // sNum으로 다시넣기
+			}
+		}
+
+		return "s"+sNum;
+	}
+
+	
 
 	@RequestMapping("registerUser")
 	public String  registerUser(HttpServletRequest request , HttpServletResponse response) throws ParseException {
+		request.getSession().invalidate();//회원가입창에 들어오게된다면 일단 세션정보 다날려
 		List<Dept> dept = new DeptDao().selectAll();
 		request.setAttribute("dept", dept);
 		return "mypage/registerUser";
@@ -75,7 +172,7 @@ public class MypageController  extends MskimRequestMapping{
 		String deptId = request.getParameter("deptId");
 		String email = request.getParameter("email");
 		String phone = request.getParameter("phone");
-		String id = MypageUsingMethod.IdChk(position);//직급에따른 아이디부여해주는 메서드(MypageUsingMethod에존재)
+		String id = IdChk(position);//직급에따른 아이디부여해주는 메서드
 
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -136,6 +233,8 @@ public class MypageController  extends MskimRequestMapping{
 		String id = request.getParameter("id");
 		String msg = "회원가입성공 id = "+id;
 		String url = "doLogin";
+		
+		
 		if(id.toLowerCase().contains("s")) {
 			Student stu = (Student)request.getSession().getAttribute("mem");
 			StudentDao sDao = new StudentDao();
@@ -169,6 +268,8 @@ public class MypageController  extends MskimRequestMapping{
 			}
 
 		}
+		 //회원가입이실패하든 성공하든 세션정보는 모두지워줌
+		request.getSession().invalidate();
 		return "alert";
 	}
 
@@ -195,6 +296,7 @@ public class MypageController  extends MskimRequestMapping{
 
 	@RequestMapping("doLogin") //로그인상태로접근불가능
 	public String doLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		request.getSession().invalidate();//로그인창에 들어오게된다면 일단 세션정보 다날려
 		HttpSession session = request.getSession();
 		String login = (String)session.getAttribute("login");
 		if(login==null) {
@@ -327,22 +429,22 @@ public class MypageController  extends MskimRequestMapping{
 	public String findPwProcess(HttpServletRequest request, HttpServletResponse response) {
 		String id = request.getParameter("id");
 		String email = request.getParameter("email");
-		String pw = new ProStuDao().findPw(id,email);
+		String pw = new ProStuDao().findPw(id,email);//아이디와이메일이 일치 시 비밀번호를 반환
 		if(pw==null) {
 			request.setAttribute("msg", "입력된정보가없어요");			
 			return "mypage/close";
 		}
 		else {
-			String tempPw = MypageUsingMethod.getTempPw(); //임시비번생성하는 알고리즘이있는 메서드
-			String hashpw = BCrypt.hashpw(tempPw, BCrypt.gensalt());
-			if(new ProStuDao().updateTempPw(hashpw,id)) {
-				EmailUtil.sendTempPw(email, id, tempPw);
-				request.setAttribute("msg", "임시 비밀번호는"+tempPw+"입니다");
+			String tempPw = getTempPw(); //임시비번생성하는 알고리즘이있는 메서드
+			String hashpw = BCrypt.hashpw(tempPw, BCrypt.gensalt()); //임시비밀번호를 암호화
+			
+			if(new ProStuDao().updateTempPw(hashpw,id)) { //넘겨받은 id의 비밀번호를 임시비번으로 업데이트
+				EmailUtil.sendTempPw(email, id, tempPw);//임시비밀번호를 메일로발송
+				request.setAttribute("msg", "임시 비밀번호는"+tempPw+"입니다"); 
 				request.setAttribute("id", id);
-				request.setAttribute("pw", tempPw);
 				request.setAttribute("email", email);
 
-				//return "mypage/pwUpdate";
+				//알림창을 띄워주고 pwUpdate폼으로이동
 				return "mypage/alertPw";
 			}
 			else {
