@@ -54,6 +54,7 @@ public class ManageCourseDao {
 		
 		try {
 			 if (session.update("CourseByPro.changeCourse",paramMap) > 0) {
+				 session.commit();
 				 return result + 1;
 			 } else {
 				 throw new RuntimeException("chgCourseFail");
@@ -62,9 +63,79 @@ public class ManageCourseDao {
 			e.printStackTrace();
 			throw new RuntimeException("chgCourseFail", e);
 		} finally {
-			MyBatisConnection.close(session);
+			session.close();
 		}
 
+	}
+
+	public void updateCourseInfo(RegistCourseDto dto) {
+		
+	    try (SqlSession session = MyBatisConnection.getConnection()) { 
+	        // course 테이블 업데이트
+	        if (session.update("CourseByPro.updateCourseInfo", dto) <= 0) {
+	            throw new RuntimeException("Failed to update course info");
+	        }
+
+	        // course_time 테이블 업데이트
+	        if (updateCourseTimeInfo(dto, session) <= 0) {
+	            throw new RuntimeException("Failed to update course time info");
+	        }
+
+	        // 성공 시 커밋
+	        session.commit();
+	    } catch (PersistenceException e) {
+	        throw new RuntimeException("Course update failed: " + e.getMessage(), e);
+	    }
+	}
+
+	public int updateCourseTimeInfo(RegistCourseDto dto, SqlSession session) {
+		
+	    int updatedRows = session.update("CourseByPro.updateCourseTimeInfo", dto);
+	    
+	    if (updatedRows <= 0) {
+	        throw new RuntimeException("Failed to update course time info for courseTimeId: ");
+	    }
+	    return updatedRows;
+	}
+
+	public void deleteCourseInfo(String courseId) {
+		
+		try (SqlSession session = MyBatisConnection.getConnection()) { 
+	        
+			// course_time 테이블 삭제(time테이블에서 courseId참조로인한 time테이블먼저 삭제)
+	        if (deleteCourseTimeInfo(courseId, session) <= 0) {
+	            throw new RuntimeException("Failed to delete course time info");
+	        }
+	        
+	        // score 테이블 삭제
+	        deleteScore(courseId, session);
+	        
+			// course 테이블 삭제
+	        if (session.delete("CourseByPro.deleteCourseInfo", courseId) <= 0) {
+	            throw new RuntimeException("Failed to delete course info");
+	        }
+	        
+	        // 성공 시 커밋
+	        session.commit();
+	    } catch (PersistenceException e) {
+	        throw new RuntimeException("Course delete failed: " + e.getMessage(), e);
+	    }
+		
+	}
+
+	private void deleteScore(String courseId, SqlSession session) {
+		session.delete("CourseByPro.deleteScore", courseId);
+	}
+	
+
+	private int deleteCourseTimeInfo(String courseId, SqlSession session) {
+		
+		int deleteddRows = session.delete("CourseByPro.deleteCourseTimeInfo", courseId);
+		
+	    if (deleteddRows <= 0) {
+	        throw new RuntimeException("Failed to delete course time");
+	    }
+	    return deleteddRows;
 	}
 		
 

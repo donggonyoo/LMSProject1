@@ -27,6 +27,7 @@
             professor_id,
             course_name,
             course_status,
+            course_current_enrollment,
             course_max_cnt,
             course_score,
             credit_category,
@@ -38,6 +39,7 @@
             #{professorId},
             #{courseName},
             #{courseStatus},
+            0,
             #{courseMaxCnt},
             #{courseScore},
             #{creditCategory},
@@ -135,4 +137,48 @@
 	        </set>
 	    WHERE course_id = #{courseId}
 	</update>
+	
+	<!-- course 테이블 업데이트 -->
+    <update id="updateCourseInfo" parameterType="RegistCourseDto">
+        UPDATE course
+        SET course_name = #{courseName},
+            course_max_cnt = #{courseMaxCnt},
+            course_score = #{courseScore},
+            credit_category = #{creditCategory},
+            course_period = #{coursePeriod},
+            course_plan = #{coursePlan}
+        WHERE course_id = #{courseId}
+    </update>
+
+    <!-- course_time 테이블 업데이트 -->
+    <update id="updateCourseTimeInfo" parameterType="RegistCourseDto">
+        UPDATE course_time
+        SET course_time_yoil = #{courseTimeYoil},
+            course_time_loc = #{courseTimeLoc},
+            course_time_start = #{courseTimeStart},
+            course_time_end = #{courseTimeEnd}
+        WHERE course_time_id = #{courseTimeId}
+    </update>
+    
+    <!-- course 테이블 삭제 -->
+    <delete id="deleteCourseInfo">
+        DELETE 
+        FROM  course
+        WHERE course_id = #{courseId}
+    </delete>
+    
+    <!-- course_time 테이블 삭제 -->
+    <delete id="deleteCourseTimeInfo">
+        DELETE 
+        FROM  course_time
+        WHERE course_id = #{course_Id}
+    </delete>
+    
+    <!-- score 테이블 삭제 -->
+    <delete id="deleteScore">
+        DELETE 
+        FROM  score
+        WHERE course_id = #{course_Id}
+    </delete>
+	
 </mapper>

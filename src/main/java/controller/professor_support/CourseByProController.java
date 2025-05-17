@@ -11,7 +11,6 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
 import model.dao.professor_support.CourseByProDao;
-import model.dao.professor_support.CourseByProDao.DuplicateKeyException;
 import model.dto.learning_support.DeptDto;
 import model.dto.professor_support.RegistCourseDto;
 
@@ -73,9 +72,7 @@ public class CourseByProController extends MskimRequestMapping {
         
         try {
         	byProDao.insertCourseInfo(dto);
-        } catch (DuplicateKeyException e){
-        	errorMsg = e.getMessage();
-        } catch (RuntimeException e2) {
+        }catch (RuntimeException e2) {
         	errorMsg = e2.getMessage();
         }
 
