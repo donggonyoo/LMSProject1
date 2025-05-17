@@ -273,8 +273,8 @@ body {
 					</a></li>
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
-					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
+					<li class="nav-item dropdown user-menu">
+						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
 						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
 <%-- 						<c:set var="img"
 								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
@@ -420,7 +420,7 @@ body {
 										<p>강의관리</p>
 								</a></li>
 								<li class="nav-item"><a
-									href="./layout/layout-custom-area.html" class="nav-link"> <i
+									href="${path}/professor_support/score/scoreMng" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
 										<p>성적관리</p>
 								</a></li>

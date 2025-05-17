@@ -379,7 +379,7 @@ body {
 										<p>강의관리</p>
 								</a></li>
 								<li class="nav-item"><a
-									href="./layout/layout-custom-area.html" class="nav-link"> <i
+									href="${path}/professor_support/score/scoreMng" class="nav-link"> <i
 										class="nav-icon bi bi-circle"></i>
 										<p>성적관리</p>
 								</a></li>

@@ -3,10 +3,6 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="CourseByPro">
-
-	<select id="insertCourseByPro" resultType="int" parameterType="RegistCourseDto">
-	    
-	</select>
 	
 	<!-- 최대 course_id의 숫자 부분 조회 -->
     <select id="getMaxcourseIdNumber" resultType="long">
