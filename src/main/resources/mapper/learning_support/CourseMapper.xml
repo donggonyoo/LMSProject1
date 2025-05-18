@@ -18,25 +18,11 @@
 		<if test="college != null and college != ''">
 		and    college = #{college};
 		</if>
-		
 	</select>
 	
-	<select id="searchCourse" resultType="CourseDto">
-	    SELECT 
-	        c.course_id, 
-	        c.dept_id, 
-	        c.professor_id, 
-	        p.professor_name, 
-	        c.course_name, 
-	        c.credit_category, 
-	        c.course_score, 
-	        c.course_plan,
-	        c.course_current_enrollment,
-	        c.course_max_cnt,
-	        (SELECT CONCAT(ct.course_time_yoil, '/ ', ct.course_time_start, ' - ', ct.course_time_end)
-	         FROM course_time ct
-	         WHERE ct.course_id = c.course_id
-	         LIMIT 1) AS time_slot
+	<!-- 강의목록 Row수 조회 -->
+    <select id="countCourses" resultType="int">
+	    SELECT COUNT(*) 
 	    FROM course c
 	    JOIN professor p ON c.professor_id = p.professor_id
 	    JOIN dept d ON c.dept_id = d.dept_id
@@ -53,6 +39,41 @@
 	    <if test="courseName != null and courseName != ''">
 	        AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
 	    </if>
+	</select>
+	
+	<select id="searchCourse" resultType="CourseDto">
+	    SELECT 
+		        c.course_id, 
+		        c.dept_id, 
+		        c.professor_id, 
+		        p.professor_name, 
+		        c.course_name, 
+		        c.credit_category, 
+		        c.course_score, 
+		        c.course_plan,
+		        c.course_current_enrollment,
+		        c.course_max_cnt,
+		        (SELECT CONCAT(ct.course_time_yoil, '/ ', ct.course_time_start, ' - ', ct.course_time_end)
+		         FROM course_time ct
+		         WHERE ct.course_id = c.course_id
+		         LIMIT 1) AS time_slot
+	    FROM  	 course c
+	    JOIN 	 professor p ON c.professor_id = p.professor_id
+	    JOIN 	 dept d ON c.dept_id = d.dept_id
+	    WHERE 	 c.course_status = 'OPEN'
+	    <if test="searchDto.college != null and searchDto.college != ''">
+	        AND d.college = #{searchDto.college}
+	    </if>
+	    <if test="searchDto.deptId != null and searchDto.deptId != ''">
+	        AND c.dept_id = #{searchDto.deptId}
+	    </if>
+	    <if test="searchDto.courseId != null and searchDto.courseId != ''">
+	        AND c.course_id = #{searchDto.courseId}
+	    </if>
+	    <if test="searchDto.courseName != null and searchDto.courseName != ''">
+	        AND c.course_name LIKE CONCAT('%', #{searchDto.courseName}, '%')
+	    </if>
+	    LIMIT #{paginationDto.offset}, #{paginationDto.itemsPerPage}
 	</select>
 	
 	<insert id="addCourse" parameterType="java.util.Map">
@@ -214,4 +235,5 @@
         AND ct.course_id = c.course_id
         AND ct.professor_id = p.professor_id
     </select>
+    
 </mapper>

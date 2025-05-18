@@ -65,6 +65,24 @@ body {
 .btn-secondary:hover {
     background: #cbd5e0;
 }
+.pagination button {
+    padding: 8px 12px;
+    margin: 0 4px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    background: #fff;
+    color: #3182ce;
+    cursor: pointer;
+}
+.pagination button.active {
+    background: #3182ce;
+    color: white;
+    border-color: #3182ce;
+}
+.pagination button:disabled {
+    color: #a0aec0;
+    cursor: not-allowed;
+}
 </style>
 </head>
 
@@ -122,7 +140,12 @@ body {
                 <!-- AJAX로 동적으로 채움 -->
             </tbody>
         </table>
-
+        
+		<!-- 추가: 페이징 네비게이션 영역 -->
+        <div class="pagination flex justify-center mt-4" id="pagination">
+            <!-- 동적으로 페이지 버튼 생성 -->
+        </div>
+        
         <!-- 신청 내역 -->
         <h3 class="text-lg font-semibold mt-4">신청내역</h3>
         <table class="table" id="registrationTable">
@@ -145,192 +168,247 @@ body {
 </main>
 
 <script>
-$(document).ready(function() {
-    // 대학 목록 로드
-    $.ajax({
-        url: "${path}/learning_support/colleges",
-        type: "get",
-        dataType: "json",
-        success: function(data) {
-            var $collegeSelect = $("#collegeSelect");
-            $collegeSelect.empty();
-            $collegeSelect.append('<option value="">전체</option>');
-            $.each(data, function(i, item) {
-                $collegeSelect.append($("<option>").val(item).text(item));
-            });
-        },
-        error: function(e) {
-            alert("SERVER_ERROR: " + e.status);
-        }
-    });
-
-    // 초기 강의 목록 및 신청 내역 로드
-    loadCourses();
-    loadRegistrations();
-
-    // 검색 버튼 클릭 이벤트
-    $("#searchButton").on("click", function() {
-        loadCourses();
-    });
-
-    // 추가 버튼 클릭 이벤트 (AJAX로 처리)
-    $(document).on("click", ".add-course", function() {
-        var courseId = $(this).closest("form").find("input[name='courseId']").val();
-        var professorId = $(this).closest("form").find("input[name='professorId']").val();
-        addCourse(courseId, professorId);
-    });
-
-    // 삭제 버튼 클릭 이벤트 (AJAX로 처리)
-    $(document).on("click", ".delete-registration", function() {
-        var registrationId = $(this).closest("form").find("input[name='registrationId']").val();
-     	// 버튼이 속한 tr에서 courseId가 있는 td(두 번째 td) 가져오기
-        var courseId = $(this).closest("tr").find("td:eq(1)").text();
-     	
-        deleteCourse(registrationId, courseId);
-    });
-});
-
-// 학과 동적 업데이트 함수
-function updateDepartments() {
-	var college = $('#collegeSelect').val();
-    
-    $.ajax({
-        url: '${path}/learning_support/departments',
-        method: 'GET',
-        data: { college: college },
-        dataType: "json",
-        success: function(data) {
-            var $deptSelect = $('#deptSelect');
-            $deptSelect.empty();
-            $deptSelect.append('<option value="">전체</option>');
-            $.each(data, function(idx, dept) {
-                $deptSelect.append($("<option>").val(dept.deptId).text(dept.deptName));
-            });
-        },
-        error: function(xhr) {
-            alert('학과 목록을 불러오지 못했습니다: ' + xhr.responseText);
-        }
-    });
-}
-
-// 강의 목록 로드
-function loadCourses() {
-    var params = {
-    	college: $('#collegeSelect').val(),
-        deptId: $("#deptSelect").val(),
-        courseId: $("#courseId").val(),
-        courseName: $("#courseName").val(),
-    };
-    $.ajax({
-        url: "${path}/learning_support/searchCourse",
-        type: "get",
-        data: params,
-        dataType: "json",
-        success: function(data) {
-            var $body = $("#courseBody");
-            $body.empty();
-            $.each(data, function(i, course) {
-                var row = $("<tr>").append(
-                    $("<td>").append(
-                        $("<form>").append(
-                            $("<input>").attr({type: "hidden", name: "courseId", value: course.courseId}),
-                            $("<input>").attr({type: "hidden", name: "professorId", value: course.professorId}),
-                            $("<button>").attr({type: "button"}).addClass("btn btn-primary add-course").text("추가")
-                       	)
-                    ),
-                    $("<td>").text(course.creditCategory),
-                    $("<td>").text(course.courseId),
-                    $("<td>").text(course.courseName),
-                    $("<td>").text(course.professorName),
-                    $("<td>").text(course.courseScore),
-                    $("<td>").text(course.timeSlot),
-                    $("<td>").text(course.courseCurrentEnrollment + ' / ' + course.courseMaxCnt),
-                    $("<td>").append(
-                        course.coursePlan ? $("<a>").attr({href: course.coursePlan, target: "_blank"}).addClass("btn btn-secondary").text("미리보기") : $("<span>").text("-")
-                    )
-                );
-                $body.append(row);
-            });
-            $("#courseCount").text(data.length);
-        },
-        error: function(xhr) {
-            alert("강의 목록을 불러오지 못했습니다: " + xhr.responseText);
-        }
-    });
-}
-
-// 과목 추가
-
-function addCourse(courseId, professorId) {
-    $.ajax({
-        url: "${path}/learning_support/addCourse",
-        type: "get",
-        data: { courseId: courseId, professorId: professorId },
-        dataType: "json",
-        success: function(data) {
-			if (data.errorMsg && data.errorMsg.indexOf('full') !== -1) {
-				alert('해당강의는 정원이 초과하였습니다.');
+	//페이징 처리 준비
+	var currentPage = 1;
+	var pageSize = 10;
+	
+	$(document).ready(function() {
+		
+		
+	    // 대학 목록 로드
+	    $.ajax({
+	        url: "${path}/learning_support/colleges",
+	        type: "get",
+	        dataType: "json",
+	        success: function(data) {
+	            var $collegeSelect = $("#collegeSelect");
+	            $collegeSelect.empty();
+	            $collegeSelect.append('<option value="">전체</option>');
+	            $.each(data, function(i, item) {
+	                $collegeSelect.append($("<option>").val(item).text(item));
+	            });
+	        },
+	        error: function(e) {
+	            alert("SERVER_ERROR: " + e.status);
+	        }
+	    });
+	
+	    // 초기 강의 목록 및 신청 내역 로드
+	    loadCourses();
+	    loadRegistrations();
+	
+	    // 검색 버튼 클릭 이벤트
+	    $("#searchButton").on("click", function() {
+	    	currentPage = 1;
+	        loadCourses();
+	    });
+	
+	    // 추가 버튼 클릭 이벤트 (AJAX로 처리)
+	    $(document).on("click", ".add-course", function() {
+	        var courseId = $(this).closest("form").find("input[name='courseId']").val();
+	        var professorId = $(this).closest("form").find("input[name='professorId']").val();
+	        addCourse(courseId, professorId);
+	    });
+	
+	    // 삭제 버튼 클릭 이벤트 (AJAX로 처리)
+	    $(document).on("click", ".delete-registration", function() {
+	        var registrationId = $(this).closest("form").find("input[name='registrationId']").val();
+	     	// 버튼이 속한 tr에서 courseId가 있는 td(두 번째 td) 가져오기
+	        var courseId = $(this).closest("tr").find("td:eq(1)").text();
+	     	
+	        deleteCourse(registrationId, courseId);
+	    });
+	});
+	
+	// 학과 동적 업데이트 함수
+	function updateDepartments() {
+		var college = $('#collegeSelect').val();
+	    
+	    $.ajax({
+	        url: '${path}/learning_support/departments',
+	        method: 'GET',
+	        data: { college: college },
+	        dataType: "json",
+	        success: function(data) {
+	            var $deptSelect = $('#deptSelect');
+	            $deptSelect.empty();
+	            $deptSelect.append('<option value="">전체</option>');
+	            $.each(data, function(idx, dept) {
+	                $deptSelect.append($("<option>").val(dept.deptId).text(dept.deptName));
+	            });
+	        },
+	        error: function(xhr) {
+	            alert('학과 목록을 불러오지 못했습니다: ' + xhr.responseText);
+	        }
+	    });
+	}
+	
+	// 강의 목록 로드
+	function loadCourses() {
+	    var params = {
+	    	college: $('#collegeSelect').val(),
+	        deptId: $("#deptSelect").val(),
+	        courseId: $("#courseId").val(),
+	        courseName: $("#courseName").val(),
+	        currentPage: currentPage,
+	        itemsPerPage: pageSize,
+	    };
+	    $.ajax({
+	        url: "${path}/learning_support/searchCourse",
+	        type: "get",
+	        data: params,
+	        dataType: "json",
+	        success: function(data) {
+				var courses = data.courses;
+				var pagination = data.pagination;
+				
+	            var $body = $("#courseBody");
+	            $body.empty();
+	            $.each(courses, function(i, course) {
+	                var row = $("<tr>").append(
+	                    $("<td>").append(
+	                        $("<form>").append(
+	                            $("<input>").attr({type: "hidden", name: "courseId", value: course.courseId}),
+	                            $("<input>").attr({type: "hidden", name: "professorId", value: course.professorId}),
+	                            $("<button>").attr({type: "button"}).addClass("btn btn-primary add-course").text("추가")
+	                       	)
+	                    ),
+	                    $("<td>").text(course.creditCategory),
+	                    $("<td>").text(course.courseId),
+	                    $("<td>").text(course.courseName),
+	                    $("<td>").text(course.professorName),
+	                    $("<td>").text(course.courseScore),
+	                    $("<td>").text(course.timeSlot),
+	                    $("<td>").text(course.courseCurrentEnrollment + ' / ' + course.courseMaxCnt),
+	                    $("<td>").append(
+	                        course.coursePlan ? $("<a>").attr({href: course.coursePlan, target: "_blank"}).addClass("btn btn-secondary").text("미리보기") : $("<span>").text("-")
+	                    )
+	                );
+	                $body.append(row);
+	                
+	                // 페이징 처리
+	                renderPagination(pagination.currentPage, pagination.totalPages);
+	            });
+	            $("#courseCount").text(courses.length);
+	        },
+	        error: function(xhr) {
+	            alert("강의 목록을 불러오지 못했습니다: " + xhr.responseText);
+	        }
+	    });
+	}
+	
+	//페이징 처리
+	function renderPagination(current, total) {
+		var paging = $("#pagination");
+		paging.empty();
+		
+		// 이전페이지btn
+		paging.append(
+			$('<button>').text('이전').prop('disabled', current == 1)	.on('click', function() {
+			if (current > 1) {
+				currentPage = current - 1;
+				loadCourses();
 			}
-        	loadRegistrations(); // 신청 내역 갱신
-            loadCourses(); // 강의 목록 갱신 (추가된 항목 제외)
-        },
-        error: function(xhr) {
-            alert("과목 추가에 실패했습니다: " + xhr.responseText);
-        }
-    });
-}
-
-
-
-// 신청 내역 로드
-function loadRegistrations() {
-    $.ajax({
-        url: "${path}/learning_support/searchRegistrationCourses",
-        type: "get",
-        dataType: "json",
-        success: function(data) {
-            var $body = $("#registrationBody");
-            $body.empty();
-            $.each(data, function(i, reg) {
-                var row = $("<tr>").append(
-                    $("<td>").text(reg.creditCategory),
-                    $("<td>").text(reg.courseId),
-                    $("<td>").text(reg.courseName),
-                    $("<td>").text(reg.courseScore),
-                    $("<td>").text(reg.professorName),
-                    $("<td>").text(reg.timeSlot),
-                    $("<td>").append(
-                        $("<form>").append(
-                            $("<input>").attr({type: "hidden", name: "registrationId", value: reg.registrationId}),
-                            $("<button>").attr({type: "button"}).addClass("btn btn-secondary delete-registration text-red-600").text("삭제")
-                        )
-                    )
-                );
-                $body.append(row);
-            });
-        },
-        error: function(xhr) {
-            alert("신청 내역을 불러오지 못했습니다: " + xhr.responseText);
-        }
-    });
-}
-
-// 신청 삭제
-function deleteCourse(registrationId, courseId) {
-    $.ajax({
-        url: "${path}/learning_support/deleteCourse",
-        type: "get",
-        data: { registrationId: registrationId, courseId: courseId },
-        dataType: "json",
-        success: function(data) {
-        	loadRegistrations(); // 신청 내역 갱신
-            loadCourses(); // 강의 목록 갱신
-        },
-        error: function(xhr) {
-            alert("과목 삭제에 실패했습니다: " + xhr.responseText);
-        }
-    });
-}
+			})	
+		);
+		
+		// 페이지번호btn
+		for (var i=1; i<=total; i++) {
+			(function(page) {
+				paging.append(
+					$('<button>').text(page).toggleClass('active', page == current).on('click', function() {
+						currentPage = page;
+						loadCourses();
+					})		
+				)
+			
+			})(i);
+		}
+	
+		// 다음페이지btn
+		paging.append(
+			$('<button>').text('다음').prop('disabled', current == total).on('click', function() {
+				if (current < total) {
+					currentPage = current + 1;
+					loadCourses();
+				}
+			
+			})		
+		)
+		
+	}
+	
+	// 과목 추가
+	function addCourse(courseId, professorId) {
+	    $.ajax({
+	        url: "${path}/learning_support/addCourse",
+	        type: "get",
+	        data: { courseId: courseId, professorId: professorId },
+	        dataType: "json",
+	        success: function(data) {
+				if (data.errorMsg && data.errorMsg.indexOf('full') !== -1) {
+					alert('해당강의는 정원이 초과하였습니다.');
+				}
+	        	loadRegistrations(); // 신청 내역 갱신
+	            loadCourses(); // 강의 목록 갱신 (추가된 항목 제외)
+	        },
+	        error: function(xhr) {
+	            alert("과목 추가에 실패했습니다: " + xhr.responseText);
+	        }
+	    });
+	}
+	
+	
+	
+	// 신청 내역 로드
+	function loadRegistrations() {
+	    $.ajax({
+	        url: "${path}/learning_support/searchRegistrationCourses",
+	        type: "get",
+	        dataType: "json",
+	        success: function(data) {
+	            var $body = $("#registrationBody");
+	            $body.empty();
+	            $.each(data, function(i, reg) {
+	                var row = $("<tr>").append(
+	                    $("<td>").text(reg.creditCategory),
+	                    $("<td>").text(reg.courseId),
+	                    $("<td>").text(reg.courseName),
+	                    $("<td>").text(reg.courseScore),
+	                    $("<td>").text(reg.professorName),
+	                    $("<td>").text(reg.timeSlot),
+	                    $("<td>").append(
+	                        $("<form>").append(
+	                            $("<input>").attr({type: "hidden", name: "registrationId", value: reg.registrationId}),
+	                            $("<button>").attr({type: "button"}).addClass("btn btn-secondary delete-registration text-red-600").text("삭제")
+	                        )
+	                    )
+	                );
+	                $body.append(row);
+	            });
+	        },
+	        error: function(xhr) {
+	            alert("신청 내역을 불러오지 못했습니다: " + xhr.responseText);
+	        }
+	    });
+	}
+	
+	// 신청 삭제
+	function deleteCourse(registrationId, courseId) {
+	    $.ajax({
+	        url: "${path}/learning_support/deleteCourse",
+	        type: "get",
+	        data: { registrationId: registrationId, courseId: courseId },
+	        dataType: "json",
+	        success: function(data) {
+	        	loadRegistrations(); // 신청 내역 갱신
+	            loadCourses(); // 강의 목록 갱신
+	        },
+	        error: function(xhr) {
+	            alert("과목 삭제에 실패했습니다: " + xhr.responseText);
+	        }
+	    });
+	}
 </script>
 </body>
 </html>

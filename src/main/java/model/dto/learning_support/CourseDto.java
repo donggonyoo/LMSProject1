@@ -12,6 +12,8 @@ public class CourseDto {
 	private Integer courseCurrentEnrollment;
 	private Integer courseMaxCnt;
 	private String timeSlot; // 시간
+	
+	
 
 	// Getters and Setters
 	public String getCourseId() {

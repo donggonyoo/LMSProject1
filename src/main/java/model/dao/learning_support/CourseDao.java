@@ -10,9 +10,11 @@ import org.apache.ibatis.session.SqlSession;
 import config.MyBatisConnection;
 import model.dto.learning_support.AttendanceDto;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.CoursePagingDto;
 import model.dto.learning_support.DeptDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
+import model.dto.professor_support.PaginationDto;
 
 
 public class CourseDao {
@@ -49,13 +51,13 @@ public class CourseDao {
 		return result;
 	}
 
-	public List<CourseDto> searchCourse(SearchDto searchDto) {
+	public List<CourseDto> searchCourse(CoursePagingDto cpDto) {
 
 		SqlSession session = MyBatisConnection.getConnection(); 
 		List<CourseDto> result = null;
 		
 		try {
-			 result = session.selectList("course.searchCourse", searchDto);
+			 result = session.selectList("course.searchCourse", cpDto);
 		} catch (Exception e) {	
 			e.printStackTrace();
 		} finally {
@@ -237,6 +239,18 @@ public class CourseDao {
 			e.printStackTrace();
 		} finally {
 			MyBatisConnection.close(session);
+		}
+		
+		return result;
+	}
+
+	public Integer countCourses(SearchDto searchDto) {
+		int result = 0;
+		
+		try (SqlSession session = MyBatisConnection.getConnection()) {
+			result = session.selectOne("countCourses", searchDto);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return result;
