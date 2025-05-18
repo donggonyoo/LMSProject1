@@ -276,19 +276,7 @@
                 }
             };
 			
-            $.ajax({
-                url: '${path}/professor_support/score/getScoreInfo', 
-                type: 'get',
-                dataType: 'json',
-                success: function (data) {
-                	gradeDetails = data; 
-                 	// 초기 과목 목록 렌더링
-                    renderCourses(coursesData);
-                },
-                error: function (xhr, status, error) {
-                    console.error('과목 목록 데이터를 가져오는 데 실패했습니다.', error);
-                }
-            });
+            
             
             // 과목 목록 렌더링 함수
             function renderCourses(data) {
@@ -305,11 +293,24 @@
                         '</tr>'
                     );
                 });
-
+				
                 // 관리 링크 클릭 이벤트 바인딩
                 $('.manage-link').click(function(e) {
                     e.preventDefault();
                     var courseId = $(this).data('course');
+                    
+                    $.ajax({
+                        url: '${path}/professor_support/score/getScoreInfo', 
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (data) {
+                        	gradeDetails = data; 
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('과목 목록 데이터를 가져오는 데 실패했습니다.', error);
+                        }
+                    });
+                    
                     loadGradeDetails(courseId); // 성적 상세 정보 로드
                 });
             }

@@ -122,7 +122,7 @@
     
     <!-- 최대 score_id의 숫자 부분 조회 -->
     <select id="getScoreIdNumber" resultType="long">
-        SELECT COALESCE(MAX(CAST(SUBSTRING(score_id, 2) AS UNSIGNED)), 0) AS max_number
+        SELECT COALESCE(MAX(CAST(SUBSTRING(score_id, 3) AS UNSIGNED)), 0) AS max_number
         FROM score
     </select>
     
