@@ -27,6 +27,7 @@ import model.dto.learning_support.SearchDto;
 public class CourseController extends MskimRequestMapping {
 	
 	private CourseDao courseDao = new CourseDao();
+	ObjectMapper mapper = new ObjectMapper();
 	
 	@RequestMapping("registerCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
@@ -112,7 +113,7 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("addCourse")
 	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+		Map<String, Object> errorMap = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
         String json;
 	
@@ -122,12 +123,21 @@ public class CourseController extends MskimRequestMapping {
 		map.put("studentId", studentId);
 		map.put("courseId", request.getParameter("courseId"));
 		map.put("professorId", request.getParameter("professorId"));
-		
-		//트랜젝션처리를 위해 수강신청테이블 insert시 시간표테이블도 같이 insert 처리.
-		courseDao.addCourse(map);
+		 
+		try {
+			courseDao.addCourse(map);
+		} catch(Exception e) {
+			errorMap.put("errorMsg", e.getMessage());
+			try {
+				json = mapper.writeValueAsString(errorMap);
+				request.setAttribute("json", json);
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+			return "/pages/returnAjax";
+		}
 		
 		return "/pages/dummy";
-
 	}
 	
 	@RequestMapping("searchRegistrationCourses")
@@ -157,7 +167,12 @@ public class CourseController extends MskimRequestMapping {
 		String registrationId = request.getParameter("registrationId");
 		String courseId = request.getParameter("courseId");
 		
-		courseDao.deleteCourse(registrationId,courseId, studentId);
+		try {
+			courseDao.deleteCourse(registrationId,courseId, studentId);
+		} catch(Exception e) {
+			
+		}
+		
 		
 		return "/pages/dummy";
 	}

@@ -28,8 +28,6 @@ import model.dto.professor_support.RegistCourseDto;
 )
 public class ManageCourseController extends MskimRequestMapping {
 	
-	private CourseDao courseDao = new CourseDao();
-	private CourseByProDao byProDao = new CourseByProDao();
 	private ManageCourseDao mDao = new ManageCourseDao();
 	
 	@RequestMapping("manageCourse")

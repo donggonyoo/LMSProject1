@@ -71,6 +71,7 @@
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
 	<mapper resource="mapper/professor_support/CourseByProMapper.xml"/>
 	<mapper resource="mapper/professor_support/ScoreMngMapper.xml"/>
+	<mapper resource="mapper/professor_support/ManageAttendanceMapper.xml"/>
 
   	
   </mappers>

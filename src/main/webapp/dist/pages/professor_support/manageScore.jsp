@@ -301,12 +301,13 @@
                 var filteredCourses = [];
                 // 검색어와 일치하는 과목 필터링
                 for (var i = 0; i < coursesData.length; i++) {
-                    if (coursesData[i].courseName.toLowerCase().indexOf(searchTerm) !== -1) {
+                    if (coursesData[i].course_name.toLowerCase().indexOf(searchTerm) !== -1) {
                         filteredCourses.push(coursesData[i]);
                     }
                 }
                 renderCourses(filteredCourses); // 필터링된 과목 렌dering
-            });
+            })
+           
 
             // 과목 목록 정렬 기능
             $('#courseTable th[data-sort]').click(function() {

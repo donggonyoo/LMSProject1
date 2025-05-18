@@ -29,9 +29,7 @@ import model.dto.professor_support.ScoreMngDto;
 )
 public class ScoreMngController extends MskimRequestMapping {
 	
-	private CourseDao courseDao = new CourseDao();
 	private CourseByProDao byProDao = new CourseByProDao();
-	private CourseByProDao mDao = new CourseByProDao();
 	private ScoreMngDao scoreDao = new ScoreMngDao();
 	
 	@RequestMapping("scoreMng")
@@ -40,7 +38,7 @@ public class ScoreMngController extends MskimRequestMapping {
 		//String professorId = (String) request.getSession().getAttribute("login");
 		String professorId = "P001";
 		
-		Map<String, Object> result = mDao.getProfessorInfo(professorId); 
+		Map<String, Object> result = byProDao.getProfessorInfo(professorId); 
 		
 		request.setAttribute("professorName", result.get("professor_name"));
 		request.setAttribute("deptName", result.get("dept_name"));

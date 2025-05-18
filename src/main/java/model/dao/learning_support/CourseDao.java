@@ -68,25 +68,38 @@ public class CourseDao {
 	public int addCourse(Map<String, Object> map) {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
+		
 		int result = 0;
-		long maxId = -1;
+		long maxId = 0;
+		Integer enrollment = 0;
+		Integer maxCnt = 0;
 		
 		// 등록된 수강신청id 최대값 조회
 		maxId = session.selectOne("getMaxRegistrationIdNumber");
 		String registrationId = "R" + (++maxId);
 		map.put("registrationId", registrationId);
 		
+		// 현재 수강인원 조회
+		Map<String, Object> courseInfo = session.selectOne("getCurrentEnrollment", map);
+		enrollment = (Integer) courseInfo.get("course_current_enrollment");
+		maxCnt = (Integer) courseInfo.get("course_max_cnt");
+		
 		try {
-			session.insert("course.addCourse", map);
-			map.remove("registrationId");
-			addAttendance(map, session);
-			addScore(map, session);
-			session.commit();
-			result = 1;
+			if (enrollment < maxCnt) {
+				map.put("enrollment",(++enrollment));
+				session.update("updateEnrollment", map);
+				session.insert("course.addCourse", map);
+				map.remove("registrationId");
+				addAttendance(map, session);
+				addScore(map, session);
+				session.commit();
+				result = 1;
+			} else {
+				throw new RuntimeException("course is full");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			session.rollback(); // 커밋 안하고 그냥 종료함으로써 둘중 하나 오류시 둘다 롤백처리.
-			throw new RuntimeException("수강신청 실패: " + e.getMessage(), e);
+			throw new RuntimeException("course regist fail: " + e.getMessage(), e);
 		} finally {
 			session.close();
 		}
@@ -156,16 +169,26 @@ public class CourseDao {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
 		int num = 0;
-
+		
+		// 현재 수강인원 조회
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("courseId", courseId);
+		Map<String, Object> courseInfo = session.selectOne("getCurrentEnrollment", map);
+		Integer enrollment = (Integer) courseInfo.get("course_current_enrollment");
+		
+		
 		try {
+			map.put("enrollment",(--enrollment));
+			session.update("updateEnrollment", map);
 			session.delete("course.deleteCourse", registrationId);
 			deleteAttendance(courseId, session);
 			deleteScore(studentId, courseId, session);
 			MyBatisConnection.close(session);
 			num=1;
 		} catch (Exception e) {	
-			e.printStackTrace();
 			session.close();
+			e.printStackTrace();
+			throw e;
 		}
 		
 		return num;
@@ -178,7 +201,7 @@ public class CourseDao {
 			session.delete("course.deleteAttendance", courseId); 
 		} catch (Exception e) {	
 			e.printStackTrace();
-			throw new RuntimeException("시간표 데이터 삭제 실패; " + e.getMessage(), e);
+			throw new RuntimeException("courseTime delete fail " + e.getMessage(), e);
 		}	
 	}
 	

@@ -114,6 +114,7 @@ body {
                     <th>교수명</th>
                     <th>학점</th>
                     <th>시간</th>
+                    <th>정원</th>
                     <th>강의계획서</th>
                 </tr>
             </thead>
@@ -243,6 +244,7 @@ function loadCourses() {
                     $("<td>").text(course.professorName),
                     $("<td>").text(course.courseScore),
                     $("<td>").text(course.timeSlot),
+                    $("<td>").text(course.courseCurrentEnrollment + ' / ' + course.courseMaxCnt),
                     $("<td>").append(
                         course.coursePlan ? $("<a>").attr({href: course.coursePlan, target: "_blank"}).addClass("btn btn-secondary").text("미리보기") : $("<span>").text("-")
                     )
@@ -266,6 +268,9 @@ function addCourse(courseId, professorId) {
         data: { courseId: courseId, professorId: professorId },
         dataType: "json",
         success: function(data) {
+			if (data.errorMsg && data.errorMsg.indexOf('full') !== -1) {
+				alert('해당강의는 정원이 초과하였습니다.');
+			}
         	loadRegistrations(); // 신청 내역 갱신
             loadCourses(); // 강의 목록 갱신 (추가된 항목 제외)
         },
