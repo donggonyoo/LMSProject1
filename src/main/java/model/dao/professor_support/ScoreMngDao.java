@@ -1,5 +1,6 @@
 package model.dao.professor_support;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,19 +32,46 @@ public class ScoreMngDao {
 		return result;
 	}
 
-	public List<Map<String, Object>> getScoreInfo(String professorId) {
+	public List<ScoreMngDto> getScoreInfo(Map<String, Object> params) {
 		
 		SqlSession session = MyBatisConnection.getConnection();
 		
-		List<Map<String, Object>> result = null;
+		List<ScoreMngDto> result = null;
 	    
 		try { 
-	        // course 테이블 업데이트
-	        result = session.selectList("ScoreMng.getScoreInfo", professorId);
+	        result = session.selectList("ScoreMng.getScoreInfo", params);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    } finally {
 	    	MyBatisConnection.close(session);
+	    }
+		
+		return result;
+	}
+
+	public int updatetScore(List<Map<String, Object>> params) {
+		
+		int result = 0;
+	    
+		try (SqlSession session = MyBatisConnection.getConnection()){
+			for(Map<String, Object> m : params) {
+				
+				Map<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("studentId", m.get("studentId"));
+				paramMap.put("courseId", m.get("courseId"));
+				paramMap.put("scoreMid", m.get("scoreMid"));
+				paramMap.put("scoreFinal", m.get("scoreFinal"));
+				paramMap.put("scoreTotal", m.get("scoreTotal"));
+				paramMap.put("scoreGrade", m.get("scoreGrade"));
+				
+				session.update("ScoreMng.updatetScore", params);
+				result++;
+			}
+			if (result != params.size()) {
+				throw new RuntimeException("update Fail");
+			}
+	    } catch (Exception e) {
+	        e.printStackTrace();
 	    }
 		
 		return result;

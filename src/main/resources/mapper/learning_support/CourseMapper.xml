@@ -99,7 +99,9 @@
             professor_id,
 	        dept_id,
 	        score_mid,
-	        score_final
+	        score_final,
+	        score_total,
+	        score_grade
 	    )
 	    VALUES (
 	        #{scoreId},
@@ -108,7 +110,9 @@
             #{professorId},
 	        #{deptId},
 	        0,
-	        0
+	        0,
+	        0,
+	        ''
 	    )
 	</insert>
     

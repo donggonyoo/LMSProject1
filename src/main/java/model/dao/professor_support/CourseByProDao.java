@@ -1,5 +1,7 @@
 package model.dao.professor_support;
 
+import java.util.Map;
+
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
@@ -87,6 +89,23 @@ public class CourseByProDao {
 			e.printStackTrace();
 			throw new RuntimeException("DBERROR");
 		}
+	}
+
+	public Map<String, Object> getProfessorInfo(String professorId) {
+		
+		SqlSession session = MyBatisConnection.getConnection(); 
+		Map<String, Object> result = null;
+		
+		try {
+			 result = session.selectOne("getProfessorInfo",professorId);
+		} catch (Exception e) {
+			e.printStackTrace();
+	    } finally {
+			MyBatisConnection.close(session);
+		}
+		
+		return result;
+		
 	}
 
 }

@@ -155,7 +155,7 @@
         <!-- 교수 및 학과 정보 -->
         <div class="mb-4">
             <div class="professor-info">
-                <h4>교수: <span>${professorName}</span> | 학과: <span>${majorName}</span></h4>
+                <h4>교수: <span>${professorName}</span> | 학과: <span>${deptName}</span></h4>
             </div>
         </div>
 
@@ -229,7 +229,7 @@
 
     <script>
         $(document).ready(function() {
-
+			// 과목 목록
             var coursesData = []; 
             // 페이지 로드시 해당교수의 과목 로드
             $.ajax({
@@ -248,35 +248,9 @@
 
             // 성적 데이터 배열
             var gradesData = [];
-
-            // 더미 데이터: 과목별 성적
-            var gradeDetails = {
-                "CS301": {
-                    courseName: "알고리즘",
-                    grades: [
-                        {name: "홍길동", studentId: "20231234", major: "컴퓨터공학과", midterm: 85, finalExam: 92, total: 177, grade: "A0"},
-                        {name: "김철수", studentId: "20225678", major: "전자공학과", midterm: 78, finalExam: 88, total: 166, grade: "B+"},
-                        {name: "이영희", studentId: "20249012", major: "산업디자인", midterm: 95, finalExam: 98, total: 193, grade: "A+"},
-                        {name: "박민지", studentId: "20233456", major: "경영학과", midterm: 82, finalExam: 79, total: 161, grade: "B0"}
-                    ]
-                },
-                "CS302": {
-                    courseName: "데이터베이스",
-                    grades: [
-                        {name: "홍길동", studentId: "20231234", major: "컴퓨터공학과", midterm: 88, finalExam: 90, total: 178, grade: "A0"},
-                        {name: "김철수", studentId: "20225678", major: "전자공학과", midterm: 75, finalExam: 85, total: 160, grade: "B+"}
-                    ]
-                },
-                "CS401": {
-                    courseName: "인공지능",
-                    grades: [
-                        {name: "홍길동", studentId: "20231234", major: "컴퓨터공학과", midterm: 90, finalExam: 95, total: 185, grade: "A+"},
-                        {name: "이영희", studentId: "20249012", major: "산업디자인", midterm: 87, finalExam: 91, total: 178, grade: "A0"}
-                    ]
-                }
-            };
 			
-            
+            // 해당과목 수강생들 데이터
+            var gradeDetails = {};
             
             // 과목 목록 렌더링 함수
             function renderCourses(data) {
@@ -289,7 +263,8 @@
                         '<td>' + course.course_name + '</td>' +
                         '<td>' + course.course_id + '</td>' +
                         '<td>' + course.course_current_enrollment + '</td>' +
-                        '<td><a href="#" class="btn-link-custom manage-link" data-course="' + course.course_id + '">관리</a></td>' +
+                        '<td> <a href="#" class="btn-link-custom manage-link" data-course-id="' 
+                        + course.course_id + '" data-course-name="' + course.course_name + '">관리</a></td>' +
                         '</tr>'
                     );
                 });
@@ -297,21 +272,26 @@
                 // 관리 링크 클릭 이벤트 바인딩
                 $('.manage-link').click(function(e) {
                     e.preventDefault();
-                    var courseId = $(this).data('course');
+                    var courseId = $(this).data('course-id');
+                    var courseName = $(this).data('course-name');
                     
                     $.ajax({
                         url: '${path}/professor_support/score/getScoreInfo', 
                         type: 'get',
+                        data: {
+							   courseId: courseId,
+                        	   courseName: courseName,
+						},
                         dataType: 'json',
                         success: function (data) {
                         	gradeDetails = data; 
+                        	loadGradeDetails(courseId); // 성적 상세 정보 로드
                         },
                         error: function (xhr, status, error) {
                             console.error('과목 목록 데이터를 가져오는 데 실패했습니다.', error);
                         }
                     });
                     
-                    loadGradeDetails(courseId); // 성적 상세 정보 로드
                 });
             }
 
@@ -345,29 +325,35 @@
 
             // 성적 상세 정보 로드 함수
             function loadGradeDetails(courseId) {
+				
                 $('#gradeDetails').removeClass('show'); // 상세 섹션 숨김
                 $('#gradeLoading').show(); // 로딩 스피너 표시
                 $('#gradeList').empty(); // 기존 목록 비우기
                 var data = gradeDetails[courseId]; // 과목 데이터 가져오기
+                
                 if (data) {
                     gradesData = data.grades; // 성적 데이터 저장
+                    
                     // 과목 제목 업데이트
-                    $('#courseTitle').text('과목: ' + data.courseName + ' (2025-1학기) | 교수: 김교수');
+                    var currentYear = new Date().getFullYear();
+					$('#courseTitle').text('과목: ' + data.courseName + ' (' + currentYear + '-' + (data.coursePeriod ? data.coursePeriod : '') + ') | 교수:' + "${professorName}");
                     var gradeList = $('#gradeList');
                     gradeList.empty();
+                    
                     // 성적 데이터 순회하며 테이블 행 추가
                     for (var i = 0; i < gradesData.length; i++) {
                         var grade = gradesData[i];
+
                         gradeList.append(
-                            '<tr data-student-id="' + grade.studentId + '">' +
-                            '<td>' + grade.name + '</td>' +
+                            '<tr data-student-id="' + grade.studentId + '" data-course-id="' + courseId + '">' +
+                            '<td>' + grade.studentName + '</td>' +
                             '<td>' + grade.studentId + '</td>' +
-                            '<td>' + grade.major + '</td>' +
-                            '<td><input type="number" class="editable-score midterm-score" value="' + grade.midterm + '" data-index="' + i + '"></td>' +
-                            '<td><input type="number" class="editable-score final-exam-score" value="' + grade.finalExam + '" data-index="' + i + '"></td>' +
-                            '<td class="total-score">' + grade.total + '</td>' +
-                            '<td class="grade">' + grade.grade + '</td>' +
-                            '<td><a href="#" class="btn-link-custom">[신청]</a></td>' +
+                            '<td>' + grade.deptName + '</td>' +
+                            '<td><input type="number" class="editable-score midterm-score" value="' + grade.scoreMid + '" data-index="' + i + '"></td>' +
+                            '<td><input type="number" class="editable-score final-exam-score" value="' + grade.scoreFinal + '" data-index="' + i + '"></td>' +
+                            '<td class="total-score" id="total-score">' + grade.scoreTotal + '</td>' +
+                            '<td class="grade" id="grade">' + grade.scoreGrade + '</td>' +
+                            '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
                             '</tr>'
                         );
                     }
@@ -383,20 +369,25 @@
             // 점수 입력 이벤트 바인딩 함수
             function bindScoreEvents() {
                 $('.editable-score').on('input', function() {
+
                     var index = $(this).data('index'); // 데이터 인덱스
                     var midterm = parseInt($('.midterm-score[data-index="' + index + '"]').val()) || 0; // 중간고사 점수
                     var finalExam = parseInt($('.final-exam-score[data-index="' + index + '"]').val()) || 0; // 기말고사 점수
                     var total = midterm + finalExam; // 총점 계산
+                    
                     $(this).closest('tr').find('.total-score').text(total); // 총점 업데이트
                     gradesData[index].midterm = midterm; // 데이터 업데이트
                     gradesData[index].finalExam = finalExam;
                     gradesData[index].total = total;
+                    
                     // 등급 계산
                     var grade = 'F';
                     if (total >= 180) grade = 'A+';
-                    else if (total >= 160) grade = 'A0';
+                    else if (total >= 160) grade = 'A';
                     else if (total >= 140) grade = 'B+';
-                    else if (total >= 120) grade = 'B0';
+                    else if (total >= 120) grade = 'B';
+                    else if (total >= 100) grade = 'C+';
+                    else if (total >= 90) grade = 'C';
                     $(this).closest('tr').find('.grade').text(grade); // 등급 업데이트
                     gradesData[index].grade = grade;
                 });
@@ -404,48 +395,88 @@
 
             // 성적 목록 정렬 기능
             $('#gradeTable th[data-sort]').click(function() {
-                var sortKey = $(this).data('sort'); // 정렬 기준 키
-                var isAscending = $(this).hasClass('sort-asc'); // 오름차순 여부
-                // 데이터 정렬
-                gradesData.sort(function(a, b) {
-                    var valA = a[sortKey], valB = b[sortKey];
-                    if (typeof valA === 'string') valA = valA.toLowerCase();
-                    if (typeof valB === 'string') valB = valB.toLowerCase();
-                    return isAscending ? (valA > valB ? -1 : 1) : (valA < valB ? -1 : 1);
-                });
-                $(this).toggleClass('sort-asc').siblings().removeClass('sort-asc');
-                $('#gradeList').empty();
-                
-                // 정렬된 데이터 렌더링
-                for (var i = 0; i < gradesData.length; i++) {
-                    var grade = gradesData[i];
-                    $('#gradeList').append(
-                        '<tr data-student-id="' + grade.studentId + '">' +
-                        '<td>' + grade.name + '</td>' +
-                        '<td>' + grade.studentId + '</td>' +
-                        '<td>' + grade.major + '</td>' +
-                        '<td><input type="number" class="editable-score midterm-score" value="' + grade.midterm + '" data-index="' + i + '"></td>' +
-                        '<td><input type="number" class="editable-score final-exam-score" value="' + grade.finalExam + '" data-index="' + i + '"></td>' +
-                        '<td class="total-score">' + grade.total + '</td>' +
-                        '<td class="grade">' + grade.grade + '</td>' +
-                        '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
-                        '</tr>'
-                    );
-                }
-                bindScoreEvents(); // 이벤트 재바인딩
+				
+            	if (confirm('정렬시 등록안된 성적입력정보는 삭제됩니다. 실행하시겠습니까?')) {
+	                var sortKey = $(this).data('sort'); // 정렬 기준 컬럼이름
+	                var isAscending = $(this).hasClass('sort-asc'); // 오름차순 여부
+	                
+	                // 데이터 정렬
+	                gradesData.sort(function(a, b) {
+	                    var valA = a[sortKey]; 
+	                    var valB = b[sortKey];
+	                    
+	                    if (typeof valA === 'string') valA = valA.toLowerCase();
+	                    if (typeof valB === 'string') valB = valB.toLowerCase();
+	                    
+	                    return isAscending ? (valA > valB ? -1 : 1) : (valA < valB ? -1 : 1);
+	                });
+	                $(this).toggleClass('sort-asc').siblings().removeClass('sort-asc');
+	                $('#gradeList').empty();
+	                
+	                // 정렬된 데이터 렌더링
+	                for (var i = 0; i < gradesData.length; i++) {
+	                    var grade = gradesData[i];
+	                    
+	                    $('#gradeList').append(
+	                        '<tr data-student-id="' + grade.studentId + '" data-course-id="' + courseId + '">' +
+	                        '<td>' + grade.studentName + '</td>' +
+	                        '<td>' + grade.studentId + '</td>' +
+	                        '<td>' + grade.deptName + '</td>' +
+	                        '<td><input type="number" class="editable-score midterm-score" value="' + grade.scoreMid + '" data-index="' + i + '"></td>' +
+	                        '<td><input type="number" class="editable-score final-exam-score" value="' + grade.scoreFinal + '" data-index="' + i + '"></td>' +
+	                        '<td class="total-score" id="total-score">' + grade.scoreTotal + '</td>' +
+	                        '<td class="grade" id="grade">' + grade.scoreGrade + '</td>' +
+	                        '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
+	                        '</tr>'
+	                    );
+	                }
+	                bindScoreEvents(); // 이벤트 재바인딩
+            	} else {
+					return false;
+            	}
             });
 
-            // 성적 등록 버튼 클릭 이벤트
+            // 등록 버튼 클릭
             $('#saveGrades').click(function() {
                 var alertMessage = $('#alertMessage');
                 alertMessage.removeClass('alert-success alert-danger').hide();
-                // 성공 메시지 표시
-                setTimeout(function() {
-                    alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
-                }, 500);
-            });
+                
+             	// 각 학생들의 studentId,courseId 받아서 
+                // score테이블에 scoreMid, scoreFinal,scoreTotal,scoreGrade 업데이트
+                var params = [];
+                
+                $("#gradeList tr[data-student-id]").each(function() {
+                	var studentId = $(this).attr("data-student-id");
+                	var courseId = $(this).attr("data-course-id");
+                	var scoreMid = $(this).find("td .midterm-score").val();
+                	var scoreFinal = $(this).find("td .final-exam-score").val();
+                	var scoreTotal = $(".total-score").text();
+                	var scoreGrade = $(".grade").text();
 
-            
+                	params.push({
+						studentId: studentId,
+						courseId: courseId,
+						scoreMid: scoreMid,
+						scoreFinal: scoreFinal,
+						scoreTotal: scoreTotal,
+						scoreGrade: scoreGrade,
+                	});
+                	
+                });
+
+                    $.ajax({
+                	url: '${path}/professor_support/score/updatetScore', 
+                    type: 'post',
+                    data: params,
+                    dataType: 'json',
+                    success: function (data) {
+                    	alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('성적 수정작업에 실패했습니다.', error);
+                    }
+                });                
+            });  
         });
         
     </script>
