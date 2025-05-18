@@ -175,10 +175,14 @@ public class CourseDao {
 		map.put("courseId", courseId);
 		Map<String, Object> courseInfo = session.selectOne("getCurrentEnrollment", map);
 		Integer enrollment = (Integer) courseInfo.get("course_current_enrollment");
-		
+		if (enrollment == null || enrollment <= 0) {
+		    enrollment = 0;
+		} else {
+			enrollment--;
+		}
 		
 		try {
-			map.put("enrollment",(--enrollment));
+			map.put("enrollment",(enrollment));
 			session.update("updateEnrollment", map);
 			session.delete("course.deleteCourse", registrationId);
 			deleteAttendance(courseId, session);
