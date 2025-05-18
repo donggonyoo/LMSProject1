@@ -73,7 +73,6 @@ body {
 
 /* 시간표 스타일 */
 #timetable-container {
-	display: none;
 	margin-top: 20px;
 }
 
@@ -133,7 +132,6 @@ body {
 </style>
 </head>
 <body>
- <button class="btn btn-primary view-courseTime">시간표 보기</button>
 	<div id="timetable-container">
 		<table id="courseTime">
 			<thead>
@@ -243,15 +241,12 @@ body {
 		</table>
 	</div>
 <script type="text/javascript">
-$(".view-courseTime").click(function() {
-    $("#timetable-container").show();
-   
+$(document).ready(function() {
     $.ajax({
         url: "${path}/mypage/viewCourseTimetable",
         type: "get",
         dataType: "json",
         beforeSend: function() {
-           
             $("#timetable-body td:not(.time-slot)").html(""); // 초기화
             $("#timetable-body").append(
                 $("<tr>").append(
