@@ -574,7 +574,7 @@ public class MypageController  extends MskimRequestMapping{
 	public String viewCourseTime (HttpServletRequest request, HttpServletResponse response) {
 		//		String studentId = (String) request.getSession().getAttribute("login");
 		//		테스트위한 임시 studentId 지정
-		String studentId = "S001";
+		String studentId = (String)request.getSession().getAttribute("login");
 		Map<String, Object> map = new HashMap<>();
 
 
