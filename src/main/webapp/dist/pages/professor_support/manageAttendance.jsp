@@ -111,153 +111,176 @@
 </div>
 
 <script>
-$(document).ready(function() {
-	//오늘 날짜로 세팅
-	var today = new Date();
+	//강의당 수강생 목록
+	var attendanceData = [];
 	
-    var year = today.getFullYear();
-    var month = today.getMonth() + 1; 
-    var day = today.getDate();
+	function createAttendanceRow(index, item) {  
+	    return (
+	        '<tr>' +
+	        '<td data-attendance-id="'+ item.attendance_id +'">' + (index + 1) + '</td>' +
+	        '<td>' + item.student_id + '</td>' +
+	        '<td>' + item.student_name + '</td>' +
+	        '<td class="late-count">' + item.attendance_late + '</td>' +
+	        '<td class="absent-count">' + item.attendance_absent + '</td>' +
+	        '<td>' +
+	        '<select class="attendance-select form-control">' +
+	        '<option value="present"' + (item.attendance_status === "출석" ? " selected" : "") + '>출석</option>' +
+	        '<option value="absent"' + (item.attendance_status === "결석" ? " selected" : "") + '>결석</option>' +
+	        '<option value="late"' + (item.attendance_status === "지각" ? " selected" : "") + '>지각</option>' +
+	        '</select>' +
+	        '</td>' +
+	        '</tr>'
+	    );
+	}
 
-    month = month < 10 ? '0' + month : month;
-    day = day < 10 ? '0' + day : day;
-    
-    var formattedDate = year + '-' + month + '-' + day;
-
-    $('#datePicker').val(formattedDate);
+	$(document).ready(function() {
+		//오늘 날짜로 세팅
+		var today = new Date();
+		
+	    var year = today.getFullYear();
+	    var month = today.getMonth() + 1; 
+	    var day = today.getDate();
 	
-    // 검색 기능
-    $('#searchBtn').click(function() {
-        var searchTerm = $('#searchInput').val().toLowerCase();
-        $('#courseList tr').filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
-        });
-    });
-    
- 	// Enter 키로 검색 버튼 작동 추가
-    $('#searchInput').on('keypress', function(e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            $('#searchBtn').click();
-        }
-    });
+	    month = month < 10 ? '0' + month : month;
+	    day = day < 10 ? '0' + day : day;
+	    
+	    var formattedDate = year + '-' + month + '-' + day;
+	
+	    $('#datePicker').val(formattedDate);
+		
+	    // 검색 기능
+	    $('#searchBtn').click(function() {
+	        var searchTerm = $('#searchInput').val().toLowerCase();
+	        $('#courseList tr').filter(function() {
+	            $(this).toggle($(this).text().toLowerCase().indexOf(searchTerm) > -1);
+	        });
+	    });
+	    
+	 	// Enter 키로 검색 버튼 작동 추가
+	    $('#searchInput').on('keypress', function(e) {
+	        if (e.which === 13) {
+	            e.preventDefault();
+	            $('#searchBtn').click();
+	        }
+	    });
+	
+	    // 날짜 변경 시 모달 업데이트
+	    $('#datePicker').change(function() {
+	        var selectedDate = $(this).val();
+	        $('#modalDate').text(selectedDate);
+	    });
+	
+	    // 출석 관리 버튼 클릭
+	    $('.manage-btn').click(function() {
+	
+	        var courseId = $(this).data('course-id');
+	        var courseName = $(this).closest('tr').find('td:nth-child(3)').text();
+	        $('#modalCourseId').text(courseId);
+	        $('#modalCourseName').text(courseName);
+	        $('#modalDate').text($('#datePicker').val());
+	        $('#attendanceRate').text('0%');
+	
+	        var attendanceList = $('#attendanceList');
+	        attendanceList.empty();
 
-    // 날짜 변경 시 모달 업데이트
-    $('#datePicker').change(function() {
-        var selectedDate = $(this).val();
-        $('#modalDate').text(selectedDate);
-    });
-
-    // 출석 관리 버튼 클릭
-    $('.manage-btn').click(function() {
-
-        var courseId = $(this).data('course-id');
-        var courseName = $(this).closest('tr').find('td:nth-child(3)').text();
-        $('#modalCourseId').text(courseId);
-        $('#modalCourseName').text(courseName);
-        $('#modalDate').text($('#datePicker').val());
-        $('#attendanceRate').text('0%');
-
-        var attendanceList = $('#attendanceList');
-        attendanceList.empty();
-        /* 
-        	var attendanceData = [
-            { studentId: "20201234", name: "김민지", status: "출석", .. },
-            { studentId: "20215678", name: "박철수", status: "결석", history: ["결석", "지각", "지각", "출석"] }
-        ]; 
-        */
-        var attendanceData = [];
-        $.ajax({
-			url : "${path}/professor_support/attendance/getAttendance",
-			type : "get",
-			data : {
-				courseId : courseId,
-				attendanceDate: $("#datePicker").val(),
+	        $.ajax({
+				url : "${path}/professor_support/attendance/getAttendance",
+				type : "get",
+				data : {
+					courseId : courseId,
+					attendanceDate: $("#datePicker").val(),
+					},
+				dataType : "json",
+				success : function(data) {
+					if (data.errorMsg) {
+						alert(data.errorMsg);
+					}
+					attendanceData = data;
+					// 서버에서 데이터를 받은 후 출석 목록을 생성
+					$.each(attendanceData, function(index, item) {
+					    attendanceList.append(createAttendanceRow(index, item));
+					});
+					
 				},
-			dataType : "json",
-			success : function(data) {
-				if (data.errorMsg) {
-					alert(data.errorMsg);
+				error : function(xhr, status, error) {
+					console.error("Error:", xhr.responseText);
+					alert("강의 상태변경 중 오류가 발생했습니다.");
 				}
-				attendanceData = data;
-			},
-			error : function(xhr, status, error) {
-				console.error("Error:", xhr.responseText);
-				alert("강의 상태변경 중 오류가 발생했습니다.");
-			}
-		});
-        $.each(attendanceData, function(index, item) {
-            var lateCount = item.attendence_late;
-            var absentCount = item.attendence_absent;
-            attendanceList.append(
-                '<tr>' +
-                '<td>' + (index + 1) + '</td>' +
-                '<td>' + item.studentId + '</td>' +
-                '<td>' + item.name + '</td>' +
-                '<td class="late-count">' + lateCount + '</td>' +
-                '<td class="absent-count">' + absentCount + '</td>' +
-                '<td>' +
-                '<select class="attendance-select form-control">' +
-                '<option value="present"' + (item.status === "출석" ? " selected" : "") + '>출석</option>' +
-                '<option value="absent"' + (item.status === "결석" ? " selected" : "") + '>결석</option>' +
-                '<option value="late"' + (item.status === "지각" ? " selected" : "") + '>지각</option>' +
-                '</select>' +
-                '</td>' +
-                '</tr>'
-            );
-        });
-
-        updateAttendanceRate();
-        $('#attendanceModal').modal('show');
-    });
-
-    // 일괄 출석
-    $('#bulkPresent').click(function() {
-        $('#attendanceList .attendance-select').val('present').change();
-        updateAttendanceRate();
-    });
-
-    // 일괄 결석
-    $('#bulkAbsent').click(function() {
-        $('#attendanceList .attendance-select').val('absent').change();
-        updateAttendanceRate();
-    });
-
-    // 출석 상태 변경 시 출석률 업데이트
-    $('#attendanceList').on('change', '.attendance-select', function() {
-        updateAttendanceRate();
-    });
-
-    // 출석률 계산
-    function updateAttendanceRate() {
-        var total = $('#attendanceList tr').length;
-        var present = $('#attendanceList .attendance-select').filter(function() {
-            return $(this).val() === 'present';
-        }).length;
-        var rate = total > 0 ? ((present / total) * 100).toFixed(1) + '%' : '0%';
-        $('#attendanceRate').text(rate);
-    }
-
-    // 저장 버튼
-    $('#saveAttendance').click(function() {
-        var attendanceData = [];
-        $('#attendanceList tr').each(function() {
-            var $row = $(this);
-            attendanceData.push({
-                studentId: $row.find('td:nth-child(2)').text(),
-                name: $row.find('td:nth-child(3)').text(),
-                status: $row.find('.attendance-select').val()
-            });
-        });
-        console.log('저장 데이터:', attendanceData);
-        $('#saveMessage').show().delay(2000).fadeOut();
-    });
-
-    // "X" 버튼 클릭 이벤트 강제 추가 (충돌 방지)
-    $('.close').on('click', function() {
-        $('#attendanceModal').modal('hide');
-    });
-});
+			});
+	        
+	        
+	
+	        updateAttendanceRate();
+	        $('#attendanceModal').modal('show');
+	    });
+	
+	    // 일괄 출석
+	    $('#bulkPresent').click(function() {
+	        $('#attendanceList .attendance-select').val('present').change();
+	        updateAttendanceRate();
+	    });
+	
+	    // 일괄 결석
+	    $('#bulkAbsent').click(function() {
+	        $('#attendanceList .attendance-select').val('absent').change();
+	        updateAttendanceRate();
+	    });
+	
+	    // 출석 상태 변경 시 출석률 업데이트
+	    $('#attendanceList').on('change', '.attendance-select', function() {
+	        updateAttendanceRate();
+	    });
+	
+	    // 출석률 계산
+	    function updateAttendanceRate() {
+	        var total = $('#attendanceList tr').length;
+	        var present = $('#attendanceList .attendance-select').filter(function() {
+	            return $(this).val() === 'present';
+	        }).length;
+	        var rate = total > 0 ? ((present / total) * 100).toFixed(1) + '%' : '0%';
+	        $('#attendanceRate').text(rate);
+	    }
+	
+	    // 저장 버튼
+	    $('#saveAttendance').click(function() {
+	        var attendanceData = [];
+	        
+	        $('#attendanceList tr').each(function() {
+	            var $row = $(this);
+	            attendanceData.push({
+					attendanceId: $row.find('td:eq(0)').data('attendance-id'),
+	                studentId: $row.find('td:eq(1)').text(),
+	                studentName: $row.find('td:eq(2)').text(),
+	                attendanceStatus: $row.find('.attendance-select').val()
+	            });
+	        });
+	        console.log('저장 데이터:', attendanceData);
+	        
+	        $.ajax({
+				url : "${path}/professor_support/attendance/updateAttendance",
+				type : "post",
+				contentType: "application/json",
+                data: JSON.stringify(attendanceData),
+				dataType : "json",
+				success : function(data) {
+					if (data.errorMsg) {
+						alert(data.errorMsg);
+					} else {
+						$('#saveMessage').show().delay(2000).fadeOut();
+					}	
+				},
+				error : function(xhr, status, error) {
+					console.error("Error:", xhr.responseText);
+					alert("출석부 수정 중 오류가 발생했습니다.");
+				}
+			});
+	    });
+	
+	    // "X" 버튼 클릭 이벤트 강제 추가 (충돌 방지)
+	    $('.close').on('click', function() {
+	        $('#attendanceModal').modal('hide');
+	    });
+	});
 </script>
 </body>
 </html>
