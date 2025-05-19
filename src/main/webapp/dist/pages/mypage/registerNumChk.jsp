@@ -47,7 +47,9 @@
         <form action="registerSuccess" onsubmit="return numChk(this)">      
         <div class="mb-3">
             <label for="name" class="form-label">인증번호</label>
-            <input type="text" class="form-control" id="num" name="num" placeholder="인증번호입력">
+            <input type="text" class="form-control" id="num" name="num"
+												placeholder="인증번호입력">
+												
             <input type="hidden" value="${mem}" name="mem">
             <input type="hidden" value="${id}" name="id">
             <input type="hidden" value="${num}" name="emailNum">

@@ -98,7 +98,7 @@ public class MypageController  extends MskimRequestMapping{
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
 			List<String> lowerList = Arrays.asList
-					("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
+	("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
 					
 					List<String> upperList = new ArrayList<>();
 					for (String string : lowerList) {
@@ -206,7 +206,6 @@ public class MypageController  extends MskimRequestMapping{
 		String phone = request.getParameter("phone");
 		String id = IdChk(position);//직급에따른 아이디부여해주는 메서드
 
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date birthDate = sdf.parse(date); // "YYYY-MM-dd" 형식의 문자열을 Date로 파싱
 
@@ -228,8 +227,7 @@ public class MypageController  extends MskimRequestMapping{
 			request.getSession().setAttribute("mem", pro);
 			String num = EmailUtil.sendNum(email, name, id);
 			request.setAttribute("num", num);
-			System.out.println("인증번호 : "+num);
-
+			
 		}
 		//학생일경우
 		else {
@@ -252,10 +250,8 @@ public class MypageController  extends MskimRequestMapping{
 			request.getSession().setAttribute("mem", stu);
 			String num = EmailUtil.sendNum(email, name, id);
 			request.setAttribute("num", num);
-			System.out.println("인증번호 : "+num);
+			
 		}
-
-
 		return "mypage/registerNumChk";
 	}
 
