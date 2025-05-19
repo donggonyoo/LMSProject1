@@ -174,102 +174,107 @@ body {
 </style>
 </head>
 <body>
-	<!-- Grade Inquiry -->
-	<div class="card">
-		<h2 class="text-xl font-semibold mb-4">성적 확인</h2>
-		<div class="flex items-center mb-4">
-			<select class="border rounded p-2 mr-2">
-				<option>전체</option>
-				<option>2024 가을</option>
-				<option>2025 봄</option>
-			</select>
-			<button class="btn btn-primary">조회</button>
-		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>학기(coursePeriod)</th>
-					<th>과목번호(courseId)</th>
-					<th>과목명(courseName)</th>
-					<th>담당교수(professorName)</th>
-					<th>학점(courseScore)</th>
-					<th>중간점수(scoreMid)</th>
-					<th>기말점수(scoreFinal)</th>
-					<th>취득 점수(scoreTotal)</th>
-					<th>평가(scoreGrade)</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:set var="totalCourseScore" value="0" />
-				<c:set var="totalGradePoints" value="0" />
-				<c:set var="courseCount" value="0" />
-				<c:forEach items="${score}" var="sc" varStatus="a">
-					<tr>
-						<td>${a.count}</td>
-						<td>${sc.coursePeriod}</td>
-						<td>${sc.courseId}</td>
-						<td>${sc.courseName}</td>
-						<td>${sc.professorName}</td>
-						<td>${sc.courseScore}</td>
-						<td>${sc.scoreMid}</td>
-						<td>${sc.scoreFinal}</td>
-						<td>${sc.scoreTotal}</td>
-						<td class="score-grade ${fn:replace(sc.scoreGrade, '+', '-plus')}">${sc.scoreGrade}</td>
-					</tr>
-					<!-- Sum total course credits -->
-					<c:set var="totalCourseScore" value="${totalCourseScore + sc.courseScore}" />
-					<!-- Convert scoreGrade to numerical value -->
-					<c:choose>
-						<c:when test="${sc.scoreGrade == 'A+'}">
-							<c:set var="gradePoint" value="4.5" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'A'}">
-							<c:set var="gradePoint" value="4.0" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'B+'}">
-							<c:set var="gradePoint" value="3.5" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'B'}">
-							<c:set var="gradePoint" value="3.0" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'C+'}">
-							<c:set var="gradePoint" value="2.5" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'C'}">
-							<c:set var="gradePoint" value="2.0" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'D+'}">
-							<c:set var="gradePoint" value="1.5" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'D'}">
-							<c:set var="gradePoint" value="1.0" />
-						</c:when>
-						<c:when test="${sc.scoreGrade == 'F'}">
-							<c:set var="gradePoint" value="0.0" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="gradePoint" value="0.0" />
-						</c:otherwise>
-					</c:choose>
-					<c:set var="totalGradePoints" value="${totalGradePoints + gradePoint}" />
-					<c:set var="courseCount" value="${courseCount + 1}" />
-				</c:forEach>
-			</tbody>
-		</table>
-		<!-- Summary Section -->
-		<div class="summary-card">
-			<div class="summary-item">
-				<div class="summary-label">해당 학기 총 이수 학점</div>
-				<div class="summary-value total-credits">${totalCourseScore}</div>
-			</div>
-			<div class="summary-item">
-				<div class="summary-label">평균 학점 (GPA)</div>
-				<div class="summary-value gpa">
-					<fmt:formatNumber value="${courseCount > 0 ? totalGradePoints / courseCount : 0}" pattern="0.00" />
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- 성적 확인 -->
+    <div class="card">
+        <h2 class="text-xl font-semibold mb-4">성적 확인</h2>
+        <form method="get" action="">
+            <div class="flex items-center mb-4">
+                <select name="semester" class="border rounded p-2 mr-2" onchange="this.form.submit()">
+                    <option value="all" ${param.semester == 'all' || empty param.semester ? 'selected' : ''}>전체</option>
+                    <option value="1학기" ${param.semester == '1학기' ? 'selected' : ''}>1학기</option>
+                    <option value="2학기" ${param.semester == '2학기' ? 'selected' : ''}>2학기</option>
+                </select>
+                <button type="submit" class="btn btn-primary">조회</button>
+            </div>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>학기(coursePeriod)</th>
+                    <th>과목번호(courseId)</th>
+                    <th>과목명(courseName)</th>
+                    <th>담당교수(professorName)</th>
+                    <th>학점(courseScore)</th>
+                    <th>중간점수(scoreMid)</th>
+                    <th>기말점수(scoreFinal)</th>
+                    <th>취득 점수(scoreTotal)</th>
+                    <th>평가(scoreGrade)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <c:set var="totalCourseScore" value="0" />
+                <c:set var="totalGradePoints" value="0" />
+                <c:set var="courseCount" value="0" />
+                <c:forEach items="${score}" var="sc" varStatus="a">
+                    <!-- 학기 필터링 -->
+                    <c:if test="${param.semester == 'all' || empty param.semester || sc.coursePeriod == param.semester}">
+                        <tr>
+                            <td>${a.count}</td>
+                            <td>${sc.coursePeriod}</td>
+                            <td>${sc.courseId}</td>
+                            <td>${sc.courseName}</td>
+                            <td>${sc.professorName}</td>
+                            <td>${sc.courseScore}</td>
+                            <td>${sc.scoreMid}</td>
+                            <td>${sc.scoreFinal}</td>
+                            <td>${sc.scoreTotal}</td>
+                            <td class="score-grade ${fn:replace(sc.scoreGrade, '+', '-plus')}">${sc.scoreGrade}</td>
+                        </tr>
+                        <!-- 총 학점 합산 -->
+                        <c:set var="totalCourseScore" value="${totalCourseScore + sc.courseScore}" />
+                        <!-- 학점 등급을 숫자로 변환 -->
+                        <c:choose>
+                            <c:when test="${sc.scoreGrade == 'A+'}">
+                                <c:set var="gradePoint" value="4.5" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'A'}">
+                                <c:set var="gradePoint" value="4.0" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'B+'}">
+                                <c:set var="gradePoint" value="3.5" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'B'}">
+                                <c:set var="gradePoint" value="3.0" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'C+'}">
+                                <c:set var="gradePoint" value="2.5" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'C'}">
+                                <c:set var="gradePoint" value="2.0" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'D+'}">
+                                <c:set var="gradePoint" value="1.5" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'D'}">
+                                <c:set var="gradePoint" value="1.0" />
+                            </c:when>
+                            <c:when test="${sc.scoreGrade == 'F'}">
+                                <c:set var="gradePoint" value="0.0" />
+                            </c:when>
+                            <c:otherwise>
+                                <c:set var="gradePoint" value="0.0" />
+                            </c:otherwise>
+                        </c:choose>
+                        <c:set var="totalGradePoints" value="${totalGradePoints + gradePoint}" />
+                        <c:set var="courseCount" value="${courseCount + 1}" />
+                    </c:if>
+                </c:forEach>
+            </tbody>
+        </table>
+        <!-- 요약 섹션 -->
+        <div class="summary-card">
+            <div class="summary-item">
+                <div class="summary-label">해당 학기 총 이수 학점</div>
+                <div class="summary-value total-credits">${totalCourseScore}</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">평균 학점 (GPA)</div>
+                <div class="summary-value gpa">
+                    <fmt:formatNumber value="${courseCount > 0 ? totalGradePoints / courseCount : 0}" pattern="0.00" />
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
