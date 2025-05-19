@@ -99,15 +99,16 @@
     <insert id="addAttendance" parameterType="java.util.Map">
 	    INSERT INTO attendance (
 	        attendance_id,
-	        attendance_date,
+            student_id,
+	        course_id,
             professor_id,
 	        attendance_remarks,
-	        student_id,
-	        course_id
+	        attendance_date
 	    )
 	    VALUES (
 	        #{attendanceId},
-	        now(),
+            #{studentId},
+	        #{courseId},
             #{professorId},
 	        <if test="attendanceRemarks != null">
 	            #{attendanceRemarks},
@@ -115,8 +116,7 @@
 	        <if test="attendanceRemarks == null">
 	            '',
 	        </if>
-	        #{studentId},
-	        #{courseId}
+	        now()
 	    )
 	</insert>
     

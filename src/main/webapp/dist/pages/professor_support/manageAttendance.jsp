@@ -39,7 +39,7 @@
         <button class="btn btn-primary" id="searchBtn">검색</button>
         <div class="ml-4">
             <label for="datePicker">날짜: </label>
-            <input type="date" id="datePicker" class="border rounded p-1" value="2025-05-18">
+            <input type="date" id="datePicker" class="border rounded p-1" value="">
         </div>
     </div>
     <table class="table">
@@ -112,6 +112,20 @@
 
 <script>
 $(document).ready(function() {
+	//오늘 날짜로 세팅
+	var today = new Date();
+	
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1; 
+    var day = today.getDate();
+
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+    
+    var formattedDate = year + '-' + month + '-' + day;
+
+    $('#datePicker').val(formattedDate);
+	
     // 검색 기능
     $('#searchBtn').click(function() {
         var searchTerm = $('#searchInput').val().toLowerCase();
@@ -136,6 +150,7 @@ $(document).ready(function() {
 
     // 출석 관리 버튼 클릭
     $('.manage-btn').click(function() {
+
         var courseId = $(this).data('course-id');
         var courseName = $(this).closest('tr').find('td:nth-child(3)').text();
         $('#modalCourseId').text(courseId);
@@ -149,6 +164,23 @@ $(document).ready(function() {
             { studentId: "20201234", name: "김민지", status: "출석", history: ["출석", "지각", "출석", "결석"] },
             { studentId: "20215678", name: "박철수", status: "결석", history: ["결석", "지각", "지각", "출석"] }
         ];
+        
+        $.ajax({
+			url : "${path}/professor_support/attendance/getAttendance",
+			type : "get",
+			data : {
+				courseId : courseId,
+				date: $("#datePicker").val();
+				},
+			dataType : "json",
+			success : function(data) {
+				attendanceData = data;
+			},
+			error : function(xhr, status, error) {
+				console.error("Error:", error);
+				alert("강의 상태변경 중 오류가 발생했습니다.");
+			}
+		});
         $.each(attendanceData, function(index, item) {
             var lateCount = item.history.filter(status => status === "지각").length;
             var absentCount = item.history.filter(status => status === "결석").length;

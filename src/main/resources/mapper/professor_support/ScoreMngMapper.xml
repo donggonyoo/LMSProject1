@@ -42,7 +42,7 @@
 		   and   c.professor_id = r.professor_id
 		   and   c.course_id = r.course_id
 		   and   r.student_id = st.student_id
-		   and   r.student_id = sc.student_id
+		   and   sc.course_id = c.course_id
 		   and   p.professor_id = c.professor_id
 		   
 	</select>
@@ -55,7 +55,7 @@
 		and     p.dept_id = d.dept_id
     </select>
     
-    <update id="updatetScore" parameterType="java.util.Map">
+    <update id="updateScore" parameterType="java.util.Map">
     	update  score
 		   set  score_mid = #{scoreMid},
 				score_final = #{scoreFinal},

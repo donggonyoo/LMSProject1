@@ -14,7 +14,6 @@ import model.dto.learning_support.CoursePagingDto;
 import model.dto.learning_support.DeptDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
-import model.dto.professor_support.PaginationDto;
 
 
 public class CourseDao {
@@ -219,7 +218,7 @@ public class CourseDao {
 		map.put("courseId", courseId);
 		
 		try { 
-	        if (session.insert("course.deleteScore", map) <= 0) {
+	        if (session.delete("course.deleteScore", map) <= 0) {
 	            throw new RuntimeException("Failed to delete ScoreTb");
 	        }
 

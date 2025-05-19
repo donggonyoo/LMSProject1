@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
-import model.dto.professor_support.RegistCourseDto;
 import model.dto.professor_support.ScoreMngDto;
 
 
@@ -49,7 +47,7 @@ public class ScoreMngDao {
 		return result;
 	}
 
-	public int updatetScore(List<Map<String, Object>> params) {
+	public int updateScore(List<Map<String, Object>> params) {
 		
 		int result = 0;
 	    
@@ -64,7 +62,7 @@ public class ScoreMngDao {
 				paramMap.put("scoreTotal", m.get("scoreTotal"));
 				paramMap.put("scoreGrade", m.get("scoreGrade"));
 				
-				session.update("ScoreMng.updatetScore", params);
+				session.update("ScoreMng.updateScore", params);
 				result++;
 			}
 			if (result != params.size()) {
