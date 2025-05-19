@@ -1,731 +1,202 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<c:set var="path" value="${pageContext.request.contextPath}"
-	scope="application" />
+<c:set var="path" value="${pageContext.request.contextPath}" scope="application" />
 
 <!doctype html>
 <html lang="en">
-<!--begin::Head-->
 <head>
-<script
-	src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>메인화면</title>
-<!--begin::Primary Meta Tags-->
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="title" content="AdminLTE v4 | Dashboard" />
-<meta name="author" content="ColorlibHQ" />
-<meta name="description"
-	content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS." />
-<meta name="keywords"
-	content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard" />
-<!--end::Primary Meta Tags-->
-<!--begin::Fonts-->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
-	integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
-	crossorigin="anonymous" />
-<!--end::Fonts-->
-<!--begin::Third Party Plugin(OverlayScrollbars)-->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
-	integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
-	crossorigin="anonymous" />
-<!--end::Third Party Plugin(OverlayScrollbars)-->
-<!--begin::Third Party Plugin(Bootstrap Icons)-->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-	integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
-	crossorigin="anonymous" />
-<!--end::Third Party Plugin(Bootstrap Icons)-->
-<!--begin::Required Plugin(AdminLTE)-->
-<link rel="stylesheet" href="${path}/dist/css/adminlte.css" />
-<!--end::Required Plugin(AdminLTE)-->
-<!-- apexcharts -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
-	integrity="sha256-4MX+61mt9NVvvuPjUWdUdyfZfxSB1/Rf9WtqRHgG5S0="
-	crossorigin="anonymous" />
-<!-- jsvectormap -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
-	integrity="sha256-+uGLJmmTKOqBr+2E6KDYs/NRsHxSkONXFHUL0fy2O/4="
-	crossorigin="anonymous" />
+
 <style>
 ul.timeline::before {
     content: none !important;
 }
-
 /* 기본 배경 스타일 */
 body {
- 	background-image: url('${path}/dist/assets/picture/backWon2.jpg');
-    /*background-image: url('${path}/dist/assets/picture/back.jpg');*/
-    background-size: contain; /* 이미지가 화면 안에 전체가 보이도록 설정 */
-    background-position: center; /* 중앙 정렬 */
+    background-image: url('${path}/dist/assets/picture/backWon2.jpg');
+    background-size: contain; /* 이미지 비율 유지하며 요소 내부에 맞춤 */
+    background-position: center 25%; /* 필요에 따라 위치 조정 */
     background-repeat: no-repeat;
-    background-attachment: fixed; /* 스크롤 시 고정 */
-    min-height: 100vh; /* 화면 높이 전체 채움 */
-    margin: 0; /* 불필요한 여백 제거 */
-    background-color: #f0f0f0; /* 이미지가 화면을 덮지 못할 경우 대비 배경색 */
-}
-
-/* body의 배경에 직접 적용되는 wrapper 스타일 */
-.app-wrapper {
-    background: rgba(255, 255, 255, 0.85);
+    background-attachment: fixed;
     min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
 }
 
-/* 카드와 사이드바 스타일 유지 */
-.card {
-    background: rgba(255, 255, 255, 0.9);
-}
-
-.app-sidebar, .app-header {
-    background: rgba(255, 255, 255, 0.95);
-}
-
-/* 반응형 설정 */
+/* 반응형 설정 (필요에 따라 조정) */
 @media (max-width: 768px) {
     body {
-        background-image: url('${path}/dist/assets/picture/backWon2.jpg');
-        /*background-image: url('${path}/dist/assets/picture/back.jpg');*/
-        background-size: contain; /* 모바일에서도 전체 이미지 표시 */
-        background-position: top center; /* 상단 중앙 정렬 */
-        background-attachment: scroll; /* 모바일 성능 최적화 */
+        background-size: contain;
+        background-position: center 15%;
     }
 }
 
 @media (min-width: 769px) and (max-width: 1200px) {
     body {
-        background-size: contain; /* 태블릿에서도 전체 이미지 표시 */
-        background-position: center;
+        background-size: contain;
+        background-position: center 20%;
     }
 }
 
 @media (min-width: 1201px) {
     body {
-        background-size: contain; /* 데스크톱에서도 전체 이미지 표시 */
-        background-position: center;
+        background-size: contain;
+        background-position: center 25%;
     }
 }
 
-/* 화면 비율에 따라 조정 */
-@media (max-aspect-ratio: 736/1103) { /* 화면이 이미지보다 세로로 더 긴 경우 */
-    body {
-        background-size: contain; /* 전체 이미지가 보이도록 */
-        background-position: center;
-    }
-}
-
-@media (min-aspect-ratio: 736/1103) { /* 화면이 이미지보다 가로로 더 긴 경우 */
-    body {
-        background-size: contain; /* 전체 이미지가 보이도록 */
-        background-position: center;
-    }
-}
-.app-content{
-	margin-top: 100px;
+.app-content {
+    margin-top: 350px; /* 이미지가 커짐에 따라 콘텐츠를 아래로 조정 */
 }
 </style>
-
 </head>
-<!--end::Head-->
-<!--begin::Body-->
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
-	<!--begin::App Wrapper-->
-	<div class="app-wrapper">
-		<!--begin::Header-->
-		<nav class="app-header navbar navbar-expand bg-body">
-			<!--begin::Container-->
-			<div class="container-fluid">
-				<!--begin::Start Navbar Links-->
-				<ul class="navbar-nav">
-					<li class="nav-item"><a class="nav-link"
-						data-lte-toggle="sidebar" href="#" role="button"> <i
-							class="bi bi-list"></i>
-					</a></li>
-					<li class="nav-item d-none d-md-block"><a href="#"
-						class="nav-link">Home</a></li>
-					<li class="nav-item d-none d-md-block"><a href="#"
-						class="nav-link">Contact</a></li>
-				</ul>
-				<!--end::Start Navbar Links-->
-				<!--begin::End Navbar Links-->
-				<ul class="navbar-nav ms-auto">
-					<!--begin::Navbar Search-->
-					<li class="nav-item"><a class="nav-link"
-						data-widget="navbar-search" href="#" role="button"> <i
-							class="bi bi-search"></i>
-					</a></li>
-					<!--end::Navbar Search-->
-					<!--begin::Messages Dropdown Menu-->
-					<li class="nav-item dropdown"><a class="nav-link"
-						data-bs-toggle="dropdown" href="#"> <i class="bi bi-chat-text"></i>
-							<span class="navbar-badge badge text-bg-danger">3</span>
-					</a>
-						<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user1-128x128.jpg"
-											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<h3 class="dropdown-item-title">
-											Brad Diesel <span class="float-end fs-7 text-danger"><i
-												class="bi bi-star-fill"></i></span>
-										</h3>
-										<p class="fs-7">Call me whenever you can...</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user8-128x128.jpg"
-											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<h3 class="dropdown-item-title">
-											John Pierce <span class="float-end fs-7 text-secondary">
-												<i class="bi bi-star-fill"></i>
-											</span>
-										</h3>
-										<p class="fs-7">I got your message bro</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <!--begin::Message-->
-								<div class="d-flex">
-									<div class="flex-shrink-0">
-										<img src="../../dist/assets/img/user3-128x128.jpg"
-											alt="User Avatar" class="img-size-50 rounded-circle me-3" />
-									</div>
-									<div class="flex-grow-1">
-										<h3 class="dropdown-item-title">
-											Nora Silvester <span class="float-end fs-7 text-warning">
-												<i class="bi bi-star-fill"></i>
-											</span>
-										</h3>
-										<p class="fs-7">The subject goes here</p>
-										<p class="fs-7 text-secondary">
-											<i class="bi bi-clock-fill me-1"></i> 4 Hours Ago
-										</p>
-									</div>
-								</div> <!--end::Message-->
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item dropdown-footer">See All
-								Messages</a>
-						</div></li>
-					<!--end::Messages Dropdown Menu-->
-					<!--begin::Notifications Dropdown Menu-->
-					<li class="nav-item dropdown"><a class="nav-link"
-						data-bs-toggle="dropdown" href="#"> <i class="bi bi-bell-fill"></i>
-							<span class="navbar-badge badge text-bg-warning">15</span>
-					</a>
-						<div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<span class="dropdown-item dropdown-header">15
-								Notifications</span>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <i
-								class="bi bi-envelope me-2"></i> 4 new messages <span
-								class="float-end text-secondary fs-7">3 mins</span>
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <i
-								class="bi bi-people-fill me-2"></i> 8 friend requests <span
-								class="float-end text-secondary fs-7">12 hours</span>
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item"> <i
-								class="bi bi-file-earmark-fill me-2"></i> 3 new reports <span
-								class="float-end text-secondary fs-7">2 days</span>
-							</a>
-							<div class="dropdown-divider"></div>
-							<a href="#" class="dropdown-item dropdown-footer"> See All
-								Notifications </a>
-						</div></li>
-					<!--end::Notifications Dropdown Menu-->
-					<!--begin::Fullscreen Toggle-->
-					<li class="nav-item"><a class="nav-link" href="#"
-						data-lte-toggle="fullscreen"> <i data-lte-icon="maximize"
-							class="bi bi-arrows-fullscreen"></i> <i data-lte-icon="minimize"
-							class="bi bi-fullscreen-exit" style="display: none"></i>
-					</a></li>
-					<!--end::Fullscreen Toggle-->
-					<!--begin::User Menu Dropdown-->
-					<li class="nav-item dropdown user-menu">
-						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
-						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
-							<%-- 				
-							<c:set var="img"
-								value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
-							--%>
- 							<img src="${path}/dist/assets/picture/${m.img}"
-							class="user-image rounded-circle shadow" alt="User Image" style=" height: 40px; width: 40px"/> <span
-							class="d-none d-md-inline" style="font-size: 20px">${sessionScope.login}님
-								반갑습니다</span>
-						
-					</a>
-						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-							<!--begin::User Image-->
-							<c:set var="img"
-								value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
-							<li class="user-header text-bg-primary"><img
-								src="${path}/dist/assets/picture/${m.img}"
-								class="rounded-circle shadow" alt="User Image" /> <%-- 세션 정보에 따라 이름 출력 --%>
-								<c:if test="${fn:contains(sessionScope.login, 'S')}">
-									<fmt:formatDate value="${m.studentBirthday}"
-										pattern="YYYY-MM-dd" var="birth" />
-									<p>${m.studentName}<small>${birth}</small>
-									</p>
-								</c:if> <c:if test="${not fn:contains(sessionScope.login, 'S')}">
-									<fmt:formatDate value="${m.professorBirthday}"
-										pattern="YYYY-MM-dd" var="birth" />
-									<p>${m.professorName}<small>${birth}</small>
-									</p>
-								</c:if></li>
-							<!--end::User Image-->
-							<!--begin::Menu Body-->
-							<li class="user-body">
-								<!--begin::Row-->
-								<div class="row">
-									<div class="col-4 text-center">
-										<a href="#">Followers</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Sales</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Friends</a>
-									</div>
-								</div> <!--end::Row-->
-							</li>
-							<!--end::Menu Body-->
-							<!--begin::Menu Footer-->
-							<li class="user-footer"><a href="#"
-								class="btn btn-default btn-flat">Profile</a> <a
-								href="${path}/mypage/logout"
-								class="btn btn-default btn-flat float-end">Sign out</a></li>
-							<!--end::Menu Footer-->
-						</ul></li>
-					<!--end::User Menu Dropdown-->
-				</ul>
-				<!--end::End Navbar Links-->
-			</div>
-			<!--end::Container-->
-		</nav>
-		<!--end::Header-->
-		<!--begin::Sidebar-->
-		<aside class="app-sidebar bg-body-secondary shadow"
-			data-bs-theme="dark">
-			<!--begin::Sidebar Brand-->
-			<div class="sidebar-brand">
-				<!--begin::Brand Link-->
-				<a href="${path}/mypage/index" class="brand-link"> <!--begin::Brand Image-->
-					<img src="${path}/dist/assets/img/AdminLTELogo.png"
-					class="brand-image opacity-75 shadow" /> <!--end::Brand Image--> <!--begin::Brand Text-->
-					<span class="brand-text fw-light">LDB 학사관리시스템</span> <!--end::Brand Text-->
-				</a>
-				<!--end::Brand Link-->
-			</div>
-			<!--end::Sidebar Brand-->
-			<!--begin::Sidebar Wrapper-->
-			<div class="sidebar-wrapper">
-				<nav class="mt-2">
-					<!--begin::Sidebar Menu-->
-					<ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview"
-						role="menu" data-accordion="false">
-						<li class="nav-item menu-open"><a href="#"
-							class="nav-link active"> <i
-								class="nav-icon bi bi-speedometer"></i>
-								<p>
-									MyPage <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/mypage/userInfo"
-									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
-										<p>개인정보</p>
-								</a></li>
-								<li class="nav-item"><a href="${path}/mypage/getCourseScores"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>성적확인</p>
-								</a></li>
-								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>시간표조회</p>
-								</a></li>
-							</ul></li>
-							
-							
-							<%-- 학습지원은 학생만 들어갈수 있게 해야함--%>
-							<!--<c:if test="${fn:contains(sessionScope.login, 'S')}"></c:if>-->
-						<li class="nav-item">
-							<a href="#" class="nav-link"> 
-								<i class="nav-icon bi bi-box-seam-fill"></i>
-								<p>학습지원 <i class="nav-arrow bi bi-chevron-right"></i></p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="${path}/learning_support/registerCourse" class="nav-link">
-									<i class="nav-icon bi bi-circle"></i>
-									<p>수강신청</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/learning_support/viewCourse/viewCourse" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>수강신청 현황</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>미정</p>
-								</a></li>
-							</ul></li>
-							
-						
-
-						
-
-						<!--<c:if test="${fn:contains(sessionScope.login, 'P')}"></c:if>
-							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
-
-						<li class="nav-item">
-							<a href="#" class="nav-link"> 
-								<i class="nav-icon bi bi-clipboard-fill"></i>
-								<p>교수지원
-									<!-- <span class="nav-badge badge text-bg-secondary me-3">6</span> -->
-									<i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="${path}/professor_support/registCourse" class="nav-link">
-										<i class="nav-icon bi bi-circle"></i>
-										<p>강의등록</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/manage/manageCourse" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>강의관리</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/score/scoreMng" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>성적관리</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/attendance/attendance"class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>출석관리</p>
-									</a>
-								</li>
-							</ul></li>
-						
-					
-							<%-- 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임 --%>
-
-						<li class="nav-item"><a href="${path}/notice/getNotices"
-							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
-								<p>공지사항</p>
-						</a></li>
-						<li class="nav-item"><a href="${path}/post/getPosts"
-							class="nav-link"> <i class="nav-icon bi bi-pencil-square"></i>
-								<p>문의게시판</p>
-						</a></li>
-					</ul>
-					<!--end::Sidebar Menu-->
-				</nav>
-			</div>
-			<!--end::Sidebar Wrapper-->
-		</aside>
-		<!--end::Sidebar-->
-		<!--begin::App Main-->
-		<!--begin::App Main-->
-		<main class="app-main">
-			<!--begin::App Content Header-->
-			<div class="app-content-header">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-sm-6">
-							<h3 class="mb-0">LDB 학사관리시스템</h3>
-						</div>
-						<div class="col-sm-6">
-							<ol class="breadcrumb float-sm-end">
-								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-							</ol>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!--end::App Content Header-->
-
-			<!--begin::App Content-->
-			<div class="app-content">
-				<div class="container-fluid">
-					<!--begin::Row 1 - Welcome & Quick Actions-->
-					
-					<div class="row">
-						<!-- Welcome Card -->
-						<div class="col-md-6">
-							<!-- 
-							<div class="card card-primary card-outline">
-								<div class="card-header">
-									<h5 class="card-title">
-										환영합니다,
-										 ${user.name} 
-										<strong>임주한(포켓몬마스터)</strong>님!
-									</h5>
-								</div>
-								<div class="card-body">
-									<p>
-										<strong>역할:</strong> ${user.role}
-									</p>
-									<p>
-										<strong>현재 학기:</strong> 2025년 1학기
-									</p>
-									<p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
-								</div>
-							</div>
-							-->
-							
-							 
-						</div>
-						<!-- Quick Actions -->
-						<div class="col-md-6">
-							<div class="card card-info card-outline">
-								<div class="card-header">
-									<h5 class="card-title">빠른 액세스</h5>
-								</div>
-								<div class="card-body">
-									<div class="d-flex flex-wrap">
-										<a href="course_registration.jsp" class="btn btn-primary m-1">수강신청</a>
-										<a href="grades.jsp" class="btn btn-success m-1">성적확인</a> <a
-											href="${path}/mypage/getCourseTimetable" class="btn btn-warning m-1">시간표조회</a> <a
-											href="notice_board.jsp" class="btn btn-info m-1">공지사항</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					<!--end::Row 1-->
-
-					<!--begin::Row 2 - Notices & Schedule-->
-					<div class="row">
-						<!-- Recent Notices -->
-						<div class="col-md-6">
-						<div class="card card-primary card-outline">
-								<div class="card-header">
-									<h5 class="card-title">
-										환영합니다,
-										<%-- ${user.name} --%>
-										<strong>임주한(포켓몬마스터)</strong>님!
-									</h5>
-								</div>
-								<div class="card-body">
-									<p>
-										<strong>역할:</strong> ${user.role}
-									</p>
-									<p>
-										<strong>현재 학기:</strong> 2025년 1학기
-									</p>
-									<p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
-								</div>
-							</div>
-							<div class="card card-warning card-outline">
-								<div class="card-header">
-									<h5 class="card-title">최신 공지사항</h5>
-									<div class="card-tools">
-										<a href="notice_board.jsp" class="btn btn-tool">전체보기</a>
-									</div>
-								</div>
-								<div class="card-body">
-									<ul class="list-group">
-										<c:forEach var="notice" items="${recentNotices}" begin="0"
-											end="4">
-											<li class="list-group-item"><a
-												href="notice_detail.jsp?id=${notice.id}">${fn:escapeXml(notice.title)}</a>
-												<span class="float-end text-muted"><fmt:formatDate
-														value="${notice.createdDate}" pattern="yyyy-MM-dd" /></span></li>
-										</c:forEach>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<!-- Academic Schedule -->
-						<div class="col-md-6">
-							<div class="card card-success card-outline">
-								<div class="card-header">
-									<h5 class="card-title">학사 일정</h5>
-								</div>
-								<div class="card-body">
-									<ul class="timeline timeline-inverse">
-										<li><i class="bi bi-calendar-event bg-primary"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-03-01</span>
-												<h3 class="timeline-header">2025년 1학기 개강</h3>
-											</div></li>
-										<li><i class="bi bi-calendar-event bg-warning"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-03-10 ~ 2025-03-15</span>
-												<h3 class="timeline-header">수강신청 기간</h3>
-											</div></li>
-										<li><i class="bi bi-calendar-event bg-danger"></i>
-											<div class="timeline-item">
-												<span class="time"><i class="bi bi-clock"></i>
-													2025-06-20 ~ 2025-06-30</span>
-												<h3 class="timeline-header">기말고사</h3>
-											</div></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 2-->
-
-					<!--begin::Row 3 - Recent Activity-->
-					<div class="row">
-						<div class="col-12">
-							<div class="card card-secondary card-outline">
-								<div class="card-header">
-									<h5 class="card-title">최근 활동</h5>
-								</div>
-								<div class="card-body">
-									<table class="table table-bordered">
-										<thead>
-											<tr>
-												<th>활동</th>
-												<th>날짜</th>
-											</tr>
-										</thead>
-										<tbody>
-											<c:forEach var="activity" items="${recentActivities}"
-												begin="0" end="4">
-												<tr>
-													<td>${fn:escapeXml(activity.description)}</td>
-													<td><fmt:formatDate value="${activity.date}"
-															pattern="yyyy-MM-dd HH:mm" /></td>
-												</tr>
-											</c:forEach>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!--end::Row 3-->
-				</div>
-			</div>
-			<!--end::App Content-->
-		</main>
-		<!--end::App Main-->
-		<!--begin::Footer-->
-		<footer class="app-footer">
-			<!--begin::To the end-->
-			<!-- <div class="float-end d-none d-sm-inline">Anything you want</div> -->
-			<!--end::To the end-->
-			<!--begin::Copyright-->
-			<strong> Copyright &copy;2025-05-01&nbsp; <a href="#"
-				class="text-decoration-none">LDB대학교</a>.
-			</strong> All rights reserved.
-			<!--end::Copyright-->
-		</footer>
-		<!--end::Footer-->
-	</div>
-	<!--end::App Wrapper-->
-	<!--begin::Script-->
-	<!--begin::Third Party Plugin(OverlayScrollbars)-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
-		integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
-		crossorigin="anonymous"></script>
-	<!--end::Third Party Plugin(OverlayScrollbars)-->
-	<!--begin::Required Plugin(popperjs for Bootstrap 5)-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-		crossorigin="anonymous"></script>
-	<!--end::Required Plugin(popperjs for Bootstrap 5)-->
-	<!--begin::Required Plugin(Bootstrap 5)-->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-		integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-		crossorigin="anonymous"></script>
-	<!--end::Required Plugin(Bootstrap 5)-->
-	<!--begin::Required Plugin(AdminLTE)-->
-	<script src="${path}/dist/js/adminlte.js"></script>
-	<!--end::Required Plugin(AdminLTE)-->
-	<!--begin::OverlayScrollbars Configure-->
-	<script>
-      const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
-      const Default = {
-        scrollbarTheme: 'os-theme-light',
-        scrollbarAutoHide: 'leave',
-        scrollbarClickScroll: true,
-      };
-      document.addEventListener('DOMContentLoaded', function () {
-        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
-        if (sidebarWrapper && typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== 'undefined') {
-          OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
-            scrollbars: {
-              theme: Default.scrollbarTheme,
-              autoHide: Default.scrollbarAutoHide,
-              clickScroll: Default.scrollbarClickScroll,
-            },
-          });
-        }
-      });
-      
-      $(document).ready(function() {//사이드바 오류수정 ()
-    	    var currentUrl = window.location.pathname;
-    	    //현재 URL(window.location.pathname)과 각 <a>의 href 비교.
-    	    $('.nav-item').removeClass('menu-open');
-    	    $('.nav-link').removeClass('active'); //클릭한 곳 (ex)시간표조회,개인정보 등)
-    	    $('.sidebar-menu .nav-link').each(function() {
-    	        var linkUrl = $(this).attr('href');
-    	        if (!linkUrl || linkUrl === '#') return;
-    	        if (currentUrl.includes(linkUrl)) {
-    	            console.log('Match found:', linkUrl);
-    	            $(this).addClass('active');
-    	            var parentNavItem = $(this).closest('.nav-item');
-    	            parentNavItem.addClass('menu-open'); 
-    	            var topLevelNavItem = $(this).closest('.nav-treeview').closest('.nav-item');
-    	            topLevelNavItem.addClass('menu-open');
-    	            //카테고리(mypage,학습지원 등)에 menu-open클래스추가
-    	        }
-    	    });
-    	});
-    </script>
-
+    <div class="app-wrapper">
+        <div class="app-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-primary card-outline">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title m-0">
+                                    환영합니다,
+                                    <c:if test="${not empty sessionScope.m}">
+                                        <c:set var="user" value="${sessionScope.m}" />
+                                        <strong>
+                                            <c:choose>
+                                                <c:when test="${user['class'].simpleName eq 'Student' and not empty user.studentName}">
+                                                    ${user.studentName}님
+                                                </c:when>
+                                                <c:when test="${user['class'].simpleName eq 'Professor' and not empty user.professorName}">
+                                                    ${user.professorName}님
+                                                </c:when>
+                                            </c:choose>
+                                        </strong>
+                                    </c:if>
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p>
+                                    <strong>역할:</strong>
+                                    <c:if test="${not empty sessionScope.m}">
+                                        <c:choose>
+                                            <c:when test="${user['class'].simpleName eq 'Student' and not empty user.studentName}">
+                                                학생
+                                            </c:when>
+                                            <c:when test="${user['class'].simpleName eq 'Professor' and not empty user.professorName}">
+                                                교수
+                                            </c:when>
+                                        </c:choose>
+                                    </c:if>
+                                </p>
+                                <p><strong>현재 학기:</strong> 2025년 1학기</p>
+                                <p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-info card-outline">
+                            <div class="card-header">
+                                <h5 class="card-title">빠른 액세스</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap">
+                                    <a href="${path}/learning_support/registerCourse" class="btn btn-primary m-1">수강신청</a>
+                                    <a href="${path}/mypage/getCourseScores" class="btn btn-success m-1">성적확인</a>
+                                    <a href="${path}/mypage/getCourseTimetable" class="btn btn-warning m-1">시간표조회</a>
+                                    <a href="${path}/notice/getNotices" class="btn btn-info m-1">공지사항</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-warning card-outline">
+                            <div class="card-header">
+                                <h5 class="card-title">최신 공지사항</h5>
+                                <div class="card-tools">
+                                    <a href="${path}/notice/getNotices" class="btn btn-tool">전체보기</a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <c:forEach var="notice" items="${recentNotices}" begin="0" end="2">
+                                        <li class="list-group-item">
+                                            <a href="${path}/notice/getNoticeDetail?noticeId=${notice.noticeId}">${fn:escapeXml(notice.noticeTitle)}</a>
+                                            <span class="float-end text-muted">
+                                                <fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd" />
+                                            </span>
+                                        </li>
+                                    </c:forEach>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card card-success card-outline">
+                            <div class="card-header">
+                                <h5 class="card-title">학사 일정</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="timeline timeline-inverse">
+                                    <li>
+                                        <i class="bi bi-calendar-event bg-primary"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="bi bi-clock"></i> 2025-03-01</span>
+                                            <h3 class="timeline-header">2025년 1학기 개강</h3>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-calendar-event bg-warning"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="bi bi-clock"></i> 2025-03-10 ~ 2025-03-15</span>
+                                            <h3 class="timeline-header">수강정정 기간</h3>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <i class="bi bi-calendar-event bg-danger"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="bi bi-clock"></i> 2025-06-20 ~ 2025-06-30</span>
+                                            <h3 class="timeline-header">기말고사</h3>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-secondary card-outline">
+                            <div class="card-header">
+                                <h5 class="card-title">최근 활동</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>활동</th>
+                                            <th>날짜</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="activity" items="${recentActivities}" begin="0" end="4">
+                                            <tr>
+                                                <td>${fn:escapeXml(activity.description)}</td>
+                                                <td><fmt:formatDate value="${activity.date}" pattern="yyyy-MM-dd HH:mm" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
-<!--end::Body-->
 </html>

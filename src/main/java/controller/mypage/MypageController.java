@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +29,13 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import domain.Dept;
+import domain.Notice;
 import domain.Professor;
 import domain.Student;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import model.dao.board.NoticeDao;
 import model.dao.learning_support.CourseDao;
 import model.dao.mypage.DeptDao;
 import model.dao.mypage.GetScoreDao;
@@ -422,6 +425,15 @@ public class MypageController  extends MskimRequestMapping{
 			session.setAttribute("m", professor);	
 
 		}
+        List<Notice> allNotices = NoticeDao.listAll();
+        List<Notice> recentNotices = new ArrayList<>();
+        if (allNotices != null) {
+            Collections.sort(allNotices, Comparator.comparing(Notice::getNoticeCreatedAt).reversed());
+            for (int i = 0; i < Math.min(4, allNotices.size()); i++) {
+                recentNotices.add(allNotices.get(i));
+            }
+        }
+        request.setAttribute("recentNotices", recentNotices);
 
 		return "index"; //forward 됨
 		//redirect시 다른 request영역이므로 속성이 넘어가지않음

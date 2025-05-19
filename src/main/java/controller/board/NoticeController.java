@@ -94,6 +94,8 @@ public class NoticeController extends MskimRequestMapping {
         return "/pages/board/notice/getNotices"; 
     }
 
+   
+    
     @RequestMapping("searchNotice")
     public String searchNotice(HttpServletRequest request, HttpServletResponse response) {
         String loginCheck = checkLogin(request, response);

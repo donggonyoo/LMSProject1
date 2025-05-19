@@ -82,4 +82,12 @@
             notice_updated_at = #{noticeUpdatedAt}
         WHERE notice_id = #{noticeId}
     </update>
+    
+     <select id="selectListAll" resultType="Notice">
+        SELECT
+            notice_id, writer_id, writer_name, notice_password, notice_title, notice_content,
+            notice_created_at, notice_updated_at, notice_file, notice_read_count
+        FROM notice
+        ORDER BY notice_created_at DESC
+    </select>
 </mapper>
