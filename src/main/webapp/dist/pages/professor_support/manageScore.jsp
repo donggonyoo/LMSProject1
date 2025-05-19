@@ -425,8 +425,8 @@
 	                        '<td>' + grade.deptName + '</td>' +
 	                        '<td><input type="number" class="editable-score midterm-score" value="' + grade.scoreMid + '" data-index="' + i + '"></td>' +
 	                        '<td><input type="number" class="editable-score final-exam-score" value="' + grade.scoreFinal + '" data-index="' + i + '"></td>' +
-	                        '<td class="total-score" id="total-score">' + grade.scoreTotal + '</td>' +
-	                        '<td class="grade" id="grade">' + grade.scoreGrade + '</td>' +
+	                        '<td class="total-score">' + grade.scoreTotal + '</td>' +
+	                        '<td class="grade">' + grade.scoreGrade + '</td>' +
 	                        '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
 	                        '</tr>'
 	                    );
@@ -447,13 +447,14 @@
                 var params = [];
                 
                 $("#gradeList tr[data-student-id]").each(function() {
+					console.log('this: ', $(this));
                 	var studentId = $(this).attr("data-student-id");
                 	var courseId = $(this).attr("data-course-id");
                 	var scoreMid = $(this).find("td .midterm-score").val();
                 	var scoreFinal = $(this).find("td .final-exam-score").val();
-                	var scoreTotal = $(".total-score").text();
-                	var scoreGrade = $(".grade").text();
-
+                	var scoreTotal = $(this).find("td.total-score").text();
+                	var scoreGrade = $(this).find("td.grade").text();
+                	
                 	params.push({
 						studentId: studentId,
 						courseId: courseId,
@@ -464,7 +465,7 @@
                 	});
                 	
                 });
-				
+				console.log('params: ', params);
                 $.ajax({
             	url: '${path}/professor_support/score/updateScore', 
                 type: 'post',
