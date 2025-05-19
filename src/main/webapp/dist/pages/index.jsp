@@ -15,7 +15,7 @@ ul.timeline::before {
 }
 /* 기본 배경 스타일 */
 body {
-    background-image: url('${path}/dist/assets/picture/backWon1.jpg');
+    background-image: url('${path}/dist/assets/picture/backWon2.jpg');
     background-size: contain; /* 이미지 비율 유지하며 요소 내부에 맞춤 */
     background-position: center 25%; /* 필요에 따라 위치 조정 */
     background-repeat: no-repeat;
@@ -199,37 +199,4 @@ body {
         </div>
     </div>
 </body>
-<script>
-  const backgroundImages = [
-   	'${path}/dist/assets/picture/backWon1.jpg',
-	'${path}/dist/assets/picture/backWon2.jpg',
-    '${path}/dist/assets/picture/backWon3.jpg',
-    '${path}/dist/assets/picture/backWon4.jpg',
-    '${path}/dist/assets/picture/backWon5.jpg',
-    '${path}/dist/assets/picture/backWon6.jpg',
-    '${path}/dist/assets/picture/backWon7.jpg',
-    '${path}/dist/assets/picture/backWon8.jpg',
-    '${path}/dist/assets/picture/backWon9.jpg',
-    '${path}/dist/assets/picture/backWon10.jpg'
-  ];
-
-  function setRandomBackground() {
-    const index = Math.floor(Math.random() * backgroundImages.length);
-    const imageUrl = backgroundImages[index];
-    if (!imageUrl) return;
-
-    const img = new Image();
-    img.src = imageUrl;
-    img.onload = () => {
-      document.body.style.backgroundImage = `url('${imageUrl}')`;
-    };
-    img.onerror = () => {
-      console.error(`Failed to load image: ${imageUrl}`);
-      document.body.style.backgroundColor = '#f0f0f0'; // 기본 배경색
-    };
-  }
-
-  window.onload = setRandomBackground;
-  setInterval(setRandomBackground, 5000);
-</script>
 </html>
