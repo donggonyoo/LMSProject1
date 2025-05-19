@@ -92,7 +92,17 @@ body {
                                     </c:if>
                                 </p>
                                 <p><strong>현재 학기:</strong> 2025년 1학기</p>
-                                <p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
+                                <p><c:if test="${not empty sessionScope.m}">
+                                        <c:choose>
+                                            <c:when test="${user['class'].simpleName eq 'Student' and not empty user.studentName}">
+                                                LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.
+                                            </c:when>
+                                            <c:when test="${user['class'].simpleName eq 'Professor' and not empty user.professorName}">
+                                                LDB 학사관리시스템에서 강의등록, 강의관리, 성적관리 등을 편리하게 이용하세요.
+                                            </c:when>
+                                        </c:choose>
+                                    </c:if>
+                                    </p>
                             </div>
                         </div>
                     </div>
