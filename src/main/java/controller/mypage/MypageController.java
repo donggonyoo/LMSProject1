@@ -90,11 +90,7 @@ public class MypageController  extends MskimRequestMapping{
 			return null; //정상인경우
 		}
 		
-		
-	
-	
-	
-	
+
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
 			List<String> lowerList = Arrays.asList
@@ -566,7 +562,7 @@ public class MypageController  extends MskimRequestMapping{
 		}
 	}
 
-	@MSLogin("loginIdCheck")
+	@MSLogin("loginStuCheck")
 	@RequestMapping("deleteUser")
 	public String deleteUser(HttpServletRequest request, HttpServletResponse response) { 
 		List<Dept> list = new DeptDao().selectAll();
@@ -575,7 +571,7 @@ public class MypageController  extends MskimRequestMapping{
 	}
 
 
-	@MSLogin("loginIdCheck")
+	@MSLogin("loginStuCheck")
 	@RequestMapping("delete")
 	public String delete(HttpServletRequest request, HttpServletResponse response) { 
 		String id = (String)request.getSession().getAttribute("login");
@@ -584,15 +580,16 @@ public class MypageController  extends MskimRequestMapping{
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String deptId = request.getParameter("deptId");
-		if(id.toLowerCase().contains("p")) {
-			request.setAttribute("msg", "교수는 자퇴가 없어요");
-		}
-		else if(id.equals(inputId)) {
+		
+		if(id.equals(inputId)) {
 			String dbId = new ProStuDao().findPw(inputId, email);
-			boolean checkpw = BCrypt.checkpw(pw, dbId);//db의비밀번호와 입력한비밀번호비교
+			//db의비밀번호와 입력한비밀번호비교
+			//암호화때문에 equals로 비교불가능
+			boolean checkpw = BCrypt.checkpw(pw, dbId);
 			System.out.println("비밀번호 검증 성공여부 : "+checkpw);
 			
 			boolean result = new StudentDao().deleteUser(inputId,deptId,name);
+			//비밀번호검증 , delete여부 모두 true일 시
 			if(checkpw&&result) {
 				EmailUtil.sendDeleteMsg(email, name); // 자퇴성공시 메일발송
 				request.setAttribute("logout", "logout");
@@ -602,11 +599,11 @@ public class MypageController  extends MskimRequestMapping{
 				request.setAttribute("msg", "변경실패");
 			}
 		}
+		//id가 로그인한정보와 일치하지않을 시
 		else {
 			request.setAttribute("msg", "입력한 아이디가 로그인한 아이디와 일치하지않아요");				
 		}
 		return "mypage/close";
-
 	}
 	
 	

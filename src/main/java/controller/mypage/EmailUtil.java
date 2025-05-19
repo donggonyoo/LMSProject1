@@ -194,7 +194,7 @@ public class EmailUtil {
 	            MimeMessage message = new MimeMessage(session);
 	            message.setFrom(new InternetAddress(from));
 	            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-	            message.setSubject("인증번호 안내");
+	            message.setSubject("자퇴 안내 메시지");
 	            message.setText(userName+"님이 자퇴를 하셨습니다 : \n 자퇴 시  해당페이지에 로그인이 제한됩니다");
 	            
 

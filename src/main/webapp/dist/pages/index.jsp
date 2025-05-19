@@ -4,6 +4,12 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <c:set var="path" value="${pageContext.request.contextPath}" scope="application" />
 
+<%
+int imageCount = 15;
+int randomImageNumber = (int)(Math.random() * imageCount) + 1;
+pageContext.setAttribute("randomImageNumber", randomImageNumber);
+%>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -15,8 +21,7 @@ ul.timeline::before {
 }
 /* 기본 배경 스타일 */
 body {
-    /*background-image: url('${path}/dist/assets/picture/backWon2.jpg');*/
-    background-image: url('${path}/dist/assets/picture/back.jpg');
+    background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
     background-size: contain; /* 이미지 비율 유지하며 요소 내부에 맞춤 */
     background-position: center 25%; /* 필요에 따라 위치 조정 */
     background-repeat: no-repeat;
@@ -93,7 +98,17 @@ body {
                                     </c:if>
                                 </p>
                                 <p><strong>현재 학기:</strong> 2025년 1학기</p>
-                                <p>LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.</p>
+                                <p><c:if test="${not empty sessionScope.m}">
+                                        <c:choose>
+                                            <c:when test="${user['class'].simpleName eq 'Student' and not empty user.studentName}">
+                                                LDB 학사관리시스템에서 수강신청, 성적확인, 공지사항 등을 편리하게 이용하세요.
+                                            </c:when>
+                                            <c:when test="${user['class'].simpleName eq 'Professor' and not empty user.professorName}">
+                                                LDB 학사관리시스템에서 강의등록, 강의관리, 성적관리 등을 편리하게 이용하세요.
+                                            </c:when>
+                                        </c:choose>
+                                    </c:if>
+								</p>
                             </div>
                         </div>
                     </div>
@@ -200,4 +215,5 @@ body {
         </div>
     </div>
 </body>
+<script type="text/javascript"></ >
 </html>
