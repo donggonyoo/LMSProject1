@@ -378,12 +378,8 @@ body {
 							
 							
 							<!--<c:if test="${fn:contains(sessionScope.login, 'S')}"></c:if>-->
-							<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon bi bi-box-seam-fill"></i>
-								<p>
-									학습지원 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
+
+				
 						<li class="nav-item">
 							<a href="#" class="nav-link"> 
 								<i class="nav-icon bi bi-box-seam-fill"></i>
@@ -411,17 +407,9 @@ body {
 							
 						
 
-						<!--<c:if test="${fn:contains(sessionScope.login, 'P')}">	</c:if>-->
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon bi bi-clipboard-fill"></i>
-								<p>
-									교수지원
-									</a>
-								</li>
-							</ul>
-						</li>
+						
 
-						<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+						<!--<c:if test="${fn:contains(sessionScope.login, 'P')}"></c:if>
 							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
 
 						<li class="nav-item">
