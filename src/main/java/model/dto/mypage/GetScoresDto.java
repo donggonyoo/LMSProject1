@@ -4,6 +4,7 @@ public class GetScoresDto {
 	private String courseId;
 	private String courseName;
 	private int courseScore;
+	private String coursePeriod;
 	private String studentId;
 	private String professorName;
 	
@@ -11,6 +12,14 @@ public class GetScoresDto {
 	private String scoreFinal;
 	private String scoreTotal;
 	private String scoreGrade;
+	
+	
+	public String getCoursePeriod() {
+		return coursePeriod;
+	}
+	public void setCoursePeriod(String coursePeriod) {
+		this.coursePeriod = coursePeriod;
+	}
 	public String getCourseId() {
 		return courseId;
 	}
@@ -68,13 +77,10 @@ public class GetScoresDto {
 	@Override
 	public String toString() {
 		return "GetScoresDto [courseId=" + courseId + ", courseName=" + courseName + ", courseScore=" + courseScore
-				+ ", studentId=" + studentId + ", professorName=" + professorName + ", scoreMid=" + scoreMid
-				+ ", scoreFinal=" + scoreFinal + ", scoreTotal=" + scoreTotal + ", scoreGrade=" + scoreGrade + "]";
+				+ ", coursePeriod=" + coursePeriod + ", studentId=" + studentId + ", professorName=" + professorName
+				+ ", scoreMid=" + scoreMid + ", scoreFinal=" + scoreFinal + ", scoreTotal=" + scoreTotal
+				+ ", scoreGrade=" + scoreGrade + "]";
 	}
-
-
-
-	
 
 
 }

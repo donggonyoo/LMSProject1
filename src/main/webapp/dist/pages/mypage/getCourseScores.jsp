@@ -34,19 +34,63 @@ body {
 
 .table {
 	width: 100%;
-	border-collapse: collapse;
+	border-collapse: separate;
+	border-spacing: 0;
 	margin-top: 10px;
+	border-radius: 8px;
+	overflow: hidden;
 }
 
 .table th, .table td {
 	border: 1px solid #e2e8f0;
-	padding: 10px;
+	padding: 12px;
 	text-align: left;
 }
 
 .table th {
 	background: #edf2f7;
 	font-weight: 600;
+	color: #2d3748;
+}
+
+.table tbody tr {
+	transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.table tbody tr:nth-child(even) {
+	background: #f7fafc;
+}
+
+.table tbody tr:hover {
+	background: #e6f0fa;
+	transform: translateY(-1px);
+}
+
+.table tbody td {
+	font-size: 0.9rem;
+	color: #4a5568;
+}
+
+.table tbody td.score-grade {
+	font-weight: 600;
+}
+
+.table tbody td.score-grade.A-plus,
+.table tbody td.score-grade.A {
+	color: #38a169;
+}
+
+.table tbody td.score-grade.B-plus,
+.table tbody td.score-grade.B {
+	color: #3182ce;
+}
+
+.table tbody td.score-grade.C-plus,
+.table tbody td.score-grade.C,
+.table tbody td.score-grade.D-plus,
+.table tbody td.score-grade.D,
+.table tbody td.score-grade.F {
+	color: #e53e3e;
 }
 
 .btn {
@@ -72,6 +116,61 @@ body {
 .btn-secondary:hover {
 	background: #cbd5e0;
 }
+
+.summary-card {
+	background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	margin-top: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 20px;
+	transition: transform 0.2s ease;
+}
+
+.summary-card:hover {
+	transform: translateY(-2px);
+}
+
+.summary-item {
+	flex: 1;
+	text-align: center;
+}
+
+.summary-label {
+	font-size: 0.9rem;
+	color: #718096;
+	margin-bottom: 8px;
+}
+
+.summary-value {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #2d3748;
+}
+
+.summary-value.total-credits {
+	color: #3182ce;
+}
+
+.summary-value.gpa {
+	color: #38a169;
+}
+
+@media (max-width: 640px) {
+	.summary-card {
+		flex-direction: column;
+	}
+	.summary-item {
+		width: 100%;
+	}
+	.table th, .table td {
+		font-size: 0.85rem;
+		padding: 8px;
+	}
+}
 </style>
 </head>
 <body>
@@ -90,10 +189,10 @@ body {
 			<thead>
 				<tr>
 					<th>#</th>
+					<th>학기(coursePeriod)</th>
 					<th>과목번호(courseId)</th>
 					<th>과목명(courseName)</th>
 					<th>담당교수(professorName)</th>
-					<!-- id와 조인해서 name뽑아 -->
 					<th>학점(courseScore)</th>
 					<th>중간점수(scoreMid)</th>
 					<th>기말점수(scoreFinal)</th>
@@ -102,73 +201,75 @@ body {
 				</tr>
 			</thead>
 			<tbody>
-        <c:set var="totalCourseScore" value="0" />
-        <c:set var="totalGradePoints" value="0" />
-        <c:set var="courseCount" value="0" />
-        <c:forEach items="${score}" var="sc" varStatus="a">
-            <tr>
-                <td>${a.count}</td>
-                <td>${sc.courseId}</td>
-                <td>${sc.courseName}</td>
-                <td>${sc.professorName}</td>
-                <td>${sc.courseScore}</td>
-                <td>${sc.scoreMid}</td>
-                <td>${sc.scoreFinal}</td>
-                <td>${sc.scoreTotal}</td>
-                <td>${sc.scoreGrade}</td>
-            </tr>
-            <!-- Sum total course credits -->
-            <c:set var="totalCourseScore" value="${totalCourseScore + sc.courseScore}" />
-            <!-- Convert scoreGrade to numerical value -->
-            <c:choose>
-                <c:when test="${sc.scoreGrade == 'A+'}">
-                    <c:set var="gradePoint" value="4.5" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'A'}">
-                    <c:set var="gradePoint" value="4.0" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'B+'}">
-                    <c:set var="gradePoint" value="3.5" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'B'}">
-                    <c:set var="gradePoint" value="3.0" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'C+'}">
-                    <c:set var="gradePoint" value="2.5" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'C'}">
-                    <c:set var="gradePoint" value="2.0" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'D+'}">
-                    <c:set var="gradePoint" value="1.5" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'D'}">
-                    <c:set var="gradePoint" value="1.0" />
-                </c:when>
-                <c:when test="${sc.scoreGrade == 'F'}">
-                    <c:set var="gradePoint" value="0.0" />
-                </c:when>
-                <c:otherwise>
-                    <c:set var="gradePoint" value="0.0" />
-                </c:otherwise>
-            </c:choose>
-         
-            
-            <c:set var="totalGradePoints" value="${totalGradePoints + gradePoint}" />
-            <c:set var="courseCount" value="${courseCount + 1}" /><!-- 총과목갯수 -->
-        </c:forEach>
-    </tbody>
-</table>
-<div class="mt-4">
-    <p>
-        <strong>해당 학기 총 이수 학점:</strong> ${totalCourseScore}
-    </p>
-    <p>
-        <strong>해당 학기 평균 학점 (GPA):</strong> 
-        <fmt:formatNumber value="${courseCount > 0 ? totalGradePoints / courseCount : 0}" pattern="0.00" />
-    </p>
-</div>
+				<c:set var="totalCourseScore" value="0" />
+				<c:set var="totalGradePoints" value="0" />
+				<c:set var="courseCount" value="0" />
+				<c:forEach items="${score}" var="sc" varStatus="a">
+					<tr>
+						<td>${a.count}</td>
+						<td>${sc.coursePeriod}</td>
+						<td>${sc.courseId}</td>
+						<td>${sc.courseName}</td>
+						<td>${sc.professorName}</td>
+						<td>${sc.courseScore}</td>
+						<td>${sc.scoreMid}</td>
+						<td>${sc.scoreFinal}</td>
+						<td>${sc.scoreTotal}</td>
+						<td class="score-grade ${fn:replace(sc.scoreGrade, '+', '-plus')}">${sc.scoreGrade}</td>
+					</tr>
+					<!-- Sum total course credits -->
+					<c:set var="totalCourseScore" value="${totalCourseScore + sc.courseScore}" />
+					<!-- Convert scoreGrade to numerical value -->
+					<c:choose>
+						<c:when test="${sc.scoreGrade == 'A+'}">
+							<c:set var="gradePoint" value="4.5" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'A'}">
+							<c:set var="gradePoint" value="4.0" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'B+'}">
+							<c:set var="gradePoint" value="3.5" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'B'}">
+							<c:set var="gradePoint" value="3.0" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'C+'}">
+							<c:set var="gradePoint" value="2.5" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'C'}">
+							<c:set var="gradePoint" value="2.0" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'D+'}">
+							<c:set var="gradePoint" value="1.5" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'D'}">
+							<c:set var="gradePoint" value="1.0" />
+						</c:when>
+						<c:when test="${sc.scoreGrade == 'F'}">
+							<c:set var="gradePoint" value="0.0" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="gradePoint" value="0.0" />
+						</c:otherwise>
+					</c:choose>
+					<c:set var="totalGradePoints" value="${totalGradePoints + gradePoint}" />
+					<c:set var="courseCount" value="${courseCount + 1}" />
+				</c:forEach>
+			</tbody>
+		</table>
+		<!-- Summary Section -->
+		<div class="summary-card">
+			<div class="summary-item">
+				<div class="summary-label">해당 학기 총 이수 학점</div>
+				<div class="summary-value total-credits">${totalCourseScore}</div>
+			</div>
+			<div class="summary-item">
+				<div class="summary-label">평균 학점 (GPA)</div>
+				<div class="summary-value gpa">
+					<fmt:formatNumber value="${courseCount > 0 ? totalGradePoints / courseCount : 0}" pattern="0.00" />
+				</div>
+			</div>
+		</div>
 	</div>
-
 </body>
 </html>
