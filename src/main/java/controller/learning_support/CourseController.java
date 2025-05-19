@@ -35,7 +35,7 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("registerCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+
 		return "/pages/learning_support/registerCourse";
 	}
 	

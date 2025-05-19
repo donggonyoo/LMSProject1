@@ -170,7 +170,7 @@ $(document).ready(function() {
 			type : "get",
 			data : {
 				courseId : courseId,
-				date: $("#datePicker").val();
+				date: $("#datePicker").val(),
 				},
 			dataType : "json",
 			success : function(data) {
