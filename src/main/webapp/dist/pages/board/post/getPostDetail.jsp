@@ -102,7 +102,7 @@
                 <th>첨부파일</th>
                 <td>
                     <c:if test="${not empty post.postFile}">
-                        <a href="${pageContext.request.contextPath}/upload/board/${post.postFile}" download>${post.postFile}</a>
+                        <a href="${pageContext.request.contextPath}/dist/assets/upload/${post.postFile}" download="${post.postFile}">${post.postFile}</a>
                     </c:if>
                 </td>
             </tr>

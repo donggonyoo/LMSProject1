@@ -26,6 +26,7 @@ import model.dao.board.NoticeDao;
 public class NoticeController extends MskimRequestMapping {
     private NoticeDao dao = new NoticeDao();
     private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
+    private static final String UPLOAD_DIR = "dist/assets/upload";
 
     // 로그인 체크 메서드
     private String checkLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -190,11 +191,10 @@ public class NoticeController extends MskimRequestMapping {
 
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) {
-
         String loginCheck = checkLogin(request, response);
         if (loginCheck != null) return loginCheck;
 
-        String uploadPath = request.getServletContext().getRealPath("/") + "upload/board/";
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs(); 
@@ -242,6 +242,7 @@ public class NoticeController extends MskimRequestMapping {
         request.setAttribute("url", url);
         return "alert"; 
     }
+
     @RequestMapping("getNoticeDetail")
     public String getNoticeDetail(HttpServletRequest request, HttpServletResponse response) {
         String loginCheck = checkLogin(request, response);
@@ -337,7 +338,7 @@ public class NoticeController extends MskimRequestMapping {
             }
 
             dao.delete(noticeId);
-            return "redirect:getNotices"; // 리다이렉트 경로는 변경하지 않아도 됨
+            return "redirect:getNotices";
         } catch (Exception e) {
             e.printStackTrace();
             session.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
@@ -364,8 +365,6 @@ public class NoticeController extends MskimRequestMapping {
             return "N001";
         }
     }
-
-   
 
     @RequestMapping("updateNotice")
     public String updateNotice(HttpServletRequest request, HttpServletResponse response) {
@@ -411,10 +410,10 @@ public class NoticeController extends MskimRequestMapping {
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
         System.out.println("update - Login: " + login + ", WriterName: " + writerName);
 
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String noticeId = multi.getParameter("noticeId");
@@ -453,14 +452,11 @@ public class NoticeController extends MskimRequestMapping {
                 File oldFile = new File(uploadPath, originalFile);
                 if (oldFile.exists()) oldFile.delete();
             }
-            File newFileObject = new File(uploadPath, newFile);
-            newFile = System.currentTimeMillis() + "_" + newFile;
-            newFileObject.renameTo(new File(uploadPath, newFile));
         }
 
         notice.setNoticeId(noticeId);
         notice.setWriterId(login);
-        notice.setWriterName(writerName); // 업데이트 시도
+        notice.setWriterName(writerName);
         notice.setNoticePassword(noticePassword);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);

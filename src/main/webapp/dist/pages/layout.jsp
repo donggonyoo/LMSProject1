@@ -252,16 +252,16 @@ body {
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
-							<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+							<c:set var="img" value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img 
 								src="${path}/dist/assets/picture/${img}"
 								class="rounded-circle shadow" alt="User Image" />
-								<c:if test="${fn:contains(sessionScope.login, 's')}">
+								<c:if test="${fn:contains(sessionScope.login, 'S')}">
 								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
 									<p>${m.studentName}<small>${birth}</small>
 									</p>
 								</c:if> 
-								<c:if test="${not fn:contains(sessionScope.login, 's')}">
+								<c:if test="${not fn:contains(sessionScope.login, 'S')}">
 								<fmt:formatDate value="${m.professorBirthday}"  pattern="YYYY-MM-dd" var="birth"/>
 									<p>${m.professorName}<small>${birth}</small>
 									</p>
@@ -328,7 +328,7 @@ body {
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
-								<li class="nav-item"><a href="./index2.jsp"
+								<li class="nav-item"><a href="${path}/mypage/getCourseScores"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
@@ -357,7 +357,7 @@ body {
 								</a></li>
 							</ul></li>
 							
-							<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+							<!--<c:if test="${fn:contains(sessionScope.login, 'P')}"></c:if>
 							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-clipboard-fill"></i>
