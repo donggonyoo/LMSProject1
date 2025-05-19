@@ -464,19 +464,20 @@
                 	});
                 	
                 });
-
-                    $.ajax({
-                	url: '${path}/professor_support/score/updateScore', 
-                    type: 'post',
-                    data: params,
-                    dataType: 'json',
-                    success: function (data) {
-                    	alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('성적 수정작업에 실패했습니다.', error);
-                    }
-                });                
+				
+                $.ajax({
+            	url: '${path}/professor_support/score/updateScore', 
+                type: 'post',
+                contentType: "application/json",
+                data: JSON.stringify(params),
+                dataType: 'json',
+                success: function (data) {
+                	alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
+                },
+                error: function (xhr, status, error) {
+                    alert('성적 수정작업에 실패했습니다.', error);
+                }
+            	});                
             });  
         });
         

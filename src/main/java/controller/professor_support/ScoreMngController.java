@@ -1,5 +1,6 @@
 package controller.professor_support;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ public class ScoreMngController extends MskimRequestMapping {
 	
 	private CourseByProDao byProDao = new CourseByProDao();
 	private ScoreMngDao scoreDao = new ScoreMngDao();
+	ObjectMapper objectMapper = new ObjectMapper();
 	
 	@RequestMapping("scoreMng")
 	public String score (HttpServletRequest request, HttpServletResponse response) {
@@ -130,19 +132,31 @@ public class ScoreMngController extends MskimRequestMapping {
 	 * @param request
 	 * @param response
 	 * @return 
+	 * @throws IOException 
 	 */
 	@RequestMapping("updateScore")
-	public String updateScore (HttpServletRequest request, HttpServletResponse response) {
+	public String updateScore (HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// 작업 완료시 주석풀고 교체
 		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
-		
-        List<Map<String, Object>> params = new ArrayList<>();
+		String professorId = "P001";		
+
+        BufferedReader reader = request.getReader();
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        String jsonData = sb.toString();
         
 		try {
+			// JSON 데이터를 List<Map<String, Object>> 형태로 파싱
+            List<Map<String, Object>> params = 
+            		objectMapper.readValue(jsonData, objectMapper.getTypeFactory()
+            					.constructParametricType(List.class, Map.class));
 			scoreDao.updateScore(params);
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("error: " + e);
 		}
 
 		return "pages/dummy";

@@ -62,14 +62,16 @@ public class ScoreMngDao {
 				paramMap.put("scoreTotal", m.get("scoreTotal"));
 				paramMap.put("scoreGrade", m.get("scoreGrade"));
 				
-				session.update("ScoreMng.updateScore", params);
+				session.update("ScoreMng.updateScore", paramMap);
 				result++;
 			}
 			if (result != params.size()) {
 				throw new RuntimeException("update Fail");
 			}
+			session.commit();
 	    } catch (Exception e) {
 	        e.printStackTrace();
+	        throw e;
 	    }
 		
 		return result;
