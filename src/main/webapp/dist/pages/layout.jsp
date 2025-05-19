@@ -337,12 +337,11 @@ body {
 										<p>시간표조회</p>
 								</a></li>
 							</ul></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon bi bi-box-seam-fill"></i>
-								<p>
-									학습지원 <i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
+						<li class="nav-item">
+							<a href="#" class="nav-link"> 
+								<i class="nav-icon bi bi-box-seam-fill"></i>
+								<p>학습지원 <i class="nav-arrow bi bi-chevron-right"></i></p>
+							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item"><a href="${path}/learning_support/registerCourse"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
@@ -369,25 +368,32 @@ body {
 								</p>
 						</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									href="${path}/professor_support/registCourse" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
+								<li class="nav-item">
+									<a href="${path}/professor_support/registCourse" class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
-								</a></li>
-								<li class="nav-item"><a href="${path}/professor_support/manage/manageCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/manage/manageCourse" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
 										<p>강의관리</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="${path}/professor_support/score/scoreMng" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/score/scoreMng" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
 										<p>성적관리</p>
-								</a></li>
-								<li class="nav-item"><a href="./layout/sidebar-mini.html"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/attendance/attendance" class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>출석관리</p>
-								</a></li>
-							</ul></li>
+									</a>
+								</li>
+							</ul>
+						</li>
 						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>

@@ -40,7 +40,7 @@
                     <th>첨부파일</th>
                     <td>
                         <c:if test="${not empty notice.noticeFile}">
-                            <a href="/upload/board/${notice.noticeFile}" download>${notice.noticeFile}</a>
+                            <a href="${path}/dist/assets/upload/${notice.noticeFile}" download="${notice.noticeFile}">${notice.noticeFile}</a>
                         </c:if>
                         <c:if test="${empty notice.noticeFile}">
                             없음

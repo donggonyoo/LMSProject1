@@ -41,10 +41,12 @@
   	<typeAlias type="model.dto.learning_support.SearchDto" alias="SearchDto" />
   	<typeAlias type="model.dto.learning_support.RegistrationDto" alias="RegistrationDto" />
     <typeAlias type="model.dto.learning_support.AttendanceDto" alias="AttendanceDto" />
+    <typeAlias type="model.dto.learning_support.CoursePagingDto" alias="CoursePagingDto" />
     
     <typeAlias type="model.dto.professor_support.RegistCourseDto" alias="RegistCourseDto" />
     <typeAlias type="model.dto.professor_support.PaginationDto" alias="PaginationDto" />
-    <typeAlias type="model.dto.professor_support.ScoreMngDto" alias="ScoreMngDto" />	
+    <typeAlias type="model.dto.professor_support.ScoreMngDto" alias="ScoreMngDto" />
+   	<typeAlias type="model.dto.professor_support.AttendanceDataDto" alias="AttendanceDataDto" />
   </typeAliases>
   
   <!-- Connection 객체  -->
@@ -74,6 +76,7 @@
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
 	<mapper resource="mapper/professor_support/CourseByProMapper.xml"/>
 	<mapper resource="mapper/professor_support/ScoreMngMapper.xml"/>
+	<mapper resource="mapper/professor_support/ManageAttendanceMapper.xml"/>
 
   	
   </mappers>

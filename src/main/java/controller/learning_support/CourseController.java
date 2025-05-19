@@ -11,15 +11,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
 import model.dto.learning_support.CourseDto;
+import model.dto.learning_support.CoursePagingDto;
 import model.dto.learning_support.DeptDto;
 import model.dto.learning_support.RegistrationDto;
 import model.dto.learning_support.SearchDto;
+import model.dto.professor_support.PaginationDto;
 
 @WebServlet(urlPatterns = {"/learning_support/*"}, 
 			initParams = {@WebInitParam(name="view",value = "/dist/")}
@@ -27,6 +31,7 @@ import model.dto.learning_support.SearchDto;
 public class CourseController extends MskimRequestMapping {
 	
 	private CourseDao courseDao = new CourseDao();
+	ObjectMapper mapper = new ObjectMapper();
 	
 	@RequestMapping("registerCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
@@ -72,22 +77,49 @@ public class CourseController extends MskimRequestMapping {
 		}
 		return "/pages/learning_support/ajax_learning_support";
 	}
-	
+	/**
+	 * 강의목록 조회
+	 * @param request
+	 * @param response
+	 * @return 
+	 */
 	@RequestMapping("searchCourse")
 	public String searchCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+		//세션 불러오기
 		String studentId = (String) request.getSession().getAttribute("login");
 		
 		SearchDto searchDto = new SearchDto();
-		searchDto.setCollege(request.getParameter("college"));
-		searchDto.setDeptId(request.getParameter("deptId"));
-		searchDto.setCourseId(request.getParameter("courseId"));
-		searchDto.setCourseName(request.getParameter("courseName"));
+		PaginationDto pageDto = new PaginationDto();
+		CoursePagingDto cpDto = new CoursePagingDto();
 		
+		try {
+			BeanUtils.populate(searchDto, request.getParameterMap());
+			BeanUtils.populate(pageDto, request.getParameterMap());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		// 페이징처리 
+		Integer pageSize = pageDto.getItemsPerPage(); 
+		Integer currentPage = pageDto.getCurrentPage();
+		currentPage = currentPage != null ? currentPage : 1;
+		Integer offset = (currentPage - 1) * pageSize;
+		Integer totalRows = courseDao.countCourses(searchDto);
+		Integer totalPages = (int) Math.ceil((double)totalRows / pageSize); 
+		
+		pageDto.setCurrentPage(currentPage);
+		pageDto.setTotalRows(totalRows);
+		pageDto.setTotalPages(totalPages);
+		pageDto.setOffset(offset);
+
+		cpDto.setPaginationDto(pageDto);
+		cpDto.setSearchDto(searchDto);
+		
+		// 수강신청한 강의 목록에서 제외 
 		List<RegistrationDto> registrationCourses = courseDao.searchRegistrationCourses(studentId);
-		List<CourseDto> result = courseDao.searchCourse(searchDto);
+		List<CourseDto> courses = courseDao.searchCourse(cpDto);
 		
-		Iterator<CourseDto> iter = result.iterator();
+		Iterator<CourseDto> iter = courses.iterator();
 		while(iter.hasNext()) {
 			CourseDto c = iter.next();
 			for (RegistrationDto r : registrationCourses) {
@@ -98,11 +130,15 @@ public class CourseController extends MskimRequestMapping {
 		}
 		
 		ObjectMapper mapper = new ObjectMapper();
-        String json;
         
+		Map<String, Object> responseMap = new HashMap<String, Object>();
+		responseMap.put("courses", courses);
+		responseMap.put("pagination", pageDto);
+		
 		try {
-			json = mapper.writeValueAsString(result);
+			String json = mapper.writeValueAsString(responseMap);
 			request.setAttribute("json", json);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -110,9 +146,15 @@ public class CourseController extends MskimRequestMapping {
         return "/pages/learning_support/ajax_learning_support";
 	}
 	
+	/**
+	 * 강의 추가
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping("addCourse")
 	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+		Map<String, Object> errorMap = new HashMap<>();
 		ObjectMapper mapper = new ObjectMapper();
         String json;
 	
@@ -122,12 +164,21 @@ public class CourseController extends MskimRequestMapping {
 		map.put("studentId", studentId);
 		map.put("courseId", request.getParameter("courseId"));
 		map.put("professorId", request.getParameter("professorId"));
-		
-		//트랜젝션처리를 위해 수강신청테이블 insert시 시간표테이블도 같이 insert 처리.
-		courseDao.addCourse(map);
+		 
+		try {
+			courseDao.addCourse(map);
+		} catch(Exception e) {
+			errorMap.put("errorMsg", e.getMessage());
+			try {
+				json = mapper.writeValueAsString(errorMap);
+				request.setAttribute("json", json);
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+			return "/pages/returnAjax";
+		}
 		
 		return "/pages/dummy";
-
 	}
 	
 	@RequestMapping("searchRegistrationCourses")
@@ -151,13 +202,17 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String studentId = (String) request.getSession().getAttribute("login");
 		
 		String registrationId = request.getParameter("registrationId");
 		String courseId = request.getParameter("courseId");
 		
-		courseDao.deleteCourse(registrationId,courseId, studentId);
+		try {
+			courseDao.deleteCourse(registrationId,courseId, studentId);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		return "/pages/dummy";
 	}

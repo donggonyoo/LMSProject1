@@ -2,28 +2,29 @@ package controller.board;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 
-import com.oreilly.servlet.MultipartRequest;
-import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
-
-import gdu.mskim.MskimRequestMapping;
-import gdu.mskim.RequestMapping;
 
 @WebServlet(urlPatterns = {"/post/uploadImage", "/notice/uploadImage"})
 @MultipartConfig
-public class UploadImageServlet extends MskimRequestMapping {
+public class UploadImageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIR = "upload/board";
+    private static final String UPLOAD_DIR = "dist/assets/upload";
     private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
 
-    @RequestMapping("uploadImage")
+    public UploadImageServlet() {
+        super();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 로그인 체크
         HttpSession session = request.getSession();
@@ -34,38 +35,44 @@ public class UploadImageServlet extends MskimRequestMapping {
             return;
         }
 
-        // 업로드 경로 설정
-        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
+        Part filePart = request.getPart("file");
+        String fileName = getFileName(filePart);
+
+        if (fileName == null || fileName.isEmpty()) {
+            response.setContentType("text/plain; charset=UTF-8");
+            response.getWriter().write("파일 업로드 실패");
+            return;
+        }
+
+        String savedFileName = UUID.randomUUID().toString() + getFileExtension(fileName);
+
+        String uploadPath = getServletContext().getRealPath("") + File.separator + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
 
-        int maxSize = 20 * 1024 * 1024; // 20MB
-        MultipartRequest multi = new MultipartRequest(
-            request,
-            uploadPath,
-            maxSize,
-            "UTF-8",
-            new DefaultFileRenamePolicy()
-        );
+        String filePath = uploadPath + File.separator + savedFileName;
+        filePart.write(filePath);
 
-        // 파일 처리
-        String fileName = multi.getFilesystemName("file");
-        if (fileName != null && !fileName.isEmpty()) {
-            // 파일명에 타임스탬프 추가
-            File originalFile = new File(uploadPath, fileName);
-            String newFileName = System.currentTimeMillis() + "_" + fileName;
-            File newFile = new File(uploadPath, newFileName);
-            originalFile.renameTo(newFile);
+        String fileUrl = request.getContextPath() + "/" + UPLOAD_DIR + "/" + savedFileName;
+        response.setContentType("text/plain; charset=UTF-8");
+        response.getWriter().write(fileUrl);
+    }
 
-            // 파일 URL 생성
-            String fileUrl = request.getContextPath() + "/" + UPLOAD_DIR + "/" + newFileName;
-            response.setContentType("text/plain; charset=UTF-8");
-            response.getWriter().write(fileUrl);
-        } else {
-            response.setContentType("text/plain; charset=UTF-8");
-            response.getWriter().write("파일 업로드 실패");
+    private String getFileName(Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf("=") + 1).trim().replace("\"", "");
+            }
         }
+        return null;
+    }
+
+    private String getFileExtension(String fileName) {
+        if (fileName == null || fileName.lastIndexOf(".") == -1) {
+            return "";
+        }
+        return fileName.substring(fileName.lastIndexOf("."));
     }
 }

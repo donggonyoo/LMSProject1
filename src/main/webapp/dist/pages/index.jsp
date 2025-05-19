@@ -384,19 +384,27 @@ body {
 									학습지원 <i class="nav-arrow bi bi-chevron-right"></i>
 								</p>
 						</a>
+						<li class="nav-item">
+							<a href="#" class="nav-link"> 
+								<i class="nav-icon bi bi-box-seam-fill"></i>
+								<p>학습지원 <i class="nav-arrow bi bi-chevron-right"></i></p>
+							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									href="${path}/learning_support/registerCourse" class="nav-link">
+								<li class="nav-item">
+									<a href="${path}/learning_support/registerCourse" class="nav-link">
+									<i class="nav-icon bi bi-circle"></i>
+									<p>수강신청</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/learning_support/viewCourse/viewCourse" class="nav-link"> 
 										<i class="nav-icon bi bi-circle"></i>
-										<p>수강신청</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="${path}/learning_support/viewCourse/viewCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>수강신청 현황</p>
-								</a></li>
-								<li class="nav-item"><a href="#"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="#" class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>미정</p>
 								</a></li>
 							</ul></li>
@@ -408,29 +416,47 @@ body {
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
 									교수지원
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
+							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
+
+						<li class="nav-item">
+							<a href="#" class="nav-link"> 
+								<i class="nav-icon bi bi-clipboard-fill"></i>
+								<p>교수지원
 									<!-- <span class="nav-badge badge text-bg-secondary me-3">6</span> -->
 									<i class="nav-arrow bi bi-chevron-right"></i>
 								</p>
-						</a>
+							</a>
 							<ul class="nav nav-treeview">
-								<li class="nav-item"><a
-									href="${path}/professor_support/registCourse" class="nav-link">
+								<li class="nav-item">
+									<a href="${path}/professor_support/registCourse" class="nav-link">
 										<i class="nav-icon bi bi-circle"></i>
 										<p>강의등록</p>
-								</a></li>
-								<li class="nav-item"><a href="${path}/professor_support/manage/manageCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/manage/manageCourse" class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>강의관리</p>
-								</a></li>
-								<li class="nav-item"><a
-									href="${path}/professor_support/score/scoreMng" class="nav-link"> <i
-										class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/score/scoreMng" class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>성적관리</p>
-								</a></li>
-								<li class="nav-item"><a href="./layout/sidebar-mini.html"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="${path}/professor_support/attendance/attendance"class="nav-link"> 
+										<i class="nav-icon bi bi-circle"></i>
 										<p>출석관리</p>
-								</a></li>
+									</a>
+								</li>
 							</ul></li>
 						
 					
