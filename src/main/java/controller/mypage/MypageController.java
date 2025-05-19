@@ -35,15 +35,18 @@ import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
 import model.dao.mypage.DeptDao;
+import model.dao.mypage.GetScoreDao;
 import model.dao.mypage.ProStuDao;
 import model.dao.mypage.ProfessorDao;
 import model.dao.mypage.StudentDao;
 import model.dto.learning_support.AttendanceDto;
+import model.dto.mypage.GetScoresDto;
 //http://localhost:8080/LMSProject1/dist/pages/mypage/registerUserChk
 @WebServlet(urlPatterns = {"/mypage/*"},
 initParams = {@WebInitParam(name="view", value="/dist/pages/")}
 		)
 public class MypageController  extends MskimRequestMapping{
+	
 	//로그인없이 접근을 막아줄 함수 ( get방식사용하지않으므로 이쪽에선 파라미터값을 막을필욘없음)
 	public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
 		HttpSession session = request.getSession();
@@ -64,9 +67,31 @@ public class MypageController  extends MskimRequestMapping{
 		else if(a.equals("stu")) {
 			num = createStudentId();
 		}
-
 		return num;
 	}
+	
+	//로그인없이접근막기 + 학생만 ( get방식사용하지않으므로 이쪽에선 파라미터값을 막을필욘없음)
+		public String loginStuCheck(HttpServletRequest request, HttpServletResponse response) {
+			HttpSession session = request.getSession();
+			String login  = (String)session.getAttribute("login");
+			if(login==null ) {
+				request.setAttribute("msg", "로그인하세요");
+				request.setAttribute("url", "doLogin");
+				return "alert";
+			}
+			else if(login.contains("P")) {
+				request.setAttribute("msg", "교수는접근불가능합니다");
+				request.setAttribute("url", "index");
+				return "alert";
+			}
+			return null; //정상인경우
+		}
+		
+		
+	
+	
+	
+	
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
 			List<String> list = Arrays.asList
@@ -108,7 +133,7 @@ public class MypageController  extends MskimRequestMapping{
 		ProfessorDao dao = new ProfessorDao();
 
 		while(true) { 
-			if(dao.idchk("p"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
+			if(dao.idchk("P"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
 				break;
 			}
 			else {
@@ -118,7 +143,7 @@ public class MypageController  extends MskimRequestMapping{
 			}
 		}
 		//p0000 형식
-		return "p"+sNum;
+		return "P"+sNum;
 
 	}
 	//학생의아이디를 자동생성하는 메서드(s00000)
@@ -134,7 +159,7 @@ public class MypageController  extends MskimRequestMapping{
 		StudentDao memberDao = new StudentDao();
 
 		while(true) { 
-			if(memberDao.idchk("s"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
+			if(memberDao.idchk("S"+sNum)) { //true(id가존재하지않을 시 )면 루프탈출
 				break;
 			}
 			else {
@@ -144,7 +169,7 @@ public class MypageController  extends MskimRequestMapping{
 			}
 		}
 
-		return "s"+sNum;
+		return "S"+sNum;
 	}
 
 	
@@ -180,7 +205,7 @@ public class MypageController  extends MskimRequestMapping{
 
 		//객체에 값 넣어주는과정 (교수 , 학생 따로)
 		//직급 = 교수일경우
-		if(id.contains("p")) {
+		if(id.contains("P")) {
 			Professor pro = new Professor();
 			pro.setProfessorId(id);
 			pro.setProfessorImg(img);
@@ -361,7 +386,7 @@ public class MypageController  extends MskimRequestMapping{
 					}
 				}
 
-				session.setAttribute("login", dbId.toLowerCase());
+				session.setAttribute("login", dbId);
 				request.setAttribute("msg", dbName+"님이 로그인 하셨습니다");
 				request.setAttribute("url","index");
 
@@ -380,12 +405,12 @@ public class MypageController  extends MskimRequestMapping{
 		String dbId = (String)request.getSession().getAttribute("login");
 		HttpSession session = request.getSession();
 
-		if(dbId.toLowerCase().contains("s")) {
+		if(dbId.contains("S")) {
 			StudentDao dao = new StudentDao();
 			Student student = dao.selectOne(dbId);
 			session.setAttribute("m", student);
 		}
-		else if(dbId.toLowerCase().contains("p")){
+		else if(dbId.contains("P")){
 			ProfessorDao dao = new ProfessorDao();
 			Professor professor = dao.selectOne(dbId);
 			session.setAttribute("m", professor);	
@@ -568,8 +593,40 @@ public class MypageController  extends MskimRequestMapping{
 		return "mypage/close";
 
 	}
-
-	@MSLogin("loginIdCheck")
+	
+	
+	//성적확인
+	@MSLogin("loginStuCheck")
+	@RequestMapping("getCourseScores")
+	public String getCourseScores (HttpServletRequest request, HttpServletResponse response) {
+		//String id = request.getSession().getAttribute("login");
+		String id = "S001";
+		try {
+			List<GetScoresDto> score = new GetScoreDao().getScore(id);
+			request.setAttribute("score", score);
+			return "mypage/getCourseScores";
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		request.setAttribute("msg", "오류발생");
+		request.setAttribute("url", "index");
+		return "alert";
+	}
+	
+	
+	
+	
+	//시간표조회폼
+	@MSLogin("loginStuCheck")
+	@RequestMapping("getCourseTimetable")
+	public String getCourseTimetable (HttpServletRequest request, HttpServletResponse response) {
+		
+		return "mypage/getCourseTimetable";
+	}
+	
+	
+	//시간표조회에 들어가면 타는 폼
 	@RequestMapping("viewCourseTimetable")
 	public String viewCourseTime (HttpServletRequest request, HttpServletResponse response) {
 		//		String studentId = (String) request.getSession().getAttribute("login");

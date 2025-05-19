@@ -32,6 +32,7 @@
   	<typeAlias type="model.dto.mypage.UpdateStuInfoDto" alias="UpdateStuInfoDto" />
   	<typeAlias type="model.dto.mypage.UpdateProInfoDto" alias="UpdateProInfoDto" />
   	<typeAlias type="model.dto.mypage.DeleteUserDto" alias="DeleteUserDto" />
+  	<typeAlias type="model.dto.mypage.GetScoresDto" alias="GetScoresDto" />
   	
   	<typeAlias type="domain.Registration" alias="Registration" />
   	<typeAlias type="domain.Attendance" alias="Attendance" />
@@ -68,6 +69,8 @@
   	<mapper resource="mapper/mypage/ProfessorMapper.xml"/>
   	<mapper resource="mapper/mypage/ProStu.xml"/>
   	<mapper resource="mapper/mypage/DeptMapper.xml"/>
+  	<mapper resource="mapper/mypage/ScoreMapper.xml"/>
+  	
   	<mapper resource="mapper/learning_support/CourseMapper.xml"/>
 	<mapper resource="mapper/professor_support/CourseByProMapper.xml"/>
 	<mapper resource="mapper/professor_support/ScoreMngMapper.xml"/>

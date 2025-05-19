@@ -277,7 +277,7 @@ body {
 						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> 
 						<!-- 교수와학생인경우 컬럼명이다르므로 삼항연산자를활용해처리 -->
 <%-- 						<c:set var="img"
-								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+								value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
  --%>
  							<img src="${path}/dist/assets/picture/${m.img}"
 							class="user-image rounded-circle shadow" alt="User Image" style=" height: 40px; width: 40px"/> <span
@@ -288,16 +288,16 @@ body {
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
 							<c:set var="img"
-								value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+								value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
 							<li class="user-header text-bg-primary"><img
 								src="${path}/dist/assets/picture/${m.img}"
 								class="rounded-circle shadow" alt="User Image" /> <%-- 세션 정보에 따라 이름 출력 --%>
-								<c:if test="${fn:contains(sessionScope.login, 's')}">
+								<c:if test="${fn:contains(sessionScope.login, 'S')}">
 									<fmt:formatDate value="${m.studentBirthday}"
 										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.studentName}<small>${birth}</small>
 									</p>
-								</c:if> <c:if test="${not fn:contains(sessionScope.login, 's')}">
+								</c:if> <c:if test="${not fn:contains(sessionScope.login, 'S')}">
 									<fmt:formatDate value="${m.professorBirthday}"
 										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.professorName}<small>${birth}</small>
@@ -366,7 +366,7 @@ body {
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
-								<li class="nav-item"><a href="./index2.jsp"
+								<li class="nav-item"><a href="${path}/mypage/getCourseScores"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
@@ -375,7 +375,10 @@ body {
 										<p>시간표조회</p>
 								</a></li>
 							</ul></li>
-						<li class="nav-item"><a href="#" class="nav-link"> <i
+							
+							
+							<!--<c:if test="${fn:contains(sessionScope.login, 'S')}"></c:if>-->
+							<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-box-seam-fill"></i>
 								<p>
 									학습지원 <i class="nav-arrow bi bi-chevron-right"></i>
@@ -397,10 +400,10 @@ body {
 										<p>미정</p>
 								</a></li>
 							</ul></li>
+							
+						
 
-						<!--<c:if test="${fn:contains(sessionScope.login, 'p')}"></c:if>
-							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
-
+						<!--<c:if test="${fn:contains(sessionScope.login, 'P')}">	</c:if>-->
 						<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
@@ -429,8 +432,9 @@ body {
 										<p>출석관리</p>
 								</a></li>
 							</ul></li>
-
-
+						
+					
+							<%-- 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임 --%>
 
 						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
