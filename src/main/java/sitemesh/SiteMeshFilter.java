@@ -67,7 +67,8 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 				;
 		
 		builder.addDecoratorPath("/professor_support/attendance/*", "/dist/pages/layout.jsp")
-		;
+				.addExcludedPath("/professor_support/attendance/getAttendance*")
+				;
 		
 		builder.addDecoratorPath("/post/*","/dist/pages/layout.jsp");
 		
