@@ -23,7 +23,7 @@
 		           a.attendance_late, <!-- 지각 -->
 		           a.attendance_absent, <!-- 결석 --> 
 		           (
-		               SELECT GROUP_CONCAT(ah.status ORDER BY ah.record_date SEPARATOR ',')
+		               SELECT GROUP_CONCAT(ah.status ORDER BY ah.updated_date SEPARATOR ',')
 		               FROM attendance_history ah
 		               WHERE ah.attendance_id = a.attendance_id
 		           ) AS history
@@ -32,5 +32,40 @@
 	    WHERE 		a.course_id = #{courseId}
 	    AND 		a.attendance_date = #{attendanceDate}
     </select>
+    
+    <insert id="insertAttendanceHistory" parameterType="java.util.Map">
+    	INSERT INTO attendance_history (attendance_id, status, created_date, updated_date)
+   		VALUES (#{attendanceId}, #{attendanceStatus}, NOW(), now())
+    </insert>
+    
+    <update id="updateAttendance" parameterType="java.util.Map">
+    	UPDATE  attendance
+    	SET     attendance_status = #{attendanceStatus},
+		        attendance_absent = (
+		            SELECT COUNT(*)
+		            FROM attendance_history ah
+		            WHERE ah.attendance_id = #{attendanceId}
+		            AND ah.status = '결석'
+		        ),
+		        attendance_late = (
+		            SELECT COUNT(*)
+		            FROM attendance_history ah
+		            WHERE ah.attendance_id = #{attendanceId}
+		            AND ah.status = '지각'
+		        ),
+		        attendance_date = #{attendanceDate}
+	    WHERE   attendance_id = #{attendanceId}
+    </update>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 </mapper>
