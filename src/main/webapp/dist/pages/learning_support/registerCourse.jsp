@@ -202,6 +202,13 @@ body {
 	    	currentPage = 1;
 	        loadCourses();
 	    });
+	    
+	    $("#courseName").on("keydown", function(e) {
+			if (e.keyCode == 13) {
+				$("#searchButton").click();
+				e.preventDefault();
+			}
+	    });
 	
 	    // 추가 버튼 클릭 이벤트 (AJAX로 처리)
 	    $(document).on("click", ".add-course", function() {
@@ -261,7 +268,7 @@ body {
 	        success: function(data) {
 				var courses = data.courses;
 				var pagination = data.pagination;
-				
+				console.log('data', data);
 	            var $body = $("#courseBody");
 	            $body.empty();
 	            $.each(courses, function(i, course) {

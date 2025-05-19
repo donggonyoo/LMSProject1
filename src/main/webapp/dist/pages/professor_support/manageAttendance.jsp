@@ -104,7 +104,7 @@
                 <button class="btn btn-primary" id="bulkPresent">일괄 출석</button>
                 <button class="btn btn-primary" id="bulkAbsent">일괄 결석</button>
                 <button class="btn btn-primary" id="saveAttendance">저장</button>
-                <div id="saveMessage" class="text-success" style="display: none;">저장이 완료되었습니다.</div>
+                <div id="saveMessage" class="text-success" style="display: none;">저장이 완료되었습니다. 강의목록으로 돌아갑니다.</div>
             </div>
         </div>
     </div>
@@ -124,9 +124,9 @@
 	        '<td class="absent-count">' + item.attendance_absent + '</td>' +
 	        '<td>' +
 	        '<select class="attendance-select form-control">' +
-	        '<option value="present"' + (item.attendance_status === "출석" ? " selected" : "") + '>출석</option>' +
-	        '<option value="absent"' + (item.attendance_status === "결석" ? " selected" : "") + '>결석</option>' +
-	        '<option value="late"' + (item.attendance_status === "지각" ? " selected" : "") + '>지각</option>' +
+	        '<option value="present"' + (item.attendance_history_status === "출석" ? " selected" : "") + '>출석</option>' +
+	        '<option value="absent"' + (item.attendance_history_status === "결석" ? " selected" : "") + '>결석</option>' +
+	        '<option value="late"' + (item.attendance_history_status === "지각" ? " selected" : "") + '>지각</option>' +
 	        '</select>' +
 	        '</td>' +
 	        '</tr>'
@@ -182,36 +182,34 @@
 	
 	        var attendanceList = $('#attendanceList');
 	        attendanceList.empty();
+			var params = {
+							courseId: courseId,
+							attendanceDate: $("#datePicker").val(),
+			}
 
 	        $.ajax({
 				url : "${path}/professor_support/attendance/getAttendance",
 				type : "get",
-				data : {
-					courseId : courseId,
-					attendanceDate: $("#datePicker").val(),
-					},
+				data : params,
 				dataType : "json",
 				success : function(data) {
 					if (data.errorMsg) {
 						alert(data.errorMsg);
+						return;
 					}
 					attendanceData = data;
 					// 서버에서 데이터를 받은 후 출석 목록을 생성
 					$.each(attendanceData, function(index, item) {
 					    attendanceList.append(createAttendanceRow(index, item));
 					});
-					
+					updateAttendanceRate();
+			        $('#attendanceModal').modal('show');
 				},
 				error : function(xhr, status, error) {
 					console.error("Error:", xhr.responseText);
 					alert("강의 상태변경 중 오류가 발생했습니다.");
 				}
-			});
-	        
-	        
-	
-	        updateAttendanceRate();
-	        $('#attendanceModal').modal('show');
+			});        
 	    });
 	
 	    // 일괄 출석
@@ -248,13 +246,15 @@
 	        $('#attendanceList tr').each(function() {
 	            var $row = $(this);
 	            attendanceData.push({
-					attendanceId: $row.find('td:eq(0)').data('attendance-id'),
+					attendanceId: $row.find('td:eq(0)').data('attendance-id') || null,
 	                studentId: $row.find('td:eq(1)').text(),
 	                studentName: $row.find('td:eq(2)').text(),
-	                attendanceStatus: $row.find('.attendance-select').val()
+	                attendanceStatus: $row.find('.attendance-select').val(),
+	                courseId: $('#modalCourseId').text(),
+	                attendanceDate: $('#modalDate').text()
 	            });
 	        });
-	        console.log('저장 데이터:', attendanceData);
+	        console.log('attendanceData저장 데이터:', attendanceData);
 	        
 	        $.ajax({
 				url : "${path}/professor_support/attendance/updateAttendance",
@@ -267,7 +267,10 @@
 						alert(data.errorMsg);
 					} else {
 						$('#saveMessage').show().delay(2000).fadeOut();
-					}	
+						setTimeout(function() {
+						      location.reload(true);
+						    }, 1000);
+					}
 				},
 				error : function(xhr, status, error) {
 					console.error("Error:", xhr.responseText);

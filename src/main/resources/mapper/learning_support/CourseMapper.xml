@@ -103,10 +103,9 @@
             student_id,
             attendance_late,
             attendance_absent,
-            attendance_status,
             professor_id,
 	        attendance_remarks,
-	        attendance_date
+	        created_date
 	    )
 	    VALUES (
 	        #{attendanceId},
@@ -114,7 +113,6 @@
             #{studentId},
             0,
             0,
-            '',
             #{professorId},
 	        <if test="attendanceRemarks != null">
 	            #{attendanceRemarks},
@@ -217,9 +215,10 @@
     </delete>
 	
 	<!-- course_id로 attendance 삭제 -->
-    <delete id="deleteAttendance" parameterType="string">
+    <delete id="deleteAttendance" parameterType="java.util.Map">
         DELETE FROM attendance
         WHERE course_id = #{courseId}
+        and   student_id = #{studentId}
     </delete>
     
     <delete id="deleteScore" parameterType="java.util.Map">

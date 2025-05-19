@@ -47,7 +47,7 @@
     <typeAlias type="model.dto.professor_support.PaginationDto" alias="PaginationDto" />
     <typeAlias type="model.dto.professor_support.ScoreMngDto" alias="ScoreMngDto" />
    	<typeAlias type="model.dto.professor_support.AttendanceDataDto" alias="AttendanceDataDto" />
-  </typeAliases>
+  </typeAliases>								 
   
   <!-- Connection 객체  -->
   <environments default="development">

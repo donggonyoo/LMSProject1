@@ -38,28 +38,46 @@ public class ManageAttendanceDao {
 		return result;
 	}
 
-	public int updateAttendance(List<Map<String, Object>> params) {
+	public int updateAttendance(List<AttendanceDataDto> dtoList) {
 		int result = 0;
 		
 		try (SqlSession session = MyBatisConnection.getConnection()) {
-			for (Map<String, Object> m : params) {
+			for (AttendanceDataDto dto : dtoList) {
 				Map<String, Object> paramMap = new HashMap<>();
-				paramMap.put("attendanceId", m.get("attendanceId"));
-				paramMap.put("studentId", m.get("studentId"));
-				paramMap.put("studentName", m.get("studentName"));
-				paramMap.put("attendanceStatus", m.get("attendanceStatus"));
+				paramMap.put("attendanceId", dto.getAttendanceId());
+				paramMap.put("attendanceDate", dto.getAttendanceDate());
+				paramMap.put("studentName", dto.getStudentName());
+				paramMap.put("attendanceStatus", convertStatus(dto.getAttendanceStatus()));
 				
-				session.insert("MngAttendance.insertAttendanceHistory", paramMap);
-				session.update("MngAttendance.updateAttendance", paramMap);
+				int insertResult = session.insert("MngAttendance.insertAttendanceHistory", paramMap);
+				int updateResult = session.update("MngAttendance.updateAttendance", paramMap);
+				result += (insertResult + updateResult);
 			}
 	        session.commit();
 	    } catch (Exception e) {
-	        e.printStackTrace();
+	    	throw new RuntimeException("Attendance update failed", e);
 	    }
 		
 		return result;
 		
 	}
+
+	private String convertStatus(String status) {
+		if (status == null) return "출석";
+        
+		switch (status.toLowerCase()) {
+	        case "present":
+	            return "출석";
+	        case "absent":
+	            return "결석";
+	        case "late":
+	            return "지각";
+	        default:
+	            return "출석";
+        }
+		
+	}
+	
 
 	
 

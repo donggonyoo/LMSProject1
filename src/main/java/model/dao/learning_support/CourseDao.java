@@ -170,10 +170,11 @@ public class CourseDao {
 		
 		SqlSession session = MyBatisConnection.getConnection(); 
 		int num = 0;
-		
-		// 현재 수강인원 조회
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("courseId", courseId);
+		map.put("studentId", studentId);
+		
+		// 현재 수강인원 조회
 		Map<String, Object> courseInfo = session.selectOne("getCurrentEnrollment", map);
 		Integer enrollment = (Integer) courseInfo.get("course_current_enrollment");
 		if (enrollment == null || enrollment <= 0) {
@@ -186,10 +187,10 @@ public class CourseDao {
 			map.put("enrollment",(enrollment));
 			session.update("updateEnrollment", map);
 			session.delete("course.deleteCourse", registrationId);
-			deleteAttendance(courseId, session);
-			deleteScore(studentId, courseId, session);
-			MyBatisConnection.close(session);
+			deleteAttendance(map, session);
+			deleteScore(map, session);
 			num=1;
+			MyBatisConnection.close(session);
 		} catch (Exception e) {	
 			session.close();
 			e.printStackTrace();
@@ -200,22 +201,17 @@ public class CourseDao {
 		
 	}
 	
-	public void deleteAttendance(String courseId, SqlSession session) {
+	public void deleteAttendance(Map<String, Object> map, SqlSession session) {
 		
 		try {
-			session.delete("course.deleteAttendance", courseId); 
+			session.delete("course.deleteAttendance", map); 
 		} catch (Exception e) {	
 			e.printStackTrace();
 			throw new RuntimeException("courseTime delete fail " + e.getMessage(), e);
 		}	
 	}
 	
-	public void deleteScore(String studentId, String courseId, SqlSession session) {
-		
-		Map<String, String> map = new HashMap<String, String>();
-		
-		map.put("studentId", studentId);
-		map.put("courseId", courseId);
+	public void deleteScore(Map<String, Object> map, SqlSession session) {
 		
 		try { 
 	        if (session.delete("course.deleteScore", map) <= 0) {

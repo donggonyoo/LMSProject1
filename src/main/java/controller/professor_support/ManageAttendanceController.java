@@ -53,7 +53,10 @@ public class ManageAttendanceController extends MskimRequestMapping {
 		AttendanceDataDto attDto = new AttendanceDataDto();
 		
 		try {
-			BeanUtils.populate(attDto, request.getParameterMap());
+			attDto.setCourseId(request.getParameter("courseId"));
+			// LocalDate타입을 위한 set
+			attDto.setAttendanceDate(request.getParameter("attendanceDate"));
+			
 			List<Map<String, Object>> attList =  attDao.getAttendance(attDto);
 			String json = mapper.writeValueAsString(attList);
 			request.setAttribute("json", json);
@@ -76,7 +79,6 @@ public class ManageAttendanceController extends MskimRequestMapping {
 		// 작업 완료시 주석풀고 교체
 		// String professorId = (String) request.getSession().getAttribute("login");
 		String professorId = "P001";
-		AttendanceDataDto attDto = new AttendanceDataDto();
 		
 		//클라이언트로부터 받은 json데이터 파싱
 		BufferedReader reader = request.getReader();
@@ -91,25 +93,19 @@ public class ManageAttendanceController extends MskimRequestMapping {
 		System.out.println("==============================================================");
 		
 		try {
-			List<Map<String, Object>> params = 
+			List<AttendanceDataDto> dtoList = 
 					mapper.readValue(jsonData, mapper.getTypeFactory()
-							.constructParametricType(List.class, Map.class));
+							.constructParametricType(List.class, AttendanceDataDto.class));
 			System.out.println("==============================================================");
-			System.out.println("params: " + params.toString());
+			System.out.println("params: " + dtoList.toString());
 			System.out.println("==============================================================");
-			attDao.updateAttendance(params);
+			attDao.updateAttendance(dtoList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("error: " + e);
+			return "returnAjax";
 		}
-		/*
-		 * 
-		 * 현재 출석관리 진입시 보여주는 강의목록에서 출석관리 버튼누를시 날짜에 따라 안나옴 로직 다시확인후 수정
-		 * 
-		 * 
-		 * 
-		 * 
-		 * */
-		return "pages/returnAjax";
+		
+		return "pages/dummy";
 	}
 }
