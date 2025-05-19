@@ -1,4 +1,4 @@
-```jsp
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -302,7 +302,9 @@
                 <div class="action-buttons">
                     <button class="btn btn-primary" type="submit">수정완료</button>
                     <button class="btn btn-primary" type="button" onclick="updatePw()">비밀번호 변경</button>
-                    <button class="btn btn-danger" type="button" onclick="deleteUser()">자퇴신청</button>
+                    <c:if test="${fn:contains(sessionScope.login, 'S')}"> <%--학생만선택가능 --%>
+						<button class="btn btn-danger" type="button" onclick="deleteUser()">자퇴신청</button>                    
+                    </c:if>                  
                 </div>
             </form>
             <form id="pwForm" action="pwUpdate" method="post" target="pwUpdateWindow" name="c">

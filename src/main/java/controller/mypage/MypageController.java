@@ -94,17 +94,21 @@ public class MypageController  extends MskimRequestMapping{
 	
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
-			List<String> list = Arrays.asList
+			List<String> lowerList = Arrays.asList
 					("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
 					
-					List<String> list2 = new ArrayList<>();
-					for (String string : list) {
-						list2.add(string.toUpperCase());
+					List<String> upperList = new ArrayList<>();
+					for (String string : lowerList) {
+						upperList.add(string.toUpperCase());
 					}	
+					List<String> specialList = Arrays.asList("%","@","#","^","&","*","!");
+					
 
 					List<Object> combineList = new ArrayList<>();
-					combineList.addAll(list);
-					combineList.addAll(list2);
+					
+					combineList.addAll(specialList);
+					combineList.addAll(lowerList);
+					combineList.addAll(upperList);
 					for (int i = 0; i < 15; i++) { //랜덤한0~9 숫자 10개집어넣기
 						 combineList.add(new Random().nextInt(10)); 
 					}

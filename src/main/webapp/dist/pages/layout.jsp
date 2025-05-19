@@ -243,7 +243,7 @@ body {
 					<li class="nav-item dropdown user-menu"><a href="#"
 						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 						<%-- 
-						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+						<c:set var="img" value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
 						--%> 
 						<img 
 							src="${path}/dist/assets/picture/${m.img}"

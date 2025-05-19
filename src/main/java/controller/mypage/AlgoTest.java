@@ -1,5 +1,8 @@
 package controller.mypage;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class AlgoTest {
 	public static void main(String[] args) {
 		
@@ -7,6 +10,14 @@ public class AlgoTest {
 			String tempPw = new MypageController().getTempPw();
 			System.out.println(i+":"+tempPw);
 		}
+		
+		List<String> list = Arrays.asList("%","@","#","^","&","*","!");
+		
+		for (String string : list) {
+			System.out.println(string.toUpperCase());
+		}
+		
+		
 		
 	}
 

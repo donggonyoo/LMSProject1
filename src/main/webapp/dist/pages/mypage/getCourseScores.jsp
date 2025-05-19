@@ -242,13 +242,7 @@ body {
                             </c:when>
                             <c:when test="${sc.scoreGrade == 'C'}">
                                 <c:set var="gradePoint" value="2.0" />
-                            </c:when>
-                            <c:when test="${sc.scoreGrade == 'D+'}">
-                                <c:set var="gradePoint" value="1.5" />
-                            </c:when>
-                            <c:when test="${sc.scoreGrade == 'D'}">
-                                <c:set var="gradePoint" value="1.0" />
-                            </c:when>
+                            </c:when>                 
                             <c:when test="${sc.scoreGrade == 'F'}">
                                 <c:set var="gradePoint" value="0.0" />
                             </c:when>
