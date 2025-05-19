@@ -275,8 +275,7 @@ public class MypageController  extends MskimRequestMapping{
 				String email = stu.getStudentEmail();
 				String name = stu.getStudentName();
 				EmailUtil.sendIdEmail(email, name, id);
-				request.setAttribute("msg", msg);
-				request.setAttribute("url", url);//doLogin
+				
 			}
 		}
 		else {
@@ -290,14 +289,16 @@ public class MypageController  extends MskimRequestMapping{
 				String email = pro.getProfessorEmail();
 				String name = pro.getProfessorName();
 				EmailUtil.sendIdEmail(email, name, id);
-				request.setAttribute("msg", msg);
-				request.setAttribute("url", url);
+				
 
 			}
 
 		}
-		 //회원가입이실패하든 성공하든 세션정보는 모두지워줌
 		request.getSession().invalidate();
+		request.setAttribute("msg", msg);
+		request.setAttribute("url", url);
+		 //회원가입이실패하든 성공하든 세션정보는 모두지워줌
+		
 		return "alert";
 	}
 
@@ -338,6 +339,7 @@ public class MypageController  extends MskimRequestMapping{
 
 	}
 
+	//(id,pw입력 후 )로그인버튼 클릭시 발생하는  컨트롤러
 	@RequestMapping("login")
 	public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -403,7 +405,7 @@ public class MypageController  extends MskimRequestMapping{
 	}
 
 	@MSLogin("loginIdCheck")
-	@RequestMapping("index") //왜이렇게해야지만 index로가는거지??????
+	@RequestMapping("index") 
 	public String main(HttpServletRequest request , HttpServletResponse response) {
 		String dbId = (String)request.getSession().getAttribute("login");
 		HttpSession session = request.getSession();
@@ -452,7 +454,8 @@ public class MypageController  extends MskimRequestMapping{
 			return "idSearch";
 		}
 		else {
-			request.setAttribute("msg", "id : "+id); //추후에는 이메일로보내는거까지??
+			EmailUtil.sendIdEmail(email, name, id);
+			request.setAttribute("msg", "id는 이메일로 발송해드렸어요...!"); //추후에는 이메일로보내는거까지??
 			request.setAttribute("id", id);
 			return "idSearch";
 		}
@@ -611,8 +614,8 @@ public class MypageController  extends MskimRequestMapping{
 	@MSLogin("loginStuCheck")
 	@RequestMapping("getCourseScores")
 	public String getCourseScores (HttpServletRequest request, HttpServletResponse response) {
-		//String id = request.getSession().getAttribute("login");
-		String id = "S001";
+		String id = (String)request.getSession().getAttribute("login");
+		//String id = "S001";
 		try {
 			List<GetScoresDto> score = new GetScoreDao().getScore(id);
 			request.setAttribute("score", score);
@@ -633,7 +636,6 @@ public class MypageController  extends MskimRequestMapping{
 	@MSLogin("loginStuCheck")
 	@RequestMapping("getCourseTimetable")
 	public String getCourseTimetable (HttpServletRequest request, HttpServletResponse response) {
-		
 		return "mypage/getCourseTimetable";
 	}
 	

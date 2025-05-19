@@ -99,16 +99,22 @@
     <insert id="addAttendance" parameterType="java.util.Map">
 	    INSERT INTO attendance (
 	        attendance_id,
-            student_id,
 	        course_id,
+            student_id,
+            attendance_late,
+            attendance_absent,
+            attendance_status,
             professor_id,
 	        attendance_remarks,
 	        attendance_date
 	    )
 	    VALUES (
 	        #{attendanceId},
-            #{studentId},
 	        #{courseId},
+            #{studentId},
+            0,
+            0,
+            '',
             #{professorId},
 	        <if test="attendanceRemarks != null">
 	            #{attendanceRemarks},

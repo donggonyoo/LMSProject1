@@ -447,36 +447,37 @@
                 var params = [];
                 
                 $("#gradeList tr[data-student-id]").each(function() {
-                	var studentId = $(this).attr("data-student-id");
-                	var courseId = $(this).attr("data-course-id");
-                	var scoreMid = $(this).find("td .midterm-score").val();
-                	var scoreFinal = $(this).find("td .final-exam-score").val();
-                	var scoreTotal = $(".total-score").text();
-                	var scoreGrade = $(".grade").text();
+                    var $row = $(this);
+                    var studentId = $row.attr("data-student-id");
+                    var courseId = $row.attr("data-course-id");
+                    var scoreMid = $row.find(".midterm-score").val();
+                    var scoreFinal = $row.find(".final-exam-score").val();
+                    var scoreTotal = $row.find(".total-score").text();   //현재 행의 total-score
+                    var scoreGrade = $row.find(".grade").text(); // 현재 행의 grade
 
-                	params.push({
-						studentId: studentId,
-						courseId: courseId,
-						scoreMid: scoreMid,
-						scoreFinal: scoreFinal,
-						scoreTotal: scoreTotal,
-						scoreGrade: scoreGrade,
-                	});
-                	
+                    params.push({
+                        studentId: studentId,
+                        courseId: courseId,
+                        scoreMid: scoreMid,
+                        scoreFinal: scoreFinal,
+                        scoreTotal: scoreTotal,
+                        scoreGrade: scoreGrade
+                    });
                 });
-
-                    $.ajax({
-                	url: '${path}/professor_support/score/updateScore', 
-                    type: 'post',
-                    data: params,
-                    dataType: 'json',
-                    success: function (data) {
-                    	alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('성적 수정작업에 실패했습니다.', error);
-                    }
-                });                
+				
+                $.ajax({
+            	url: '${path}/professor_support/score/updateScore', 
+                type: 'post',
+                contentType: "application/json",
+                data: JSON.stringify(params),
+                dataType: 'json',
+                success: function (data) {
+                	alertMessage.addClass('alert-success').text('성적이 성공적으로 등록되었습니다.').show();
+                },
+                error: function (xhr, status, error) {
+                    alert('성적 수정작업에 실패했습니다.', error);
+                }
+            	});                
             });  
         });
         

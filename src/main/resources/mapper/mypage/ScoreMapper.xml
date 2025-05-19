@@ -5,6 +5,7 @@
 <mapper namespace="getScore">
 	<select id="getScore" parameterType="String" resultType="GetScoresDto">
 		SELECT  p.professor_name , c.course_id  , c.course_name , c.course_score , s.score_mid , s.score_final , s.score_total , s.score_grade
+		,c.course_period
 			FROM score s JOIN professor p  ON(s.professor_id = p.professor_id) 
  			 JOIN course c ON (s.course_id = c.course_id)
 			WHERE s.student_id=#{val};
