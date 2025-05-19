@@ -265,7 +265,7 @@ body {
         <!-- 요약 섹션 -->
         <div class="summary-card">
             <div class="summary-item">
-                <div class="summary-label">해당 학기 총 이수 학점</div>
+                <div class="summary-label">총 이수 학점</div>
                 <div class="summary-value total-credits">${totalCourseScore}</div>
             </div>
             <div class="summary-item">

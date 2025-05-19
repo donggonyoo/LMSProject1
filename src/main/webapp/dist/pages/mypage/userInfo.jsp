@@ -242,6 +242,10 @@
                             <input type="text" readonly="readonly" value="<fmt:formatDate value='${m.studentBirthday}' pattern='yyyy-MM-dd'/>" name="birthday">
                         </div>
                         <div>
+                            <strong>직위:</strong>
+                            <input type="text" readonly="readonly" value="학생" name="position">
+                        </div>
+                        <div>
                             <strong>학과:</strong>
                             <input type="text" readonly="readonly" value="${deptName}" name="deptName">
                         </div>
@@ -255,6 +259,10 @@
                         <div>
                             <strong>생년월일:</strong>
                             <input type="text" readonly="readonly" value="<fmt:formatDate value='${m.professorBirthday}' pattern='yyyy-MM-dd'/>" name="birthday">
+                        </div>
+                        <div>
+                            <strong>직위:</strong>
+                            <input type="text" readonly="readonly" value="교수" name="position">
                         </div>
                         <div>
                             <strong>학과:</strong>
