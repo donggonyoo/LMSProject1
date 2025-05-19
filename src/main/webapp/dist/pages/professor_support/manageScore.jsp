@@ -447,22 +447,22 @@
                 var params = [];
                 
                 $("#gradeList tr[data-student-id]").each(function() {
-                	var studentId = $(this).attr("data-student-id");
-                	var courseId = $(this).attr("data-course-id");
-                	var scoreMid = $(this).find("td .midterm-score").val();
-                	var scoreFinal = $(this).find("td .final-exam-score").val();
-                	var scoreTotal = $(".total-score").text();
-                	var scoreGrade = $(".grade").text();
+                    var $row = $(this);
+                    var studentId = $row.attr("data-student-id");
+                    var courseId = $row.attr("data-course-id");
+                    var scoreMid = $row.find(".midterm-score").val();
+                    var scoreFinal = $row.find(".final-exam-score").val();
+                    var scoreTotal = $row.find(".total-score").text();   //현재 행의 total-score
+                    var scoreGrade = $row.find(".grade").text(); // 현재 행의 grade
 
-                	params.push({
-						studentId: studentId,
-						courseId: courseId,
-						scoreMid: scoreMid,
-						scoreFinal: scoreFinal,
-						scoreTotal: scoreTotal,
-						scoreGrade: scoreGrade,
-                	});
-                	
+                    params.push({
+                        studentId: studentId,
+                        courseId: courseId,
+                        scoreMid: scoreMid,
+                        scoreFinal: scoreFinal,
+                        scoreTotal: scoreTotal,
+                        scoreGrade: scoreGrade
+                    });
                 });
 				
                 $.ajax({
