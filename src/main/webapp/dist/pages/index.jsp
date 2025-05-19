@@ -15,7 +15,8 @@ ul.timeline::before {
 }
 /* 기본 배경 스타일 */
 body {
-    background-image: url('${path}/dist/assets/picture/backWon2.jpg');
+    /*background-image: url('${path}/dist/assets/picture/backWon2.jpg');*/
+    background-image: url('${path}/dist/assets/picture/back.jpg');
     background-size: contain; /* 이미지 비율 유지하며 요소 내부에 맞춤 */
     background-position: center 25%; /* 필요에 따라 위치 조정 */
     background-repeat: no-repeat;
