@@ -102,35 +102,72 @@ body {
 				</tr>
 			</thead>
 			<tbody>
-			<c:forEach items="${score}" var="sc" varStatus="a">
-			<tr>
-					<td>${a.count}</td>
-					<td>${sc.courseId}</td>
-					<td>${sc.courseName}</td>
-					<td>${sc.professorName}</td>
-					<td>${sc.courseScore}</td>
-					<td>${sc.scoreMid}</td>
-					<td>${sc.scoreFinal}</td>
-					<td>${sc.scoreTotal}</td>
-					<td>${sc.scoreGrade}</td>
-				</tr>
-			</c:forEach>
-			</tbody>
-		</table>
-		<div class="mt-4">
-			<p>
-				<strong>해당 학기 총 이수 학점:</strong> 6 학점
-			</p>
-			<p>
-				<strong>해당 학기 평균 학점 (GPA):</strong> 3.75
-			</p>
-			<p>
-				<strong>총 이수 학점:</strong> 60 학점
-			</p>
-			<p>
-				<strong>전체 평균 학점 (GPA):</strong> 3.50
-			</p>
-		</div>
+        <c:set var="totalCourseScore" value="0" />
+        <c:set var="totalGradePoints" value="0" />
+        <c:set var="courseCount" value="0" />
+        <c:forEach items="${score}" var="sc" varStatus="a">
+            <tr>
+                <td>${a.count}</td>
+                <td>${sc.courseId}</td>
+                <td>${sc.courseName}</td>
+                <td>${sc.professorName}</td>
+                <td>${sc.courseScore}</td>
+                <td>${sc.scoreMid}</td>
+                <td>${sc.scoreFinal}</td>
+                <td>${sc.scoreTotal}</td>
+                <td>${sc.scoreGrade}</td>
+            </tr>
+            <!-- Sum total course credits -->
+            <c:set var="totalCourseScore" value="${totalCourseScore + sc.courseScore}" />
+            <!-- Convert scoreGrade to numerical value -->
+            <c:choose>
+                <c:when test="${sc.scoreGrade == 'A+'}">
+                    <c:set var="gradePoint" value="4.5" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'A'}">
+                    <c:set var="gradePoint" value="4.0" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'B+'}">
+                    <c:set var="gradePoint" value="3.5" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'B'}">
+                    <c:set var="gradePoint" value="3.0" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'C+'}">
+                    <c:set var="gradePoint" value="2.5" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'C'}">
+                    <c:set var="gradePoint" value="2.0" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'D+'}">
+                    <c:set var="gradePoint" value="1.5" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'D'}">
+                    <c:set var="gradePoint" value="1.0" />
+                </c:when>
+                <c:when test="${sc.scoreGrade == 'F'}">
+                    <c:set var="gradePoint" value="0.0" />
+                </c:when>
+                <c:otherwise>
+                    <c:set var="gradePoint" value="0.0" />
+                </c:otherwise>
+            </c:choose>
+         
+            
+            <c:set var="totalGradePoints" value="${totalGradePoints + gradePoint}" />
+            <c:set var="courseCount" value="${courseCount + 1}" /><!-- 총과목갯수 -->
+        </c:forEach>
+    </tbody>
+</table>
+<div class="mt-4">
+    <p>
+        <strong>해당 학기 총 이수 학점:</strong> ${totalCourseScore}
+    </p>
+    <p>
+        <strong>해당 학기 평균 학점 (GPA):</strong> 
+        <fmt:formatNumber value="${courseCount > 0 ? totalGradePoints / courseCount : 0}" pattern="0.00" />
+    </p>
+</div>
 	</div>
 
 </body>

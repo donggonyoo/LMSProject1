@@ -138,6 +138,7 @@ public class ScoreMngController extends MskimRequestMapping {
 		String professorId = "P001";
 		
         List<Map<String, Object>> params = new ArrayList<>();
+     
         
 		try {
 			scoreDao.updateScore(params);
