@@ -14,6 +14,23 @@
 	      AND  c.professor_id = #{professorId}
 	</select>
     
-    
+    <!-- 데이터 조회 -->
+    <select id="getAttendance" resultType="java.util.Map" parameterType="AttendanceDataDto">
+	    SELECT     a.attendance_id,
+		           a.student_id,
+		           s.student_name,
+		           a.attendance_status,
+		           a.attendance_late, <!-- 지각 -->
+		           a.attendance_absent, <!-- 결석 --> 
+		           (
+		               SELECT GROUP_CONCAT(ah.status ORDER BY ah.record_date SEPARATOR ',')
+		               FROM attendance_history ah
+		               WHERE ah.attendance_id = a.attendance_id
+		           ) AS history
+	    FROM 		attendance a
+	    JOIN 		student s ON a.student_id = s.student_id
+	    WHERE 		a.course_id = #{courseId}
+	    AND 		a.attendance_date = #{attendanceDate}
+    </select>
     
 </mapper>

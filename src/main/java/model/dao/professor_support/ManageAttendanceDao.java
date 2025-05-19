@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 
 import config.MyBatisConnection;
+import model.dto.professor_support.AttendanceDataDto;
 
 
 public class ManageAttendanceDao {
@@ -24,11 +25,11 @@ public class ManageAttendanceDao {
 		
 	}
 
-	public List<Map<String, Object>> getAttendance(String courseId) {
+	public List<Map<String, Object>> getAttendance(AttendanceDataDto attDto) {
 		List<Map<String, Object>> result = null;
 	    
 		try (SqlSession session = MyBatisConnection.getConnection()) { 
-	        result = session.selectList("MngAttendance.getAttendance", courseId);
+	        result = session.selectList("MngAttendance.getAttendance", attDto);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }

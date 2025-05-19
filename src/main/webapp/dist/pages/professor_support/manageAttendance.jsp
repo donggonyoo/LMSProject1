@@ -160,30 +160,35 @@ $(document).ready(function() {
 
         var attendanceList = $('#attendanceList');
         attendanceList.empty();
-        var attendanceData = [
-            { studentId: "20201234", name: "김민지", status: "출석", history: ["출석", "지각", "출석", "결석"] },
+        /* 
+        	var attendanceData = [
+            { studentId: "20201234", name: "김민지", status: "출석", .. },
             { studentId: "20215678", name: "박철수", status: "결석", history: ["결석", "지각", "지각", "출석"] }
-        ];
-        
+        ]; 
+        */
+        var attendanceData = [];
         $.ajax({
 			url : "${path}/professor_support/attendance/getAttendance",
 			type : "get",
 			data : {
 				courseId : courseId,
-				date: $("#datePicker").val(),
+				attendanceDate: $("#datePicker").val(),
 				},
 			dataType : "json",
 			success : function(data) {
+				if (data.errorMsg) {
+					alert(data.errorMsg);
+				}
 				attendanceData = data;
 			},
 			error : function(xhr, status, error) {
-				console.error("Error:", error);
+				console.error("Error:", xhr.responseText);
 				alert("강의 상태변경 중 오류가 발생했습니다.");
 			}
 		});
         $.each(attendanceData, function(index, item) {
-            var lateCount = item.history.filter(status => status === "지각").length;
-            var absentCount = item.history.filter(status => status === "결석").length;
+            var lateCount = item.attendence_late;
+            var absentCount = item.attendence_absent;
             attendanceList.append(
                 '<tr>' +
                 '<td>' + (index + 1) + '</td>' +
