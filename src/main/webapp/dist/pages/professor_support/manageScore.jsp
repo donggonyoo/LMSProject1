@@ -466,7 +466,7 @@
                 });
 
                     $.ajax({
-                	url: '${path}/professor_support/score/updatetScore', 
+                	url: '${path}/professor_support/score/updateScore', 
                     type: 'post',
                     data: params,
                     dataType: 'json',

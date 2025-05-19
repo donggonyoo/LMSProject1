@@ -202,7 +202,7 @@ public class CourseController extends MskimRequestMapping {
 	
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
-		
+
 		String studentId = (String) request.getSession().getAttribute("login");
 		
 		String registrationId = request.getParameter("registrationId");
@@ -211,9 +211,8 @@ public class CourseController extends MskimRequestMapping {
 		try {
 			courseDao.deleteCourse(registrationId,courseId, studentId);
 		} catch(Exception e) {
-			
+			e.printStackTrace();
 		}
-		
 		
 		return "/pages/dummy";
 	}

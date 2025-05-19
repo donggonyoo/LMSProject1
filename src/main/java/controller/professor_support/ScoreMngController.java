@@ -11,17 +11,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
-import model.dao.learning_support.CourseDao;
 import model.dao.professor_support.CourseByProDao;
 import model.dao.professor_support.ScoreMngDao;
-import model.dto.learning_support.DeptDto;
-import model.dto.professor_support.RegistCourseDto;
 import model.dto.professor_support.ScoreMngDto;
 
 @WebServlet(urlPatterns = {"/professor_support/score/*"}, 
@@ -134,20 +129,18 @@ public class ScoreMngController extends MskimRequestMapping {
 	 * 학생 성적 입력
 	 * @param request
 	 * @param response
-	 * @return Ajax
+	 * @return 
 	 */
-	@RequestMapping("updatetScore")
-	public String insertScore (HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping("updateScore")
+	public String updateScore (HttpServletRequest request, HttpServletResponse response) {
 		// 작업 완료시 주석풀고 교체
 		//String professorId = (String) request.getSession().getAttribute("login");
 		String professorId = "P001";
-		ObjectMapper mapper = new ObjectMapper();
-        String json = "";
+		
         List<Map<String, Object>> params = new ArrayList<>();
         
 		try {
-			scoreDao.updatetScore(params);
-			request.setAttribute("json", json);
+			scoreDao.updateScore(params);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
