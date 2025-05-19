@@ -377,9 +377,8 @@ body {
 							</ul></li>
 							
 							
+							<%-- 학습지원은 학생만 들어갈수 있게 해야함--%>
 							<!--<c:if test="${fn:contains(sessionScope.login, 'S')}"></c:if>-->
-
-				
 						<li class="nav-item">
 							<a href="#" class="nav-link"> 
 								<i class="nav-icon bi bi-box-seam-fill"></i>
