@@ -160,17 +160,20 @@ $(document).ready(function() {
 
         var attendanceList = $('#attendanceList');
         attendanceList.empty();
-        var attendanceData = [
-            { studentId: "20201234", name: "김민지", status: "출석", history: ["출석", "지각", "출석", "결석"] },
+        /* 
+        	var attendanceData = [
+            { studentId: "20201234", name: "김민지", status: "출석",  },
             { studentId: "20215678", name: "박철수", status: "결석", history: ["결석", "지각", "지각", "출석"] }
-        ];
-        
+        ]; 
+        */
+        var attendanceData = [];
         $.ajax({
 			url : "${path}/professor_support/attendance/getAttendance",
 			type : "get",
 			data : {
 				courseId : courseId,
-				date: $("#datePicker").val();
+				attendanceDate: $("#datePicker").val(),
+				
 				},
 			dataType : "json",
 			success : function(data) {
