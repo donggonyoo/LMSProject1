@@ -425,8 +425,8 @@
 	                        '<td>' + grade.deptName + '</td>' +
 	                        '<td><input type="number" class="editable-score midterm-score" value="' + grade.scoreMid + '" data-index="' + i + '"></td>' +
 	                        '<td><input type="number" class="editable-score final-exam-score" value="' + grade.scoreFinal + '" data-index="' + i + '"></td>' +
-	                        '<td class="total-score" id="total-score">' + grade.scoreTotal + '</td>' +
-	                        '<td class="grade" id="grade">' + grade.scoreGrade + '</td>' +
+	                        '<td class="total-score">' + grade.scoreTotal + '</td>' +
+	                        '<td class="grade">' + grade.scoreGrade + '</td>' +
 	                        '<td><a href="#" class="btn-link-custom">[보기]</a></td>' +
 	                        '</tr>'
 	                    );
@@ -447,24 +447,25 @@
                 var params = [];
                 
                 $("#gradeList tr[data-student-id]").each(function() {
-                    var $row = $(this);
-                    var studentId = $row.attr("data-student-id");
-                    var courseId = $row.attr("data-course-id");
-                    var scoreMid = $row.find(".midterm-score").val();
-                    var scoreFinal = $row.find(".final-exam-score").val();
-                    var scoreTotal = $row.find(".total-score").text();   //현재 행의 total-score
-                    var scoreGrade = $row.find(".grade").text(); // 현재 행의 grade
-
-                    params.push({
-                        studentId: studentId,
-                        courseId: courseId,
-                        scoreMid: scoreMid,
-                        scoreFinal: scoreFinal,
-                        scoreTotal: scoreTotal,
-                        scoreGrade: scoreGrade
-                    });
+					console.log('this: ', $(this));
+                	var studentId = $(this).attr("data-student-id");
+                	var courseId = $(this).attr("data-course-id");
+                	var scoreMid = $(this).find("td .midterm-score").val();
+                	var scoreFinal = $(this).find("td .final-exam-score").val();
+                	var scoreTotal = $(this).find("td.total-score").text();
+                	var scoreGrade = $(this).find("td.grade").text();
+                	
+                	params.push({
+						studentId: studentId,
+						courseId: courseId,
+						scoreMid: scoreMid,
+						scoreFinal: scoreFinal,
+						scoreTotal: scoreTotal,
+						scoreGrade: scoreGrade,
+                	});
+                	
                 });
-				
+				console.log('params: ', params);
                 $.ajax({
             	url: '${path}/professor_support/score/updateScore', 
                 type: 'post',

@@ -64,6 +64,6 @@ public class ManageAttendanceController extends MskimRequestMapping {
 			}
 		}
 		
-		return "pages/return_ajax";
+		return "pages/returnAjax";
 	}
 }
