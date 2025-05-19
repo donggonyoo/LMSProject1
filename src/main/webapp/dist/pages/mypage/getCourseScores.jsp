@@ -242,13 +242,7 @@ body {
                             </c:when>
                             <c:when test="${sc.scoreGrade == 'C'}">
                                 <c:set var="gradePoint" value="2.0" />
-                            </c:when>
-                            <c:when test="${sc.scoreGrade == 'D+'}">
-                                <c:set var="gradePoint" value="1.5" />
-                            </c:when>
-                            <c:when test="${sc.scoreGrade == 'D'}">
-                                <c:set var="gradePoint" value="1.0" />
-                            </c:when>
+                            </c:when>                 
                             <c:when test="${sc.scoreGrade == 'F'}">
                                 <c:set var="gradePoint" value="0.0" />
                             </c:when>
@@ -265,7 +259,7 @@ body {
         <!-- 요약 섹션 -->
         <div class="summary-card">
             <div class="summary-item">
-                <div class="summary-label">해당 학기 총 이수 학점</div>
+                <div class="summary-label">총 이수 학점</div>
                 <div class="summary-value total-credits">${totalCourseScore}</div>
             </div>
             <div class="summary-item">

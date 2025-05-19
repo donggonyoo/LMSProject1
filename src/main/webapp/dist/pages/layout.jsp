@@ -243,7 +243,7 @@ body {
 					<li class="nav-item dropdown user-menu"><a href="#"
 						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 						<%-- 
-						<c:set var="img" value="${fn:contains(sessionScope.login, 's') ? m.studentImg : m.professorImg}" />
+						<c:set var="img" value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
 						--%> 
 						<img 
 							src="${path}/dist/assets/picture/${m.img}"
@@ -332,7 +332,7 @@ body {
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
-								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable""
+								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable"
 									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
 										<p>시간표조회</p>
 								</a></li>

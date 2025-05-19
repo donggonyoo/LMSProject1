@@ -114,4 +114,12 @@ public class NoticeDao {
 	        }
 
 	}
+	public static List<Notice> listAll() {
+		SqlSession session = MyBatisConnection.getConnection();
+		try {
+			return session.selectList("notice.selectListAll"); 
+		} finally {
+			MyBatisConnection.close(session);
+		}
+	}
 }

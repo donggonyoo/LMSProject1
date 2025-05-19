@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +29,13 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import domain.Dept;
+import domain.Notice;
 import domain.Professor;
 import domain.Student;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
+import model.dao.board.NoticeDao;
 import model.dao.learning_support.CourseDao;
 import model.dao.mypage.DeptDao;
 import model.dao.mypage.GetScoreDao;
@@ -94,17 +97,21 @@ public class MypageController  extends MskimRequestMapping{
 	
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
-			List<String> list = Arrays.asList
-					("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
+			List<String> lowerList = Arrays.asList
+	("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
 					
-					List<String> list2 = new ArrayList<>();
-					for (String string : list) {
-						list2.add(string.toUpperCase());
+					List<String> upperList = new ArrayList<>();
+					for (String string : lowerList) {
+						upperList.add(string.toUpperCase());
 					}	
+					List<String> specialList = Arrays.asList("%","@","#","^","&","*","!");
+					
 
 					List<Object> combineList = new ArrayList<>();
-					combineList.addAll(list);
-					combineList.addAll(list2);
+					
+					combineList.addAll(specialList);
+					combineList.addAll(lowerList);
+					combineList.addAll(upperList);
 					for (int i = 0; i < 15; i++) { //랜덤한0~9 숫자 10개집어넣기
 						 combineList.add(new Random().nextInt(10)); 
 					}
@@ -199,7 +206,6 @@ public class MypageController  extends MskimRequestMapping{
 		String phone = request.getParameter("phone");
 		String id = IdChk(position);//직급에따른 아이디부여해주는 메서드
 
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date birthDate = sdf.parse(date); // "YYYY-MM-dd" 형식의 문자열을 Date로 파싱
 
@@ -221,8 +227,7 @@ public class MypageController  extends MskimRequestMapping{
 			request.getSession().setAttribute("mem", pro);
 			String num = EmailUtil.sendNum(email, name, id);
 			request.setAttribute("num", num);
-			System.out.println("인증번호 : "+num);
-
+			
 		}
 		//학생일경우
 		else {
@@ -245,10 +250,8 @@ public class MypageController  extends MskimRequestMapping{
 			request.getSession().setAttribute("mem", stu);
 			String num = EmailUtil.sendNum(email, name, id);
 			request.setAttribute("num", num);
-			System.out.println("인증번호 : "+num);
+			
 		}
-
-
 		return "mypage/registerNumChk";
 	}
 
@@ -418,6 +421,15 @@ public class MypageController  extends MskimRequestMapping{
 			session.setAttribute("m", professor);	
 
 		}
+        List<Notice> allNotices = NoticeDao.listAll();
+        List<Notice> recentNotices = new ArrayList<>();
+        if (allNotices != null) {
+            Collections.sort(allNotices, Comparator.comparing(Notice::getNoticeCreatedAt).reversed());
+            for (int i = 0; i < Math.min(4, allNotices.size()); i++) {
+                recentNotices.add(allNotices.get(i));
+            }
+        }
+        request.setAttribute("recentNotices", recentNotices);
 
 		return "index"; //forward 됨
 		//redirect시 다른 request영역이므로 속성이 넘어가지않음
