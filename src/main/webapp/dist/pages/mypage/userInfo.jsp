@@ -227,7 +227,7 @@
                     <button type="button" class="btn btn-secondary" onclick="win_upload()">이미지 변경</button>
                 </div>
                 <c:choose>
-                    <c:when test="${fn:contains(sessionScope.login, 's')}">
+                    <c:when test="${fn:contains(sessionScope.login, 'S')}">
                         <!-- Student Information -->
                         <div>
                             <strong>이름:</strong>
@@ -246,7 +246,7 @@
                             <input type="text" readonly="readonly" value="${deptName}" name="deptName">
                         </div>
                     </c:when>
-                    <c:when test="${fn:contains(sessionScope.login, 'p')}">
+                    <c:when test="${fn:contains(sessionScope.login, 'P')}">
                         <!-- Professor Information -->
                         <div>
                             <strong>이름:</strong>
@@ -265,12 +265,12 @@
 
                 <div>
                     <c:choose>
-                        <c:when test="${fn:contains(sessionScope.login, 's')}">
+                        <c:when test="${fn:contains(sessionScope.login, 'S')}">
                             <strong>연락처:</strong>
                             <input type="text" readonly="readonly" value="${m.studentPhone}" name="phone" id="phone">
                             <button class="btn btn-secondary" type="button" onclick="updatePhone()">수정</button>
                         </c:when>
-                        <c:when test="${fn:contains(sessionScope.login, 'p')}">
+                        <c:when test="${fn:contains(sessionScope.login, 'P')}">
                             <strong>연락처:</strong>
                             <input type="text" readonly="readonly" value="${m.professorPhone}" name="phone" id="phone">
                             <button class="btn btn-secondary" type="button" onclick="updatePhone()">수정</button>
@@ -279,12 +279,12 @@
                 </div>
                 <div>
                     <c:choose>
-                        <c:when test="${fn:contains(sessionScope.login, 's')}">
+                        <c:when test="${fn:contains(sessionScope.login, 'S')}">
                             <strong>이메일:</strong>
                             <input type="email" readonly="readonly" value="${m.studentEmail}" name="email" id="email">
                             <button class="btn btn-secondary" type="button" onclick="updateEmail()">수정</button>
                         </c:when>
-                        <c:when test="${fn:contains(sessionScope.login, 'p')}">
+                        <c:when test="${fn:contains(sessionScope.login, 'P')}">
                             <strong>이메일:</strong>
                             <input type="email" readonly="readonly" value="${m.professorEmail}" name="email" id="email">
                             <button class="btn btn-secondary" type="button" onclick="updateEmail()">수정</button>
@@ -299,7 +299,7 @@
             </form>
             <form id="pwForm" action="pwUpdate" method="post" target="pwUpdateWindow" name="c">
                 <input type="hidden" name="id" value="${sessionScope.login}">
-                <input type="hidden" name="email" value="${fn:contains(sessionScope.login, 's') ? m.studentEmail : m.professorEmail}">
+                <input type="hidden" name="email" value="${fn:contains(sessionScope.login, 'S') ? m.studentEmail : m.professorEmail}">
             </form>
         </div>
     </div>
@@ -322,7 +322,7 @@
 
         function updatePw() {
             let loginId = "${sessionScope.login}";
-            let email = "${fn:contains(sessionScope.login, 's') ? m.studentEmail : m.professorEmail}";
+            let email = "${fn:contains(sessionScope.login, 'S') ? m.studentEmail : m.professorEmail}";
             if (!loginId) {
                 alert("로그인이 필요합니다.");
                 return;

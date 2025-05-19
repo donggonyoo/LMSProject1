@@ -31,6 +31,7 @@ import model.dao.board.PostDao;
 public class PostController extends MskimRequestMapping {
     private PostDao dao = new PostDao();
     private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
+    private static final String UPLOAD_DIR = "dist/assets/upload"; 
 
     // 로그인 체크 메서드
     private String checkLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -230,10 +231,10 @@ public class PostController extends MskimRequestMapping {
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postFile = multi.getFilesystemName("post_file");
@@ -384,10 +385,10 @@ public class PostController extends MskimRequestMapping {
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postId = multi.getParameter("num");
@@ -472,10 +473,10 @@ public class PostController extends MskimRequestMapping {
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/upload/board");
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 20 * 1024 * 1024; // 10MB
+        int maxSize = 20 * 1024 * 1024; // 20MB
         MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
 
         String postId = multi.getParameter("postId");
@@ -510,9 +511,6 @@ public class PostController extends MskimRequestMapping {
                 File oldFile = new File(uploadPath, originalFile);
                 if (oldFile.exists()) oldFile.delete();
             }
-            File newFileObject = new File(uploadPath, newFile);
-            newFile = System.currentTimeMillis() + "_" + newFile;
-            newFileObject.renameTo(new File(uploadPath, newFile));
         }
 
         post.setAuthorId(login);
@@ -558,7 +556,7 @@ public class PostController extends MskimRequestMapping {
             return "redirect:getPosts";
         }
         request.setAttribute("post", post);
-		return "pages/board/post/deletePost"; 
+        return "pages/board/post/deletePost"; 
     }
 
     @RequestMapping("delete")
@@ -594,7 +592,7 @@ public class PostController extends MskimRequestMapping {
 
         try {
             if (post.getPostFile() != null && !post.getPostFile().isEmpty()) {
-                String uploadPath = request.getServletContext().getRealPath("/upload/board");
+                String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
                 File file = new File(uploadPath, post.getPostFile());
                 if (file.exists()) file.delete();
             }
