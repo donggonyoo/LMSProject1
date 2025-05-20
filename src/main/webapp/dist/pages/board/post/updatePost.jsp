@@ -13,9 +13,9 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center fs-1">문의 게시판 게시물 수정</h2>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
         <form action="update" method="post" enctype="multipart/form-data" name="f">
             <input type="hidden" name="postId" value="${p.postId}">

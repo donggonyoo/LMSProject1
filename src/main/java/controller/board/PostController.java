@@ -31,7 +31,6 @@ import model.dao.board.PostDao;
 @WebServlet(urlPatterns = {"/post/*"}, initParams = {@WebInitParam(name = "view", value = "/dist/pages/")})
 public class PostController extends MskimRequestMapping {
     private PostDao dao = new PostDao();
-    private static final String LOGIN_PAGE = "/mypage/doLogin";
     private static final String UPLOAD_DIR = "dist/assets/upload";
 
     // 로그인 체크
@@ -215,7 +214,7 @@ public class PostController extends MskimRequestMapping {
         return "board/post/searchPost";
     }
 
-    @MSLogin("loginStuCheck")
+    @MSLogin("loginIdCheck")
     @RequestMapping("createPost")
     public String createPost(HttpServletRequest request, HttpServletResponse response) {
         String parentPostId = request.getParameter("parent_post_id");
@@ -231,7 +230,7 @@ public class PostController extends MskimRequestMapping {
         return "board/post/createPost";
     }
 
-    @MSLogin("loginStuCheck")
+    @MSLogin("loginIdCheck")
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
@@ -364,7 +363,7 @@ public class PostController extends MskimRequestMapping {
         return "board/post/getPostDetail";
     }
 
-    @MSLogin("loginStuCheck")
+    @MSLogin("loginIdCheck")
     @RequestMapping("replyPost")
     public String replyPost(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
@@ -392,7 +391,7 @@ public class PostController extends MskimRequestMapping {
         return "board/post/replyPost";
     }
 
-    @MSLogin("loginStuCheck")
+    @MSLogin("loginIdCheck")
     @RequestMapping("writeReply")
     public String writeReply(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession();
