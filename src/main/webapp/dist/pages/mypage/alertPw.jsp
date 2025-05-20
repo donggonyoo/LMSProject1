@@ -16,9 +16,15 @@
         // 메시지 표시
         var msg = "${requestScope.msg}";
         if (msg) {
-            alert(msg);
+            var bool = confirm(msg);
+            if(bool == false){
+				self.close();
+            }
+            else{
+            	 document.f.submit();
+            }
         }
-        document.f.submit();
+       
     </script>
 </body>
 </html>

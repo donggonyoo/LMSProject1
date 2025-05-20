@@ -499,7 +499,7 @@ public class MypageController  extends MskimRequestMapping{
 			
 			if(new ProStuDao().updateTempPw(hashpw,id)) { //넘겨받은 id의 비밀번호를 임시비번으로 업데이트
 				EmailUtil.sendTempPw(email, id, tempPw);//임시비밀번호를 메일로발송
-				request.setAttribute("msg", "임시 비밀번호는이메일로 전송해드렸어요"); 
+				request.setAttribute("msg", "임시 비밀번호는이메일로 전송해드렸어요 , 바로비밀번호를 변경할까요?"); 
 				request.setAttribute("id", id);
 				request.setAttribute("email", email);
 				//알림창을 띄워주고 pwUpdate폼으로이동
