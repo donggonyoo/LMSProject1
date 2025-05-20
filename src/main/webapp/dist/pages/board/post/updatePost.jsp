@@ -63,8 +63,16 @@
                 <tr>
                     <td>공지사항</td>
                     <td>
-                        <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1" ${p.postNotice ? 'checked' : ''}>
-                        <label class="form-check-label" for="post_notice">공지사항</label>
+                        <c:choose>
+                            <c:when test="${empty sessionScope.m or sessionScope.m['class'].simpleName == 'Student'}">
+                                <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1" ${p.postNotice ? 'checked' : ''} disabled>
+                                <label class="form-check-label" for="post_notice">공지사항 (학생은 설정 불가)</label>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1" ${p.postNotice ? 'checked' : ''}>
+                                <label class="form-check-label" for="post_notice">공지사항</label>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
                 </tr>
                 <tr>

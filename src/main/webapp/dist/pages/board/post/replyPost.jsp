@@ -17,7 +17,7 @@
     <input type="hidden" name="grplevel" value="${board.postGroupLevel}">
     <input type="hidden" name="grpstep" value="${board.postGroupStep}">
     <div class="container">
-        <h2>답글 작성</h2>
+        <h2 class="text-center fs-1">답글 작성</h2>
         <c:if test="${not empty error}">
             <div style="color: red;">${error}</div>
             <% session.removeAttribute("error"); %>

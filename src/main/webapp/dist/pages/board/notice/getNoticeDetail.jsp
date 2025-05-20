@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="fs-1">게시물 상세</h1> <br>
+        <h1 class="fs-1">공지사항</h1> <br>
         <c:if test="${not empty error}">
             <div class="alert alert-danger">${error}</div>
             <% session.removeAttribute("error"); %>
