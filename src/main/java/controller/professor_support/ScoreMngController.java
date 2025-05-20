@@ -31,12 +31,10 @@ public class ScoreMngController extends MskimRequestMapping {
 	
 	@RequestMapping("scoreMng")
 	public String score (HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+		
+		String professorId = (String) request.getSession().getAttribute("login");
 		
 		Map<String, Object> result = byProDao.getProfessorInfo(professorId); 
-		
 		request.setAttribute("professorName", result.get("professor_name"));
 		request.setAttribute("deptName", result.get("dept_name"));
 		
@@ -50,9 +48,8 @@ public class ScoreMngController extends MskimRequestMapping {
 	 */
 	@RequestMapping("getCoursesInfo")
 	public String getCoursesInfo (HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+
+		String professorId = (String) request.getSession().getAttribute("login");
 		ObjectMapper mapper = new ObjectMapper();
         String json = "";
         
@@ -76,10 +73,9 @@ public class ScoreMngController extends MskimRequestMapping {
 	 */
 	@RequestMapping("getScoreInfo")
 	public String getScore (HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
+		
 		Map<String, Object> params = new HashMap<String, Object>();
-		String professorId = "P001";
+		String professorId = (String) request.getSession().getAttribute("login");		
 		String courseId = request.getParameter("courseId");
 		String courseName = request.getParameter("courseName");
 		
@@ -136,9 +132,8 @@ public class ScoreMngController extends MskimRequestMapping {
 	 */
 	@RequestMapping("updateScore")
 	public String updateScore (HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";		
+		
+		String professorId = (String) request.getSession().getAttribute("login");
 
         BufferedReader reader = request.getReader();
         StringBuilder sb = new StringBuilder();

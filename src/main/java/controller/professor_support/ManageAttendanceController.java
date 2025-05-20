@@ -11,8 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,10 +28,8 @@ public class ManageAttendanceController extends MskimRequestMapping {
 	
 	@RequestMapping("attendance")
 	public String attendance(HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		// String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
 
+		String professorId = (String) request.getSession().getAttribute("login");
 		List<Map<String, Object>> result = attDao.getCoursesInfoByPro(professorId);
 		request.setAttribute("courses", result);
 
@@ -47,9 +43,8 @@ public class ManageAttendanceController extends MskimRequestMapping {
 	 */
 	@RequestMapping("getAttendance")
 	public String getAttendance(HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		// String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+		
+		String professorId = (String) request.getSession().getAttribute("login");
 		AttendanceDataDto attDto = new AttendanceDataDto();
 		
 		try {
@@ -76,9 +71,8 @@ public class ManageAttendanceController extends MskimRequestMapping {
 	
 	@RequestMapping("updateAttendance")
 	public String updateAttendance(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// 작업 완료시 주석풀고 교체
-		// String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+		
+		String professorId = (String) request.getSession().getAttribute("login");
 		
 		//클라이언트로부터 받은 json데이터 파싱
 		BufferedReader reader = request.getReader();
@@ -88,17 +82,11 @@ public class ManageAttendanceController extends MskimRequestMapping {
 			sb.append(line);
 		}
 		String jsonData = sb.toString();
-		System.out.println("==============================================================");
-		System.out.println("jsonData: " + jsonData.toString());
-		System.out.println("==============================================================");
 		
 		try {
 			List<AttendanceDataDto> dtoList = 
 					mapper.readValue(jsonData, mapper.getTypeFactory()
 							.constructParametricType(List.class, AttendanceDataDto.class));
-			System.out.println("==============================================================");
-			System.out.println("params: " + dtoList.toString());
-			System.out.println("==============================================================");
 			attDao.updateAttendance(dtoList);
 		} catch (Exception e) {
 			e.printStackTrace();

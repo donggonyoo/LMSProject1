@@ -42,10 +42,9 @@ public class CourseByProController extends MskimRequestMapping {
 	
 	@RequestMapping("registCourseForm")
 	public String registCourseForm (HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
 		
-		String professorId = "P001";
+		String professorId = (String) request.getSession().getAttribute("login");
+		
 		String errorMsg = "";
 		String courseId = byProDao.getMaxcourseIdNumber();
 		String CourseTimeId = byProDao.getMaxcourseTimeIdNumber();
