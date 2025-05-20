@@ -1,8 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<c:set var="path" value="${pageContext.request.contextPath}" scope="application"/>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<c:set var="path" value="${pageContext.request.contextPath}"
+	scope="application" />
 
 <!doctype html>
 <html lang="en">
@@ -19,7 +21,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><sitemesh:write property="title"/></title>
+<title><sitemesh:write property="title" /></title>
 <!--begin::Primary Meta Tags-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="title" content="AdminLTE v4 | Dashboard" />
@@ -54,57 +56,77 @@
 ul.timeline::before {
 	content: none !important;
 }
+
 body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f7fafc;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        .table th, .table td {
-            border: 1px solid #e2e8f0;
-            padding: 10px;
-            text-align: left;
-        }
-        .table th {
-            background: #edf2f7;
-            font-weight: 600;
-        }
-        .btn {
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-        .btn-primary {
-            background: #3182ce;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #2b6cb0;
-        }
-        .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-        .btn-secondary:hover {
-            background: #cbd5e0;
-        }
+	font-family: 'Noto Sans KR', sans-serif;
+	background-color: #f7fafc;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.card {
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+.table th, .table td {
+	border: 1px solid #e2e8f0;
+	padding: 10px;
+	text-align: left;
+}
+
+.table th {
+	background: #edf2f7;
+	font-weight: 600;
+}
+
+.btn {
+	padding: 8px 16px;
+	border-radius: 4px;
+	transition: background 0.2s;
+}
+
+.btn-primary {
+	background: #3182ce;
+	color: white;
+}
+
+.btn-primary:hover {
+	background: #2b6cb0;
+}
+
+.btn-secondary {
+	background: #e2e8f0;
+	color: #4a5568;
+}
+
+.btn-secondary:hover {
+	background: #cbd5e0;
+}
+
+.user-header {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
 </style>
-<sitemesh:write property="head"/>
+<sitemesh:write property="head" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -121,8 +143,8 @@ body {
 						data-lte-toggle="sidebar" href="#" role="button"> <i
 							class="bi bi-list"></i>
 					</a></li>
-					<li class="nav-item d-none d-md-block"><a href="${path}/mypage/index"
-						class="nav-link">Home</a></li>
+					<li class="nav-item d-none d-md-block"><a
+						href="${path}/mypage/index" class="nav-link">Home</a></li>
 				</ul>
 				<!--end::Start Navbar Links-->
 				<!--begin::End Navbar Links-->
@@ -136,51 +158,39 @@ body {
 					<!--end::Fullscreen Toggle-->
 					<!--begin::User Menu Dropdown-->
 					<li class="nav-item dropdown user-menu"><a href="#"
-						class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-						<%-- 
+						class="nav-link dropdown-toggle d-flex align-items-center"
+						data-bs-toggle="dropdown"> <%-- 
 						<c:set var="img" value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
-						--%> 
-						<img 
-							src="${path}/dist/assets/picture/${m.img}"
-							class="user-image rounded-circle shadow" alt="User Image" />
-							<span class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
+						--%> <img src="${path}/dist/assets/picture/${m.img}"
+							class="user-image rounded-circle shadow" alt="User Image" style="width: 60px; height: 60px; margin-top: 3px"/> <span
+							class="d-none d-md-inline">${sessionScope.login}님 반갑습니다</span>
 					</a>
 						<ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
 							<!--begin::User Image-->
-							<c:set var="img" value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
-							<li class="user-header text-bg-primary"><img 
+							<c:set var="img"
+								value="${fn:contains(sessionScope.login, 'S') ? m.studentImg : m.professorImg}" />
+							<li class="user-header text-bg-primary"><img
 								src="${path}/dist/assets/picture/${img}"
-								class="rounded-circle shadow" alt="User Image" />
+								class="rounded-circle shadow" alt="User Image" 
+								style="width: 100px; height: 100px;"/> 
 								<c:if test="${fn:contains(sessionScope.login, 'S')}">
-								<fmt:formatDate value="${m.studentBirthday}" pattern="YYYY-MM-dd" var="birth"/>
+									<fmt:formatDate value="${m.studentBirthday}"
+										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.studentName}<small>${birth}</small>
 									</p>
-								</c:if> 
-								<c:if test="${not fn:contains(sessionScope.login, 'S')}">
-								<fmt:formatDate value="${m.professorBirthday}"  pattern="YYYY-MM-dd" var="birth"/>
+								</c:if> <c:if test="${not fn:contains(sessionScope.login, 'S')}">
+									<fmt:formatDate value="${m.professorBirthday}"
+										pattern="YYYY-MM-dd" var="birth" />
 									<p>${m.professorName}<small>${birth}</small>
 									</p>
-								</c:if></li>
+								</c:if>
+								<p>${deptName}</p></li>
 							<!--end::User Image-->
-							<!--begin::Menu Body-->
-							<li class="user-body">
-								<!--begin::Row-->
-								<div class="row">
-									<div class="col-4 text-center">
-										<a href="#">Followers</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Sales</a>
-									</div>
-									<div class="col-4 text-center">
-										<a href="#">Friends</a>
-									</div>
-								</div> <!--end::Row-->
-							</li>
-							<!--end::Menu Body-->
+
 							<!--begin::Menu Footer-->
-							<li class="user-footer"><a href="#"
-								class="btn btn-default btn-flat">Profile</a> <a href="${path}/mypage/logout"
+							<li class="user-footer"><a href="${path}/mypage/userInfo"
+								class="btn btn-default btn-flat">Profile</a> <a
+								href="${path}/mypage/logout"
 								class="btn btn-default btn-flat float-end">Sign out</a></li>
 							<!--end::Menu Footer-->
 						</ul></li>
@@ -199,8 +209,8 @@ body {
 				<!--begin::Brand Link-->
 				<a href="${path}/mypage/index" class="brand-link"> <!--begin::Brand Image-->
 					<img src="/LMSProject1/dist/assets/img/AdminLTELogo.png"
-					class="brand-image opacity-75 shadow" /> <!--end::Brand Image-->
-					<!--begin::Brand Text--> <span class="brand-text fw-light">LDB학사관리시스템</span> <!--end::Brand Text-->
+					class="brand-image opacity-75 shadow" /> <!--end::Brand Image--> <!--begin::Brand Text-->
+					<span class="brand-text fw-light">LDB학사관리시스템</span> <!--end::Brand Text-->
 				</a>
 				<!--end::Brand Link-->
 			</div>
@@ -223,76 +233,76 @@ body {
 									class="nav-link active"> <i class="nav-icon bi bi-circle"></i>
 										<p>개인정보</p>
 								</a></li>
-								<li class="nav-item"><a href="${path}/mypage/getCourseScores"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+								<li class="nav-item"><a
+									href="${path}/mypage/getCourseScores" class="nav-link"> <i
+										class="nav-icon bi bi-circle"></i>
 										<p>성적확인</p>
 								</a></li>
-								<li class="nav-item"><a href="${path}/mypage/getCourseTimetable"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+								<li class="nav-item"><a
+									href="${path}/mypage/getCourseTimetable" class="nav-link">
+										<i class="nav-icon bi bi-circle"></i>
 										<p>시간표조회</p>
 								</a></li>
 							</ul></li>
-							<c:if test="${fn:contains(sessionScope.login, 'S')}">
-						<li class="nav-item">
-							<a href="#" class="nav-link"> 
-								<i class="nav-icon bi bi-box-seam-fill"></i>
-								<p>학습지원 <i class="nav-arrow bi bi-chevron-right"></i></p>
+						<c:if test="${fn:contains(sessionScope.login, 'S')}">
+							<li class="nav-item"><a href="#" class="nav-link"> <i
+									class="nav-icon bi bi-box-seam-fill"></i>
+									<p>
+										학습지원 <i class="nav-arrow bi bi-chevron-right"></i>
+									</p>
 							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item"><a href="${path}/learning_support/registerCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>수강신청</p>
-								</a></li>
-								<li class="nav-item"><a href="${path}/learning_support/viewCourse/viewCourse"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>수강신청 현황</p>
-								</a></li>
-								<li class="nav-item"><a href="#"
-									class="nav-link"> <i class="nav-icon bi bi-circle"></i>
-										<p>미정</p>
-								</a></li>
-							</ul></li>
-							</c:if>
-							
-							<c:if test="${fn:contains(sessionScope.login, 'P')}">
-								<li class="nav-item"><a href="#" class="nav-link"> <i
-								class="nav-icon bi bi-clipboard-fill"></i>
-								<p>
-									교수지원
-									<!-- <span class="nav-badge badge text-bg-secondary me-3">6</span> -->
-									<i class="nav-arrow bi bi-chevron-right"></i>
-								</p>
-						</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="${path}/professor_support/registCourse" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>강의등록</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/manage/manageCourse" class="nav-link">
-										<i class="nav-icon bi bi-circle"></i>
-										<p>강의관리</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/score/scoreMng" class="nav-link">
-										<i class="nav-icon bi bi-circle"></i>
-										<p>성적관리</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="${path}/professor_support/attendance/attendance" class="nav-link"> 
-										<i class="nav-icon bi bi-circle"></i>
-										<p>출석관리</p>
-									</a>
-								</li>
-							</ul>
-						</li>
-							</c:if>
-							 <!--  교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
-					
+								<ul class="nav nav-treeview">
+									<li class="nav-item"><a
+										href="${path}/learning_support/registerCourse"
+										class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+											<p>수강신청</p>
+									</a></li>
+									<li class="nav-item"><a
+										href="${path}/learning_support/viewCourse/viewCourse"
+										class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+											<p>수강신청 현황</p>
+									</a></li>
+									<li class="nav-item"><a href="#" class="nav-link"> <i
+											class="nav-icon bi bi-circle"></i>
+											<p>미정</p>
+									</a></li>
+								</ul></li>
+						</c:if>
+
+						<c:if test="${fn:contains(sessionScope.login, 'P')}">
+							<li class="nav-item"><a href="#" class="nav-link"> <i
+									class="nav-icon bi bi-clipboard-fill"></i>
+									<p>
+										교수지원
+										<!-- <span class="nav-badge badge text-bg-secondary me-3">6</span> -->
+										<i class="nav-arrow bi bi-chevron-right"></i>
+									</p>
+							</a>
+								<ul class="nav nav-treeview">
+									<li class="nav-item"><a
+										href="${path}/professor_support/registCourse" class="nav-link">
+											<i class="nav-icon bi bi-circle"></i>
+											<p>강의등록</p>
+									</a></li>
+									<li class="nav-item"><a
+										href="${path}/professor_support/manage/manageCourse"
+										class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+											<p>강의관리</p>
+									</a></li>
+									<li class="nav-item"><a
+										href="${path}/professor_support/score/scoreMng"
+										class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+											<p>성적관리</p>
+									</a></li>
+									<li class="nav-item"><a
+										href="${path}/professor_support/attendance/attendance"
+										class="nav-link"> <i class="nav-icon bi bi-circle"></i>
+											<p>출석관리</p>
+									</a></li>
+								</ul></li>
+						</c:if>
+						<!--  교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
+
 						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
@@ -309,11 +319,11 @@ body {
 		</aside>
 		<!--end::Sidebar-->
 		<!--begin::App Main-->
-		
+
 		<main class="app-main">
-		
-		<sitemesh:write property="body"/>
-	
+
+			<sitemesh:write property="body" />
+
 		</main>
 		<!--end::App Main-->
 		<!--begin::Footer-->

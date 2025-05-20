@@ -32,6 +32,7 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
+    /*background-image: url('${path}/dist/assets/picture/back.jpg');*/
     background-size: 510px 900px;
     background-position: 100% 25%;
     background-repeat: no-repeat;

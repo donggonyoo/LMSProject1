@@ -41,6 +41,22 @@ public class DeptDao {
 		  return null;
 	  }
 
+
+	public String selectName(String deptId) {
+		  SqlSession connection = MyBatisConnection.getConnection();
+		  try {
+			return connection.selectOne("dept.selectName",deptId);
+		  }
+		  catch (Exception e) {
+			e.printStackTrace();
+		}
+		  finally {
+			  MyBatisConnection.close(connection);
+		  }
+		  return null;
+		
+	}
+
 	
 	 
 		

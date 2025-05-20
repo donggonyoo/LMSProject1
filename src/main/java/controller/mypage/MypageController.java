@@ -90,6 +90,23 @@ public class MypageController  extends MskimRequestMapping{
 			return null; //정상인경우
 		}
 		
+		//로그인없이접근막기 + 교수만 
+		public String loginProCheck(HttpServletRequest request, HttpServletResponse response) {
+			HttpSession session = request.getSession();
+			String login  = (String)session.getAttribute("login");
+			if(login==null ) {
+				request.setAttribute("msg", "로그인하세요");
+				request.setAttribute("url", "doLogin");
+				return "alert";
+			}
+			else if(login.contains("S")) {
+				request.setAttribute("msg", "학생은 접근불가능합니다");
+				request.setAttribute("url", "index");
+				return "alert";
+			}
+			return null; //정상인경우
+		}
+		
 
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
@@ -303,6 +320,7 @@ public class MypageController  extends MskimRequestMapping{
 	@RequestMapping("picture")
 	public String picture(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String path = request.getServletContext().getRealPath("")+"/dist/assets/picture/";
+		
 		//기준 디렉토리 의 실제 경로
 		String fname = null;
 		File f = new File(path);//업로드되는 폴더정보
@@ -311,6 +329,7 @@ public class MypageController  extends MskimRequestMapping{
 		}
 		MultipartRequest multi = new MultipartRequest(
 		request,path,10*1024*1024,"UTF-8",new DefaultFileRenamePolicy());
+		
 		fname = multi.getFilesystemName("picture");//사진명
 		request.setAttribute("fname", fname);
 		System.out.println(fname);
@@ -377,6 +396,7 @@ public class MypageController  extends MskimRequestMapping{
 			
 			//Bcrypt.checkpw(입력,검증) : 입력과 검증(암호화된비번) 을 비교할수있음
 			if(BCrypt.checkpw(pass, dbPw) ){
+				
 				if(dbId.contains("S")) { //학생 중 퇴학상태인 학생을 검증하는 단계
 					if(new StudentDao().selectStatus(dbId)) { 
 						request.setAttribute("msg","퇴학한사람은 로그인할수없어요");
@@ -407,11 +427,15 @@ public class MypageController  extends MskimRequestMapping{
 		if(dbId.contains("S")) {
 			StudentDao dao = new StudentDao();
 			Student student = dao.selectOne(dbId);
+			String deptName = new DeptDao().selectName(student.getDeptId());
+			session.setAttribute("deptName", deptName);
 			session.setAttribute("m", student);
 		}
 		else if(dbId.contains("P")){
 			ProfessorDao dao = new ProfessorDao();
 			Professor professor = dao.selectOne(dbId);
+			String deptName = new DeptDao().selectName(professor.getDeptId());
+			session.setAttribute("deptName", deptName);
 			session.setAttribute("m", professor);	
 
 		}
@@ -608,7 +632,6 @@ public class MypageController  extends MskimRequestMapping{
 	@RequestMapping("getCourseScores")
 	public String getCourseScores (HttpServletRequest request, HttpServletResponse response) {
 		String id = (String)request.getSession().getAttribute("login");
-		//String id = "S001";
 		try {
 			List<GetScoresDto> score = new GetScoreDao().getScore(id);
 			request.setAttribute("score", score);
