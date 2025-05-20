@@ -16,52 +16,99 @@ pageContext.setAttribute("randomImageNumber", randomImageNumber);
 <title>메인화면</title>
 
 <style>
-ul.timeline::before {
-    content: none !important;
-}
-
 /* 기본 배경 스타일 */
 body {
-    background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
-    background-size: 800px auto; /* 이미지 크기 고정 */
-    background-position: 55% 25%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
     margin: 0;
+    min-height: 100vh;
     background-color: #f0f0f0;
+    position: relative;
 }
 
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
+    background-size: 510px 900px;
+    background-position: 100% 25%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: brightness(0.7);
+    z-index: -1;
+}
+
+/* .app-content 스타일 */
+.app-wrapper .app-content {
+    margin-top: 50px !important; /* 400px -> 350px로 줄여 더 위로 올림 */
+    margin-left: 5px !important; /* 기존 50px -> 5px로 줄여 왼쪽으로 이동 */
+}
+
+.container {
+    margin-top: 0px; /* 10px -> 0px로 줄여 더 위로 올림 */
+    margin-left: -10px; /* 살짝 왼쪽으로 이동 */
+}
+/* 카드 크기 맞춤 */
+.card.card-warning.card-outline {
+    min-height: 380px; /* 최소 높이 설정으로 높이 맞춤 */
+    
+}
+/* list-group-item 높이 조정 */
+.card.card-warning.card-outline .list-group-item {
+    padding: 15px 20px; /* 상하 15px, 좌우 20px로 패딩 증가 */
+    min-height: 60px; /* 최소 높이 설정으로 항목 높이 키움 */
+    display: flex; /* Flexbox로 내부 콘텐츠 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    justify-content: space-between; /* 제목과 날짜 사이 간격 조정 */
+}
 /* 반응형 설정 */
+/* 
 @media (max-width: 768px) {
     body {
-        background-size: 600px auto; /* 모바일에서 크기 축소 */
-        background-position: 55% 15%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
+        background-size: 600px auto;
+        background-position: 55% 15%;
+    }
+    .app-wrapper .app-content {
+        margin-top: 300px !important; 
+        margin-left: 5px !important; 
+    }
+    .container {
+        margin-top: 0px;
+        margin-left: -5px; 
     }
 }
 
 @media (min-width: 769px) and (max-width: 1200px) {
     body {
-        background-size: 700px auto; /* 중간 크기 화면에서 크기 조정 */
-        background-position: 55% 20%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
+        background-size: 700px auto;
+        background-position: 55% 20%;
+    }
+    .app-wrapper .app-content {
+        margin-top: 330px !important; 
+        margin-left: 5px !important; 
+    }
+    .container {
+        margin-top: 0px;
+        margin-left: -8px;
     }
 }
 
 @media (min-width: 1201px) {
     body {
-        background-size: 800px auto; /* 큰 화면에서 크기 고정 */
-        background-position: 55% 25%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
+        background-size: 800px auto;
+        background-position: 55% 25%;
     }
-}
-
-.app-content {
-    margin-top: 450px; /* 이미지가 커짐에 따라 콘텐츠를 아래로 조정 */
-   	margin-left: 100px;
-}
-
-.container{
-	margin-top:20px;
-}
+    .app-wrapper .app-content {
+        margin-top: 350px !important;
+        margin-left: 5px !important;
+    }
+    .container {
+        margin-top: 0px;
+        margin-left: -10px;
+    }
+} */ 
 </style>
 </head>
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
