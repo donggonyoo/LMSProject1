@@ -493,26 +493,4 @@ public class NoticeController extends MskimRequestMapping {
             return "alert";
         }
     }
-
-    @MSLogin("loginProCheck")
-    @RequestMapping("uploadImage")
-    public String uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) uploadDir.mkdirs();
-        int maxSize = 10 * 1024 * 1024; // 10MB
-        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
-
-        String fileName = multi.getFilesystemName("file");
-        if (fileName == null) {
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\": \"파일 업로드 실패\"}");
-            return null;
-        }
-
-        String fileUrl = request.getContextPath() + "/" + UPLOAD_DIR + "/" + fileName;
-        response.setContentType("application/json");
-        response.getWriter().write("{\"url\": \"" + fileUrl + "\"}");
-        return null;
-    }
 }

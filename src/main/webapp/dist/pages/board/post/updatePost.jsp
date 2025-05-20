@@ -119,11 +119,6 @@
 
     function inputcheck() {
         let f = document.f;
-        console.log("inputcheck called");
-        console.log("authorId:", f.authorId.value);
-        console.log("postPassword:", f.postPassword.value);
-        console.log("postTitle:", f.postTitle.value);
-        console.log("postContent:", f.postContent.value);
         if (f.authorId.value.trim() === "") {
             alert("글쓴이를 입력하세요");
             f.authorId.focus();
