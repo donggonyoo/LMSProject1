@@ -214,7 +214,6 @@
         WHERE registration_id = #{registrationId}
     </delete>
 	
-	<!-- course_id로 attendance 삭제 -->
     <delete id="deleteAttendance" parameterType="java.util.Map">
         DELETE FROM attendance
         WHERE course_id = #{courseId}
