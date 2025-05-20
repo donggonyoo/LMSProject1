@@ -1,7 +1,6 @@
 package controller.professor_support;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
-import model.dao.learning_support.CourseDao;
-import model.dao.professor_support.CourseByProDao;
 import model.dao.professor_support.ManageCourseDao;
 import model.dto.professor_support.PaginationDto;
 import model.dto.professor_support.RegistCourseDto;
@@ -32,9 +29,8 @@ public class ManageCourseController extends MskimRequestMapping {
 	
 	@RequestMapping("manageCourse")
 	public String searchCourseInfo (HttpServletRequest request, HttpServletResponse response) {
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+		
+		String professorId = (String) request.getSession().getAttribute("login");
 		String search = request.getParameter("search");
 		String errorMsg = request.getParameter("errorMsg");
 		
@@ -111,9 +107,7 @@ public class ManageCourseController extends MskimRequestMapping {
 	@RequestMapping("updateCourseInfo")
 	public String updateCourseInfo (HttpServletRequest request, HttpServletResponse response) {
 		
-		// 작업 완료시 주석풀고 교체
-		//String professorId = (String) request.getSession().getAttribute("login");
-		String professorId = "P001";
+		String professorId = (String) request.getSession().getAttribute("login");
 		String errorMsg = "";
 		// 기존 페이지정보 전달
 		String search = request.getParameter("search");
