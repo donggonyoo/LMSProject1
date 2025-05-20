@@ -259,7 +259,7 @@ public class MypageController  extends MskimRequestMapping{
 		String url = "doLogin";
 		
 		
-		if(id.toLowerCase().contains("s")) {
+		if(id.contains("S")) {
 			Student stu = (Student)request.getSession().getAttribute("mem");
 			StudentDao sDao = new StudentDao();
 			if(!sDao.insert(stu)) { //DB에오류발생시
@@ -451,7 +451,7 @@ public class MypageController  extends MskimRequestMapping{
 		}
 		else {
 			EmailUtil.sendIdEmail(email, name, id);
-			request.setAttribute("msg", "id는 이메일로 발송해드렸어요...!"); //추후에는 이메일로보내는거까지??
+			request.setAttribute("msg", "id는 이메일로 발송해드렸어요...!"); 
 			request.setAttribute("id", id);
 			return "idSearch";
 		}

@@ -19,11 +19,12 @@ pageContext.setAttribute("randomImageNumber", randomImageNumber);
 ul.timeline::before {
     content: none !important;
 }
+
 /* 기본 배경 스타일 */
 body {
     background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
-    background-size: contain; /* 이미지 비율 유지하며 요소 내부에 맞춤 */
-    background-position: center 25%; /* 필요에 따라 위치 조정 */
+    background-size: 800px auto; /* 이미지 크기 고정 */
+    background-position: 55% 25%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
     background-repeat: no-repeat;
     background-attachment: fixed;
     min-height: 100vh;
@@ -31,30 +32,35 @@ body {
     background-color: #f0f0f0;
 }
 
-/* 반응형 설정 (필요에 따라 조정) */
+/* 반응형 설정 */
 @media (max-width: 768px) {
     body {
-        background-size: contain;
-        background-position: center 15%;
+        background-size: 600px auto; /* 모바일에서 크기 축소 */
+        background-position: 55% 15%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
     }
 }
 
 @media (min-width: 769px) and (max-width: 1200px) {
     body {
-        background-size: contain;
-        background-position: center 20%;
+        background-size: 700px auto; /* 중간 크기 화면에서 크기 조정 */
+        background-position: 55% 20%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
     }
 }
 
 @media (min-width: 1201px) {
     body {
-        background-size: contain;
-        background-position: center 25%;
+        background-size: 800px auto; /* 큰 화면에서 크기 고정 */
+        background-position: 55% 25%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
     }
 }
 
 .app-content {
-    margin-top: 350px; /* 이미지가 커짐에 따라 콘텐츠를 아래로 조정 */
+    margin-top: 450px; /* 이미지가 커짐에 따라 콘텐츠를 아래로 조정 */
+   	margin-left: 100px;
+}
+
+.container{
+	margin-top:20px;
 }
 </style>
 </head>
