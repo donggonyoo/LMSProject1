@@ -9,27 +9,9 @@
 <head>
 <meta charset="UTF-8">
 <title>출석 관리</title>
-
+<!-- Custom CSS -->
 <style>
-    /* body에 직접적인 padding 제거 */
-    body {
-        margin: 0; /* 기본 margin 제거 */
-    }
-    /* content-wrapper 스타일 적용 */
-    #content-wrapper {
-    	padding-top: 20px;
-        padding-left: 140px;
-        padding-right: 0px;
-         
-        max-width: 1500px; /* 최대 너비 설정 (선택 사항) */
-    }
-    .card {
-        margin-bottom: 20px; /* card의 하단 margin 유지 */
-        width: 100%;
-        
-        /* margin: auto; */
- 
-    }
+    .card { margin-bottom: 20px; }
     .table { width: 100%; }
     .modal-body table { width: 100%; }
     .attendance-select { width: 120px; }
@@ -43,96 +25,91 @@
         margin: -1rem -1rem -1rem auto;
     }
     @media (max-width: 768px) {
-        #content-wrapper {
-            padding-left: 10px; /* 작은 화면에서 여백 줄임 */
-            padding-right: 10px; /* 작은 화면에서 여백 줄임 */
-        }
         .table th, .table td { font-size: 14px; }
         .attendance-select { width: 100px; }
     }
+
 </style>
 </head>
 <body>
-<div id="content-wrapper">
-	<h2 class="text-xl font-semibold mb-4">출석 관리</h2>
-	<div class="card">
-	    
-	    <div class="flex items-center mb-4">
-	        <input type="text" id="searchInput" class="border rounded p-2 mr-2" placeholder="강의명 또는 강의 ID 검색">
-	        <button class="btn btn-primary" id="searchBtn">검색</button>
-	        <div class="ml-4">
-	            <label for="datePicker">날짜: </label>
-	            <input type="date" id="datePicker" class="border rounded p-1" value="">
-	        </div>
-	    </div>
-	    <table class="table">
-	        <thead>
-	            <tr>
-	                <th>#</th>
-	                <th>과목 ID</th>
-	                <th>학기</th>
-	                <th>학생수</th>
-	                <th>강의명</th>
-	                <th>관리</th>
-	            </tr>
-	        </thead>
-	        <tbody id="courseList">
-	            <c:forEach var="course" items="${courses}" varStatus="idx">
-	            	<tr>
-	            		<td>${idx.count}</td>
-	            		<td>${course.course_id}</td>
-	            		<td>${course.course_period}</td>
-	            		<td>${course.course_current_enrollment}</td>
-	            		<td>${course.course_name}</td>
-	            		<td>
-	           				<button class="btn btn-primary manage-btn" data-course-id="${course.course_id}">출석 관리</button>
-	           			</td>
-	           		</tr>
-	            </c:forEach>
-	        </tbody>
-	    </table>
-	</div>
-	
-	<!-- 모달 팝업 -->
-	<div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-lg">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title" id="attendanceModalLabel">출석 관리</h5>
-	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	                    <span aria-hidden="true">×</span>
-	                </button>
-	            </div>
-	            <div class="modal-body">
-	                <p><strong>과목:</strong> <span id="modalCourseName"></span> (<span id="modalCourseId"></span>)</p>
-	                <p><strong>날짜:</strong> <span id="modalDate"></span></p>
-	                <p><strong>출석률:</strong> <span id="attendanceRate" class="attendance-rate">0%</span></p>
-	                <table class="table">
-	                    <thead>
-	                        <tr>
-	                            <th>#</th>
-	                            <th>학번</th>
-	                            <th>이름</th>
-	                            <th>지각 횟수</th>
-	                            <th>결석 횟수</th>
-	                            <th>출석 상태</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody id="attendanceList">
-	                        <!-- 동적 데이터 삽입 -->
-	                    </tbody>
-	                </table>
-	            </div>
-	            <div class="modal-footer">
-	                <button class="btn btn-primary" id="bulkPresent">일괄 출석</button>
-	                <button class="btn btn-primary" id="bulkAbsent">일괄 결석</button>
-	                <button class="btn btn-primary" id="saveAttendance">저장</button>
-	                <div id="saveMessage" class="text-success" style="display: none;">저장이 완료되었습니다. 강의목록으로 돌아갑니다.</div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+<div class="card">
+    <h2 class="text-xl font-semibold mb-4">출석 관리</h2>
+    <div class="flex items-center mb-4">
+        <input type="text" id="searchInput" class="border rounded p-2 mr-2" placeholder="강의명 또는 강의 ID 검색">
+        <button class="btn btn-primary" id="searchBtn">검색</button>
+        <div class="ml-4">
+            <label for="datePicker">날짜: </label>
+            <input type="date" id="datePicker" class="border rounded p-1" value="">
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>과목 ID</th>
+                <th>학기</th>
+                <th>학생수</th>
+                <th>강의명</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody id="courseList">
+            <c:forEach var="course" items="${courses}" varStatus="idx">
+            	<tr>
+            		<td>${idx.count}</td>
+            		<td>${course.course_id}</td>
+            		<td>${course.course_period}</td>
+            		<td>${course.course_current_enrollment}</td>
+            		<td>${course.course_name}</td>
+            		<td>
+           				<button class="btn btn-primary manage-btn" data-course-id="${course.course_id}">출석 관리</button>
+           			</td>
+           		</tr>
+            </c:forEach>
+        </tbody>
+    </table>
 </div>
+
+<!-- 모달 팝업 -->
+<div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="attendanceModalLabel">출석 관리</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>과목:</strong> <span id="modalCourseName"></span> (<span id="modalCourseId"></span>)</p>
+                <p><strong>날짜:</strong> <span id="modalDate"></span></p>
+                <p><strong>출석률:</strong> <span id="attendanceRate" class="attendance-rate">0%</span></p>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>학번</th>
+                            <th>이름</th>
+                            <th>지각 횟수</th>
+                            <th>결석 횟수</th>
+                            <th>출석 상태</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceList">
+                        <!-- 동적 데이터 삽입 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="bulkPresent">일괄 출석</button>
+                <button class="btn btn-primary" id="bulkAbsent">일괄 결석</button>
+                <button class="btn btn-primary" id="saveAttendance">저장</button>
+                <div id="saveMessage" class="text-success" style="display: none;">저장이 완료되었습니다. 강의목록으로 돌아갑니다.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 	//강의당 수강생 목록
 	var attendanceData = [];

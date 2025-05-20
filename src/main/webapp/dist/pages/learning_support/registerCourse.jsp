@@ -85,7 +85,7 @@ body {
 }
 </style>
 </head>
-
+<body>
 <main class="app-main">
     <div class="card">
         <h2 class="text-xl font-semibold mb-4">수강신청</h2>
