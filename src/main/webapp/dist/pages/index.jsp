@@ -5,7 +5,7 @@
 <c:set var="path" value="${pageContext.request.contextPath}" scope="application" />
 
 <%
-int imageCount = 15;
+int imageCount = 20;
 int randomImageNumber = (int)(Math.random() * imageCount) + 1;
 pageContext.setAttribute("randomImageNumber", randomImageNumber);
 %>
@@ -55,6 +55,7 @@ body {
 
 .app-content {
     margin-top: 350px; /* 이미지가 커짐에 따라 콘텐츠를 아래로 조정 */
+    padding-left:220px;
 }
 </style>
 </head>
