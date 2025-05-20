@@ -29,7 +29,7 @@ body {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 60px;
     margin-bottom: 20px;
 }
 .table {
@@ -119,8 +119,6 @@ body {
 }
 </style>
 </head>
-
-<main class="app-main">
     <div class="card">
     <h2 class="text-xl font-semibold mb-4">수강신청 현황</h2>
     <table class="table">
@@ -273,7 +271,6 @@ body {
         </table>
     </div>
 </div>
-</main>
 
 <script>
 $(document).ready(function() {
@@ -311,6 +308,11 @@ $(document).ready(function() {
     });
     
     $(".view-courseTime").click(function() {
+		// 시간표보기 열려있을시 닫음
+		if ($("#timetable-container").is(":visible")) {
+			$("#timetable-container").hide();
+			return;
+		}
         $("#timetable-container").show();
         console.log('Triggering view-courseTime');
         $.ajax({

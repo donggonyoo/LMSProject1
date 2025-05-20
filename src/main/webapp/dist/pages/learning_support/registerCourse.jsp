@@ -16,10 +16,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>개인정보</title>
 <style>
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #f7fafc;
-}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -29,7 +26,7 @@ body {
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 50px;
     margin-bottom: 20px;
 }
 .table {
@@ -86,7 +83,7 @@ body {
 </style>
 </head>
 <body>
-<main class="app-main">
+
     <div class="card">
         <h2 class="text-xl font-semibold mb-4">수강신청</h2>
 
@@ -165,7 +162,6 @@ body {
             </tbody>
         </table>
     </div>
-</main>
 
 <script>
 	//페이징 처리 준비
