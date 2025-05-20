@@ -156,10 +156,11 @@
 				<tbody>
 					<c:forEach var="course" items="${courses}" varStatus="status">
 						<tr>
-							<td><span data-bs-toggle="tooltip"
-								title="${course.coursePlan}"> <c:out
-										value="${course.courseName}" />
-							</span></td>
+							<td>
+							<span data-bs-toggle="tooltip" title="${course.coursePlan}"> 
+								<c:out value="${course.courseName}" />
+							</span>
+							</td>
 							<td>${course.coursePeriod}</td>
 							<td>${course.courseTimeLoc}</td>
 							<td><c:choose>

@@ -157,6 +157,7 @@ public class CourseController extends MskimRequestMapping {
 	 * @param response
 	 * @return
 	 */
+	@MSLogin("loginStuCheck")
 	@RequestMapping("addCourse")
 	public String addCourse (HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> errorMap = new HashMap<>();
@@ -205,6 +206,7 @@ public class CourseController extends MskimRequestMapping {
         return "/pages/learning_support/ajax_learning_support";
 	}
 	
+	@MSLogin("loginStuCheck")
 	@RequestMapping("deleteCourse")
 	public String deleteCourse (HttpServletRequest request, HttpServletResponse response) {
 
