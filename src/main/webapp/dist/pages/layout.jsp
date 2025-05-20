@@ -337,6 +337,7 @@ body {
 										<p>시간표조회</p>
 								</a></li>
 							</ul></li>
+							<c:if test="${fn:contains(sessionScope.login, 'S')}">
 						<li class="nav-item">
 							<a href="#" class="nav-link"> 
 								<i class="nav-icon bi bi-box-seam-fill"></i>
@@ -356,10 +357,10 @@ body {
 										<p>미정</p>
 								</a></li>
 							</ul></li>
+							</c:if>
 							
-							<!--<c:if test="${fn:contains(sessionScope.login, 'P')}"></c:if>
-							 교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
-						<li class="nav-item"><a href="#" class="nav-link"> <i
+							<c:if test="${fn:contains(sessionScope.login, 'P')}">
+								<li class="nav-item"><a href="#" class="nav-link"> <i
 								class="nav-icon bi bi-clipboard-fill"></i>
 								<p>
 									교수지원
@@ -394,6 +395,9 @@ body {
 								</li>
 							</ul>
 						</li>
+							</c:if>
+							 <!--  교수지원쪽부분을 교수가아니면 아예 뜨지않게 막아놓을거임-->
+					
 						<li class="nav-item"><a href="${path}/notice/getNotices"
 							class="nav-link"> <i class="nav-icon bi bi-tree-fill"></i>
 								<p>공지사항</p>
