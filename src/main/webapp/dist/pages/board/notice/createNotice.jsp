@@ -79,8 +79,8 @@
             data: data,
             processData: false,
             contentType: false,
-            success: function(response) {
-                $('#summernote').summernote('insertImage', response.url);
+            success: function(url) {
+                $('#summernote').summernote('insertImage', url);
             },
             error: function(e) {
                 alert("이미지 업로드 실패: " + e.status);
@@ -91,11 +91,6 @@
 
     function inputcheck() {
         let f = document.f;
-        console.log("inputcheck called");
-        console.log("writer_id:", f.writer_id.value);
-        console.log("pass:", f.pass.value);
-        console.log("notice_title:", f.notice_title.value);
-        console.log("notice_content:", f.notice_content.value);
         if (f.writer_id.value.trim() === "") {
             alert("글쓴이를 입력하세요");
             f.writer_id.focus();

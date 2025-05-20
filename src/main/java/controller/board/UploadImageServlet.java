@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 
@@ -19,22 +18,12 @@ import javax.servlet.http.Part;
 public class UploadImageServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final String UPLOAD_DIR = "dist/assets/upload";
-    private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
 
     public UploadImageServlet() {
         super();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 로그인 체크
-        HttpSession session = request.getSession();
-        String login = (String) session.getAttribute("login");
-        if (login == null) {
-            session.setAttribute("error", "로그인하시오");
-            response.sendRedirect(request.getContextPath() + LOGIN_PAGE);
-            return;
-        }
-
         Part filePart = request.getPart("file");
         String fileName = getFileName(filePart);
 

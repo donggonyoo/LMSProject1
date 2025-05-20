@@ -97,11 +97,6 @@
 
     function inputcheck() {
         let f = document.f;
-        console.log("inputcheck called");
-        console.log("writer:", f.writer.value);
-        console.log("pass:", f.pass.value);
-        console.log("title:", f.title.value);
-        console.log("content:", f.content.value);
         if (f.writer.value.trim() === "") {
             alert("글쓴이를 입력하세요");
             f.writer.focus();
