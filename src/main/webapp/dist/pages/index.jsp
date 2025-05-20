@@ -32,7 +32,7 @@ body::before {
     width: 100%;
     height: 100%;
     background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
-    background-size: 500px 900px;
+    background-size: 510px 900px;
     background-position: 100% 25%;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -42,7 +42,7 @@ body::before {
 
 /* .app-content 스타일 */
 .app-wrapper .app-content {
-    margin-top: 0px !important; /* 400px -> 350px로 줄여 더 위로 올림 */
+    margin-top: 50px !important; /* 400px -> 350px로 줄여 더 위로 올림 */
     margin-left: 5px !important; /* 기존 50px -> 5px로 줄여 왼쪽으로 이동 */
 }
 
