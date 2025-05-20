@@ -17,10 +17,10 @@
     <input type="hidden" name="grplevel" value="${board.postGroupLevel}">
     <input type="hidden" name="grpstep" value="${board.postGroupStep}">
     <div class="container">
-        <h2>답글 작성</h2>
-        <c:if test="${not empty error}">
-            <div style="color: red;">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <h2 class="text-center fs-1">답글 작성</h2>
+        <c:if test="${not empty msg}">
+            <div style="color: red;">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
         <table class="table">
             <tr>
@@ -55,7 +55,7 @@
             </tr>
             <tr>
                 <td colspan="2" align="center">
-                    <button type="submit" class="btn btn-primary">답변글 등록</button>
+                    <button type="button" onclick="inputcheck()" class="btn btn-primary">답변글 등록</button>
                     <a href="getPosts" class="btn btn-secondary">목록</a>
                 </td>
             </tr>
@@ -95,27 +95,31 @@
         });
     }
 
-    function validateForm() {
+    function inputcheck() {
         let f = document.f;
+        console.log("inputcheck called");
+        console.log("writer:", f.writer.value);
+        console.log("pass:", f.pass.value);
+        console.log("title:", f.title.value);
+        console.log("content:", f.content.value);
+        if (f.writer.value.trim() === "") {
+            alert("글쓴이를 입력하세요");
+            f.writer.focus();
+            return;
+        }
         if (f.pass.value.trim() === "") {
             alert("비밀번호를 입력하세요");
             f.pass.focus();
-            return false;
+            return;
         }
         if (f.title.value.trim() === "") {
             alert("제목을 입력하세요");
             f.title.focus();
-            return false;
+            return;
         }
-        return true;
+        console.log("Submitting form");
+        f.submit();
     }
-
-
-    document.querySelector('button[type="submit"]').addEventListener('click', function(e) {
-        if (!validateForm()) {
-            e.preventDefault();
-        }
-    });
-</script>
+    </script>
 </body>
 </html>

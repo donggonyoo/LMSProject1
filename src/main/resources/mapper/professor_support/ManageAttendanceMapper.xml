@@ -12,6 +12,7 @@
 	    FROM   course c
 	    WHERE  1 = 1
 	      AND  c.professor_id = #{professorId}
+	      AND  c.course_status in ('open', 'OPEN')
 	</select>
     
     <!-- 데이터 조회 -->

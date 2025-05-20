@@ -12,10 +12,10 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center fs-1">게시물 작성</h2>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <h2 class="text-center fs-1">문의게시판 게시물 작성</h2>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
         <form action="write" method="post" enctype="multipart/form-data" name="f">
             <input type="hidden" name="parent_post_id" value="${parent_post_id}">
@@ -57,12 +57,19 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>공지사항</td>
+               	<td>공지사항</td>
                     <td>
-                        <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1">
-                        <label class="form-check-label" for="post_notice">공지사항</label>
+                        <c:choose>
+                            <c:when test="${sessionScope.m['class'].simpleName == 'Student'}">
+                                <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1" disabled>
+                                <label class="form-check-label" for="post_notice">공지사항 (학생은 설정 불가)</label>
+                            </c:when>
+                            <c:otherwise>
+                                <input type="checkbox" name="post_notice" id="post_notice" class="form-check-input" value="1">
+                                <label class="form-check-label" for="post_notice">공지사항</label>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
-                </tr>
                 <tr>
                     <td colspan="2">
                         <button type="button" onclick="inputcheck()" class="btn btn-primary">게시물 등록</button>

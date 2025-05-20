@@ -94,9 +94,9 @@
     <div class="container mt-5">
         <h2 class="text-center fs-1">게시물 삭제</h2>
 
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
 
         <form action="delete" method="post" class="mt-4">

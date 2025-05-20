@@ -10,10 +10,12 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.professor_support.ManageAttendanceDao;
@@ -26,6 +28,7 @@ public class ManageAttendanceController extends MskimRequestMapping {
 	private ManageAttendanceDao attDao = new ManageAttendanceDao();	
 	ObjectMapper mapper = new ObjectMapper();
 	
+	@MSLogin("loginStuCheck")
 	@RequestMapping("attendance")
 	public String attendance(HttpServletRequest request, HttpServletResponse response) {
 
@@ -95,5 +98,22 @@ public class ManageAttendanceController extends MskimRequestMapping {
 		}
 		
 		return "pages/dummy";
+	}
+	
+	//로그인없이접근막기 + 교수만 ( get방식사용하지않으므로 이쪽에선 파라미터값을 막을필욘없음)
+	public String loginStuCheck(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String login  = (String)session.getAttribute("login");
+		if(login==null ) {
+			request.setAttribute("msg", "로그인하세요");
+			request.setAttribute("url", "doLogin");
+			return "alert";
+		}
+		else if(login.contains("S")) {
+			request.setAttribute("msg", "학생은 접근불가능합니다");
+			request.setAttribute("url", "index");
+			return "alert";
+		}
+		return null; //정상인경우
 	}
 }

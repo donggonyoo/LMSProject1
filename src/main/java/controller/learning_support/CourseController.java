@@ -10,11 +10,13 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.learning_support.CourseDao;
@@ -33,11 +35,14 @@ public class CourseController extends MskimRequestMapping {
 	private CourseDao courseDao = new CourseDao();
 	ObjectMapper mapper = new ObjectMapper();
 	
+	
+	@MSLogin("loginStuCheck")
 	@RequestMapping("registerCourse")
 	public String registerCourse (HttpServletRequest request, HttpServletResponse response) {
 
 		return "/pages/learning_support/registerCourse";
 	}
+	
 	
 	@RequestMapping("colleges")
 	public String getColleges (HttpServletRequest request, HttpServletResponse response) {
@@ -217,4 +222,20 @@ public class CourseController extends MskimRequestMapping {
 		return "/pages/dummy";
 	}
 	
+	//로그인없이접근막기 + 학생만 ( get방식사용하지않으므로 이쪽에선 파라미터값을 막을필욘없음)
+	public String loginStuCheck(HttpServletRequest request, HttpServletResponse response) {
+		HttpSession session = request.getSession();
+		String login  = (String)session.getAttribute("login");
+		if(login==null ) {
+			request.setAttribute("msg", "로그인하세요");
+			request.setAttribute("url", "doLogin");
+			return "alert";
+		}
+		else if(login.contains("P")) {
+			request.setAttribute("msg", "교수는접근불가능합니다");
+			request.setAttribute("url", "index");
+			return "alert";
+		}
+		return null; //정상인경우
+	}
 }

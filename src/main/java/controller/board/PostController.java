@@ -23,25 +23,41 @@ import domain.Post;
 import domain.PostComment;
 import domain.Professor;
 import domain.Student;
+import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
 import gdu.mskim.RequestMapping;
 import model.dao.board.PostDao;
 
-@WebServlet(urlPatterns = {"/post/*"}, initParams = {@WebInitParam(name = "view", value = "/dist/")})
+@WebServlet(urlPatterns = {"/post/*"}, initParams = {@WebInitParam(name = "view", value = "/dist/pages/")})
 public class PostController extends MskimRequestMapping {
     private PostDao dao = new PostDao();
-    private static final String LOGIN_PAGE = "/LMSProject1/mypage/doLogin";
-    private static final String UPLOAD_DIR = "dist/assets/upload"; 
+    private static final String UPLOAD_DIR = "dist/assets/upload";
 
-    // 로그인 체크 메서드
-    private String checkLogin(HttpServletRequest request, HttpServletResponse response) {
+    // 로그인 체크
+    public String loginIdCheck(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         if (login == null) {
-            session.setAttribute("error", "로그인하시오");
-            return "redirect:" + LOGIN_PAGE;
+            request.setAttribute("msg", "로그인하세요");
+            request.setAttribute("url", request.getContextPath()+"/mypage/doLogin");
+            return "alert";
         }
-        session.removeAttribute("error");
+        return null;
+    }
+
+    // 학생만 접근 가능 체크
+    public String loginStuCheck(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
+        if (login == null) {
+            request.setAttribute("msg", "로그인하세요");
+            request.setAttribute("url", request.getContextPath()+"/mypage/doLogin");
+            return "alert";
+        } else if (login.contains("P")) {
+            request.setAttribute("msg", "교수는 접근 불가능합니다");
+            request.setAttribute("url", request.getContextPath()+"/mypage/index");
+            return "alert";
+        }
         return null;
     }
 
@@ -102,11 +118,9 @@ public class PostController extends MskimRequestMapping {
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("getPosts")
     public String getPosts(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         int limit = 10;
         int pageNum = 1;
         try {
@@ -143,14 +157,12 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("boardNum", boardNum);
         request.setAttribute("today", new Date());
 
-        return "pages/board/post/getPosts"; 
+        return "board/post/getPosts";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("searchPost")
     public String searchPost(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         int limit = 10;
         int pageNum = 1;
         try {
@@ -199,14 +211,12 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("find", find);
         request.setAttribute("login", (String) request.getSession().getAttribute("login"));
 
-        return "pages/board/post/searchPost";
+        return "board/post/searchPost";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("createPost")
     public String createPost(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         String parentPostId = request.getParameter("parent_post_id");
         if (parentPostId != null && !parentPostId.trim().isEmpty()) {
             request.setAttribute("parent_post_id", parentPostId);
@@ -217,21 +227,26 @@ public class PostController extends MskimRequestMapping {
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
         request.setAttribute("login", (String) session.getAttribute("login"));
         request.setAttribute("userName", userName);
-        return "pages/board/post/createPost"; 
+        return "board/post/createPost";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("write")
     public String write(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
+        // 학생은 공지사항 설정 불가
+        if (user instanceof Student && "1".equals(request.getParameter("post_notice"))) {
+            request.setAttribute("msg", "학생은 공지사항을 설정할 수 없습니다.");
+            request.setAttribute("url", "/post/createPost");
+            return "alert";
+        }
+
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
         int maxSize = 20 * 1024 * 1024; // 20MB
@@ -251,8 +266,9 @@ public class PostController extends MskimRequestMapping {
         if (login == null || login.trim().isEmpty() ||
             pass == null || pass.trim().isEmpty() ||
             postTitle == null || postTitle.trim().isEmpty()) {
-            session.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
-            return "redirect:/pages/board/post/createPost"; // 리다이렉트 경로는 수정하지 않음
+            request.setAttribute("msg", "글쓴이, 비밀번호, 제목은 필수입니다.");
+            request.setAttribute("url", "/post/createPost");
+            return "alert";
         }
 
         String newPostId = generateNewPostId();
@@ -289,31 +305,32 @@ public class PostController extends MskimRequestMapping {
 
         try {
             dao.insert(post);
-            return "redirect:getPosts"; 
+            return "redirect:/LMSProject1/post/getPosts";
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "게시물 등록 실패: " + e.getMessage());
-            return "redirect:createPost"; 
+            request.setAttribute("msg", "게시물 등록 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/createPost");
+            return "alert";
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("getPostDetail")
     public String getPostDetail(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String postId = request.getParameter("post_id");
         String readcnt = request.getParameter("readcnt");
         if (postId == null || postId.trim().isEmpty()) {
-            session.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "게시물 ID가 필요합니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         Post post = dao.selectOne(postId);
         if (post == null) {
-            session.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "게시물을 찾을 수 없습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         if (readcnt == null || !readcnt.trim().equals("f")) {
@@ -343,19 +360,18 @@ public class PostController extends MskimRequestMapping {
         request.setAttribute("commentList", uniqueCommentList);
         request.setAttribute("authorName", authorName);
         request.setAttribute("isLoggedIn", login != null);
-        return "pages/board/post/getPostDetail"; 
+        return "board/post/getPostDetail";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("replyPost")
     public String replyPost(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String postId = request.getParameter("postId");
         if (postId == null || postId.trim().isEmpty()) {
-            session.setAttribute("error", "부모 게시물 ID가 필요합니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "부모 게시물 ID가 필요합니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         Object user = session.getAttribute("m");
@@ -364,28 +380,27 @@ public class PostController extends MskimRequestMapping {
 
         Post parentPost = dao.selectOne(postId);
         if (parentPost == null) {
-            session.setAttribute("error", "부모 게시물을 찾을 수 없습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "부모 게시물을 찾을 수 없습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         request.setAttribute("board", parentPost);
         request.setAttribute("login", (String) session.getAttribute("login"));
         request.setAttribute("userName", userName);
-        return "pages/board/post/replyPost"; 
+        return "board/post/replyPost";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("writeReply")
     public String writeReply(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
         int maxSize = 20 * 1024 * 1024; // 20MB
@@ -404,8 +419,9 @@ public class PostController extends MskimRequestMapping {
         }
 
         if (login == null || login.trim().isEmpty() || pass == null || pass.trim().isEmpty() || title == null || title.trim().isEmpty()) {
-            session.setAttribute("error", "글쓴이, 비밀번호, 제목은 필수입니다.");
-            return "redirect:replyPost?num=" + postId;
+            request.setAttribute("msg", "글쓴이, 비밀번호, 제목은 필수입니다.");
+            request.setAttribute("url", "/post/replyPost?num=" + postId);
+            return "alert";
         }
 
         Post post = new Post();
@@ -423,57 +439,65 @@ public class PostController extends MskimRequestMapping {
         post.setPostGroup(grp);
         post.setPostGroupLevel(grplevel + 1);
         post.setPostGroupStep(grpstep + 1);
+        post.setPostNotice(false); // 답글은 공지사항 설정 불가
 
         try {
             dao.updateGroupStep(grp, grpstep);
             dao.insert(post);
-            return "redirect:getPosts";
+            return "redirect:/LMSProject1/post/getPosts";
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "답글 등록 실패: " + e.getMessage());
-            return "redirect:replyPost?num=" + postId;
+            request.setAttribute("msg", "답글 등록 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/replyPost?num=" + postId);
+            return "alert";
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("updatePost")
     public String updatePost(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String postId = request.getParameter("postId");
         if (postId == null || postId.trim().isEmpty()) {
-            session.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "게시물 ID가 필요합니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         String login = (String) session.getAttribute("login");
         Post post = dao.selectOne(postId);
         if (post == null) {
-            session.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "게시물을 찾을 수 없습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
         if (!post.getAuthorId().equals(login)) {
-            session.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "자신의 게시물만 수정할 수 있습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
         request.setAttribute("p", post);
-        return "pages/board/post/updatePost"; 
+        return "board/post/updatePost";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("update")
     public String update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
         String authorName = user != null ?
             (user instanceof Professor ? ((Professor) user).getProfessorName() : ((Student) user).getStudentName()) : "Unknown";
 
-        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
+        // 학생은 공지사항 설정 불가
+        if (user instanceof Student && "1".equals(request.getParameter("post_notice"))) {
+            request.setAttribute("msg", "학생은 공지사항을 설정할 수 없습니다.");
+            request.setAttribute("url", "/post/updatePost?postId=" + request.getParameter("postId"));
+            return "alert";
+        }
+
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
         int maxSize = 20 * 1024 * 1024; // 20MB
@@ -489,19 +513,22 @@ public class PostController extends MskimRequestMapping {
 
         if (postId == null || postId.trim().isEmpty() || postPassword == null || postPassword.trim().isEmpty() ||
             postTitle == null || postTitle.trim().isEmpty()) {
-            session.setAttribute("error", "필수 입력값이 누락되었습니다.");
-            return "redirect:updatePost?postId=" + postId;
+            request.setAttribute("msg", "필수 입력값이 누락되었습니다.");
+            request.setAttribute("url", "/post/updatePost?postId=" + postId);
+            return "alert";
         }
 
         Post post = dao.selectOne(postId);
         if (post == null || !post.getAuthorId().equals(login)) {
-            session.setAttribute("error", "자신의 게시물만 수정할 수 있습니다.");
-            return "redirect:updatePost?postId=" + postId;
+            request.setAttribute("msg", "자신의 게시물만 수정할 수 있습니다.");
+            request.setAttribute("url", "/post/updatePost?postId=" + postId);
+            return "alert";
         }
 
         if (!post.getPostPassword().equals(postPassword)) {
-            session.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "redirect:updatePost?postId=" + postId;
+            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            request.setAttribute("url", "/post/updatePost?postId=" + postId);
+            return "alert";
         }
 
         if (newFile == null || newFile.isEmpty()) {
@@ -524,92 +551,94 @@ public class PostController extends MskimRequestMapping {
 
         try {
             dao.update(post);
-            return "redirect:getPosts";
+            return "redirect:/LMSProject1/post/getPosts";
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "게시물 수정 실패: " + e.getMessage());
-            return "redirect:updatePost?postId=" + postId;
+            request.setAttribute("msg", "게시물 수정 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/updatePost?postId=" + postId);
+            return "alert";
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("deletePost")
     public String deletePost(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
-
         String postId = request.getParameter("postId");
         if (postId == null || postId.trim().isEmpty()) {
-            session.setAttribute("error", "게시물 ID가 필요합니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "게시물 ID가 필요합니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
 
-        String login = (String) request.getSession().getAttribute("login");
+        String login = (String) session.getAttribute("login");
         Post post = dao.selectOne(postId);
         if (post == null) {
-            session.setAttribute("error", "삭제하려는 게시물이 존재하지 않습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "삭제하려는 게시물이 존재하지 않습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
         if (!post.getAuthorId().equals(login)) {
-            session.setAttribute("error", "자신의 게시물만 삭제할 수 있습니다.");
-            return "redirect:getPosts";
+            request.setAttribute("msg", "자신의 게시물만 삭제할 수 있습니다.");
+            request.setAttribute("url", "/post/getPosts");
+            return "alert";
         }
         request.setAttribute("post", post);
-        return "pages/board/post/deletePost"; 
+        return "board/post/deletePost";
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("delete")
     public String delete(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         String postId = request.getParameter("postId");
         String pass = request.getParameter("pass");
         HttpSession session = request.getSession();
+        String login = (String) session.getAttribute("login");
 
         if (postId == null || postId.trim().isEmpty() || pass == null || pass.trim().isEmpty()) {
-            session.setAttribute("error", "게시물 ID와 비밀번호가 필요합니다.");
-            return "redirect:deletePost?postId=" + (postId != null ? postId : "");
+            request.setAttribute("msg", "게시물 ID와 비밀번호가 필요합니다.");
+            request.setAttribute("url", "/post/deletePost?postId=" + (postId != null ? postId : ""));
+            return "alert";
         }
 
-        String login = (String) request.getSession().getAttribute("login");
         Post post = dao.selectOne(postId);
         if (post == null) {
-            session.setAttribute("error", "게시물을 찾을 수 없습니다.");
-            return "redirect:deletePost?postId=" + postId;
+            request.setAttribute("msg", "게시물을 찾을 수 없습니다.");
+            request.setAttribute("url", "/post/deletePost?postId=" + postId);
+            return "alert";
         }
 
         if (!post.getAuthorId().equals(login)) {
-            session.setAttribute("error", "자신의 게시물만 삭제할 수 있습니다.");
-            return "redirect:deletePost?postId=" + postId;
+            request.setAttribute("msg", "자신의 게시물만 삭제할 수 있습니다.");
+            request.setAttribute("url", "/post/deletePost?postId=" + postId);
+            return "alert";
         }
 
         if (!post.getPostPassword().equals(pass)) {
-            session.setAttribute("error", "비밀번호가 일치하지 않습니다.");
-            return "redirect:deletePost?postId=" + postId;
+            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            request.setAttribute("url", "/post/deletePost?postId=" + postId);
+            return "alert";
         }
 
         try {
             if (post.getPostFile() != null && !post.getPostFile().isEmpty()) {
-                String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR; // 경로 변경
+                String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
                 File file = new File(uploadPath, post.getPostFile());
                 if (file.exists()) file.delete();
             }
             dao.deleteWithComments(postId);
-            return "redirect:getPosts";
+            return "redirect:/LMSProject1/post/getPosts";
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "게시물 삭제 실패: " + e.getMessage());
-            return "redirect:deletePost?postId=" + postId;
+            request.setAttribute("msg", "게시물 삭제 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/deletePost?postId=" + postId);
+            return "alert";
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("writeComment")
     public String writeComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
@@ -621,8 +650,9 @@ public class PostController extends MskimRequestMapping {
         String parentCommentId = request.getParameter("parentCommentId");
 
         if (postId == null || postId.trim().isEmpty() || commentContent == null || commentContent.trim().isEmpty()) {
-            session.setAttribute("error", "필수 입력값이 누락되었습니다.");
-            return "redirect:getPostDetail?post_id=" + postId;
+            request.setAttribute("msg", "필수 입력값이 누락되었습니다.");
+            request.setAttribute("url", "/post/getPostDetail?post_id=" + postId);
+            return "alert";
         }
 
         String newCommentId = generateNewCommentId();
@@ -638,19 +668,18 @@ public class PostController extends MskimRequestMapping {
 
         try {
             dao.insertComment(comment);
-            return "redirect:getPostDetail?post_id=" + postId;
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + postId;
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "댓글 등록 실패: " + e.getMessage());
-            return "redirect:getPostDetail?post_id=" + postId;
+            request.setAttribute("msg", "댓글 등록 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/getPostDetail?post_id=" + postId);
+            return "alert";
         }
     }
 
+    @MSLogin("loginIdCheck")
     @RequestMapping("updateComment")
     public String updateComment(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) return loginCheck;
-
         HttpSession session = request.getSession();
         String login = (String) session.getAttribute("login");
         Object user = session.getAttribute("m");
@@ -661,14 +690,16 @@ public class PostController extends MskimRequestMapping {
         String commentContent = request.getParameter("commentContent");
 
         if (commentId == null || commentId.trim().isEmpty() || commentContent == null || commentContent.trim().isEmpty()) {
-            session.setAttribute("error", "필수 입력값이 누락되었습니다.");
-            return "redirect:getPostDetail?post_id=" + request.getParameter("postId");
+            request.setAttribute("msg", "필수 입력값이 누락되었습니다.");
+            request.setAttribute("url", "/post/getPostDetail?post_id=" + request.getParameter("postId"));
+            return "alert";
         }
 
         PostComment comment = dao.selectComment(commentId);
         if (comment == null || !comment.getWriterId().equals(login)) {
-            session.setAttribute("error", "자신의 댓글만 수정할 수 있습니다.");
-            return "redirect:getPostDetail?post_id=" + request.getParameter("postId");
+            request.setAttribute("msg", "자신의 댓글만 수정할 수 있습니다.");
+            request.setAttribute("url", "/post/getPostDetail?post_id=" + request.getParameter("postId"));
+            return "alert";
         }
 
         comment.setCommentContent(commentContent);
@@ -677,21 +708,18 @@ public class PostController extends MskimRequestMapping {
 
         try {
             dao.updateComment(comment);
-            return "redirect:getPostDetail?post_id=" + comment.getPostId();
+            return "redirect:/LMSProject1/post/getPostDetail?post_id=" + comment.getPostId();
         } catch (Exception e) {
             e.printStackTrace();
-            session.setAttribute("error", "댓글 수정 실패: " + e.getMessage());
-            return "redirect:getPostDetail?post_id=" + comment.getPostId();
+            request.setAttribute("msg", "댓글 수정 실패: " + e.getMessage());
+            request.setAttribute("url", "/post/getPostDetail?post_id=" + comment.getPostId());
+            return "alert";
         }
     }
-    
+
+    @MSLogin("loginIdCheck")
     @RequestMapping("deleteComment")
     public String deleteComment(HttpServletRequest request, HttpServletResponse response) {
-        String loginCheck = checkLogin(request, response);
-        if (loginCheck != null) {
-            return "redirect:" + LOGIN_PAGE;
-        }
-
         String commentId = request.getParameter("commentId");
         String postId = request.getParameter("postId");
         HttpSession session = request.getSession();
@@ -702,23 +730,21 @@ public class PostController extends MskimRequestMapping {
         String json;
 
         try {
-            // 입력값 검증
             if (commentId == null || commentId.trim().isEmpty() || postId == null || postId.trim().isEmpty()) {
                 result.put("status", "error");
                 result.put("message", "댓글 ID 또는 게시물 ID가 누락되었습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "pages/board/post/ajax_post_support";
+                return "board/post/ajax_post_support";
             }
 
-            // 댓글 조회 및 작성자 확인
             PostComment comment = dao.selectComment(commentId);
             if (comment == null) {
                 result.put("status", "error");
                 result.put("message", "삭제할 댓글이 존재하지 않습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "pages/board/post/ajax_post_support";
+                return "board/post/ajax_post_support";
             }
 
             if (!comment.getWriterId().equals(login)) {
@@ -726,10 +752,9 @@ public class PostController extends MskimRequestMapping {
                 result.put("message", "자신의 댓글만 삭제할 수 있습니다.");
                 json = mapper.writeValueAsString(result);
                 request.setAttribute("json", json);
-                return "pages/board/post/ajax_post_support";
+                return "board/post/ajax_post_support";
             }
 
-            // 댓글 삭제
             dao.deleteComment(commentId);
 
             result.put("status", "success");
@@ -748,6 +773,29 @@ public class PostController extends MskimRequestMapping {
             }
         }
 
-        return "pages/board/post/ajax_post_support";
+        return "board/post/ajax_post_support";
+    }
+
+    // Summernote 이미지 업로드 처리
+    @MSLogin("loginIdCheck")
+    @RequestMapping("uploadImage")
+    public String uploadImage(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String uploadPath = request.getServletContext().getRealPath("/") + UPLOAD_DIR;
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) uploadDir.mkdirs();
+        int maxSize = 10 * 1024 * 1024; // 10MB
+        MultipartRequest multi = new MultipartRequest(request, uploadPath, maxSize, "UTF-8");
+
+        String fileName = multi.getFilesystemName("file");
+        if (fileName == null) {
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"파일 업로드 실패\"}");
+            return null;
+        }
+
+        String fileUrl = request.getContextPath() + "/" + UPLOAD_DIR + "/" + fileName;
+        response.setContentType("application/json");
+        response.getWriter().write("{\"url\": \"" + fileUrl + "\"}");
+        return null;
     }
 }

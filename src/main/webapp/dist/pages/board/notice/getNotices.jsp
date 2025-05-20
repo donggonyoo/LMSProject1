@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,19 +11,13 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center fs-1">공지사항</h2>
-
-        <!-- 에러 메시지 -->
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
-
-        <!-- 검색 페이지 링크 -->
         <div class="text-right mb-3">
             <a href="searchNotice" class="btn btn-primary">공지사항 검색</a>
         </div>
-
-        <!-- 공지사항 목록 -->
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -38,11 +33,11 @@
                     <tr>
                         <td>${boardNum - status.index}</td>
                         <td>
-                            <a href="getNoticeDetail?notice_id=${notice.noticeId}">
+                            <a href="${path}/notice/getNoticeDetail?notice_id=${notice.noticeId}">
                                 ${notice.noticeTitle}
                             </a>
                         </td>
-                        <td>${notice.writerName}</td> 
+                        <td>${notice.writerName}</td>
                         <td>
                             <c:set var="todayDate"><fmt:formatDate value="${today}" pattern="yyyy-MM-dd"/></c:set>
                             <c:set var="createDate"><fmt:formatDate value="${notice.noticeCreatedAt}" pattern="yyyy-MM-dd"/></c:set>
@@ -65,29 +60,26 @@
                 </c:if>
             </tbody>
         </table>
-        
-        <!-- 글쓰기 버튼 -->
         <div class="text-right">
-            <c:if test="${not empty login and isProfessor}">	
-                <a href="createNotice" class="btn btn-primary">글쓰기</a>
+            <c:if test="${not empty login and isProfessor}">
+                <a href="${path}/notice/createNotice" class="btn btn-primary">글쓰기</a>
             </c:if>
         </div>
-        <!-- 페이지네이션 -->
         <nav>
             <ul class="pagination justify-content-center">
                 <c:if test="${pageNum > 1}">
                     <li class="page-item">
-                        <a class="page-link" href="?pageNum=${pageNum - 1}">이전</a>
+                        <a class="page-link" href="${path}/notice/getNotices?pageNum=${pageNum - 1}">이전</a>
                     </li>
                 </c:if>
                 <c:forEach begin="${startpage}" end="${endpage}" var="i">
                     <li class="page-item ${i == pageNum ? 'active' : ''}">
-                        <a class="page-link" href="?pageNum=${i}">${i}</a>
+                        <a class="page-link" href="${path}/notice/getNotices?pageNum=${i}">${i}</a>
                     </li>
                 </c:forEach>
                 <c:if test="${pageNum < maxpage}">
                     <li class="page-item">
-                        <a class="page-link" href="?pageNum=${pageNum + 1}">다음</a>
+                        <a class="page-link" href="${path}/notice/getNotices?pageNum=${pageNum + 1}">다음</a>
                     </li>
                 </c:if>
             </ul>

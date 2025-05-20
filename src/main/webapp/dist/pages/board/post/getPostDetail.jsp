@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<c:set var="path" value="${pageContext.request.contextPath}" scope="application" />
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,7 +42,6 @@
             if (confirm('댓글을 삭제하시겠습니까?')) {
                 const deleteButton = document.querySelector('[onclick="confirmDelete(\'' + commentId + '\')"]');
                 if (deleteButton) deleteButton.disabled = true;
-
                 $.ajax({
                     url: '${path}/post/deleteComment',
                     type: 'POST',
@@ -51,11 +50,11 @@
                     cache: false,
                     success: function(data) {
                         console.log('Server data:', data);
-                        if (data.status === 'success') { 
+                        if (data.status === 'success') {
                             alert('댓글이 삭제되었습니다.');
-                            location.reload(); 
+                            location.reload();
                         } else {
-                            alert(data.message || '삭제 실패: 알 수 없는 오류'); 
+                            alert(data.message || '삭제 실패: 알 수 없는 오류');
                         }
                         if (deleteButton) deleteButton.disabled = false;
                     },
@@ -71,11 +70,10 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="fs-1">게시물 상세</h1> <br>
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% System.out.println("Error displayed: " + session.getAttribute("error")); %>
-            <% session.removeAttribute("error"); %>
+        <h1 class="fs-1">게시물 상세</h1>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
         <table class="table">
             <tr>
@@ -102,23 +100,20 @@
                 <th>첨부파일</th>
                 <td>
                     <c:if test="${not empty post.postFile}">
-                        <a href="${pageContext.request.contextPath}/dist/assets/upload/${post.postFile}" download="${post.postFile}">${post.postFile}</a>
+                        <a href="${path}/dist/assets/upload/${post.postFile}" download="${post.postFile}">${post.postFile}</a>
                     </c:if>
                 </td>
             </tr>
         </table>
-
         <div class="text-end mb-5">
-            <a href="${pageContext.request.contextPath}/post/getPosts" class="btn btn-secondary">목록</a>
-           	<a href="${pageContext.request.contextPath}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
+            <a href="${path}/post/getPosts" class="btn btn-secondary">목록</a>
+            <a href="${path}/post/replyPost?postId=${post.postId}" class="btn btn-primary">답글 작성</a>
             <c:if test="${isLoggedIn and post.authorId == sessionScope.login}">
-                <a href="${pageContext.request.contextPath}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
-                <a href="${pageContext.request.contextPath}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
+                <a href="${path}/post/updatePost?postId=${post.postId}" class="btn btn-secondary">수정</a>
+                <a href="${path}/post/deletePost?postId=${post.postId}" class="btn btn-danger">삭제</a>
             </c:if>
         </div>
-
         <h3>댓글</h3>
-
         <c:forEach var="comment" items="${commentList}">
             <c:if test="${empty comment.parentCommentId}">
                 <div class="card my-2">
@@ -136,9 +131,7 @@
                                     <a href="javascript:void(0)" onclick="confirmDelete('${comment.commentId}')" class="btn btn-sm btn-danger">삭제</a>
                                 </c:if>
                             </div>
-
-                            <!-- 부모 댓글 수정 폼 -->
-                            <form id="editForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
+                            <form id="editForm-${comment.commentId}" action="${path}/post/updateComment" method="post" class="mt-2" style="display:none;">
                                 <input type="hidden" name="commentId" value="${comment.commentId}">
                                 <input type="hidden" name="postId" value="${post.postId}">
                                 <div class="mb-3">
@@ -153,7 +146,6 @@
                                 <button type="button" onclick="hideEditForm('${comment.commentId}')" class="btn btn-secondary btn-sm">취소</button>
                             </form>
                         </c:if>
-
                         <c:forEach var="child" items="${commentList}">
                             <c:if test="${child.parentCommentId eq comment.commentId}">
                                 <div class="ms-4 border-start ps-3 mt-2">
@@ -169,8 +161,7 @@
                                                 <a href="javascript:void(0)" onclick="confirmDelete('${child.commentId}')" class="btn btn-sm btn-danger">삭제</a>
                                             </c:if>
                                         </div>
-
-                                        <form id="editForm-${child.commentId}" action="${pageContext.request.contextPath}/post/updateComment" method="post" class="mt-2" style="display:none;">
+                                        <form id="editForm-${child.commentId}" action="${path}/post/updateComment" method="post" class="mt-2" style="display:none;">
                                             <input type="hidden" name="commentId" value="${child.commentId}">
                                             <input type="hidden" name="postId" value="${post.postId}">
                                             <div class="mb-3">
@@ -188,9 +179,8 @@
                                 </div>
                             </c:if>
                         </c:forEach>
-
                         <c:if test="${isLoggedIn}">
-                            <form id="replyForm-${comment.commentId}" action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-2" style="display:none;">
+                            <form id="replyForm-${comment.commentId}" action="${path}/post/writeComment" method="post" class="mt-2" style="display:none;">
                                 <input type="hidden" name="postId" value="${post.postId}">
                                 <input type="hidden" name="parentCommentId" value="${comment.commentId}">
                                 <div class="mb-3">
@@ -208,9 +198,8 @@
                 </div>
             </c:if>
         </c:forEach>
-
         <c:if test="${isLoggedIn}">
-            <form action="${pageContext.request.contextPath}/post/writeComment" method="post" class="mt-4">
+            <form action="${path}/post/writeComment" method="post" class="mt-4">
                 <input type="hidden" name="postId" value="${post.postId}">
                 <div class="mb-3">
                     <label for="writerId" class="form-label">작성자</label>

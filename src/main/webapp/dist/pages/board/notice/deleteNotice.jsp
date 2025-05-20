@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,17 +14,17 @@
             background-color: #fff;
             padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 좀 더 은은한 그림자 */
-            border: 1px solid #e9ecef; /* 얇은 테두리 */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
         }
         .form-group {
-            margin-bottom: 1.5rem; /* 폼 그룹 간 간격 */
+            margin-bottom: 1.5rem;
         }
         .form-group label {
             font-weight: bold;
             color: #495057;
             margin-bottom: 0.5rem;
-            display: block; /* 라벨을 한 줄에 표시 */
+            display: block;
         }
         .form-control {
             border: 1px solid #ced4da;
@@ -68,25 +69,26 @@
             margin-bottom: 2rem;
         }
         .fs-1 {
-            font-size: 2.2rem !important; /* 제목 크기 약간 조정 */
+            font-size: 2.2rem !important;
             color: #343a40;
             margin-bottom: 1.5rem;
             font-weight: bold;
         }
         .font-weight-bold {
-            color: #007bff; /* 주요 정보 강조 색상 */
+            color: #007bff;
         }
         .ml-2 {
             margin-left: 0.5rem;
-            color: #6c757d; /* 보조 정보 색상 */
+            color: #6c757d;
         }
         .mt-4 {
             margin-top: 2rem !important;
         }
-        .btn-group { /* 버튼 그룹 스타일 */
-            margin-top: 1rem; /* 버튼 그룹 상단 여백 */
+        .btn-group {
+            margin-top: 1rem;
         }
         .btn-group > .btn {
+Shear {
             margin-right: 0.5rem;
         }
         .btn-group > .btn:last-child {
@@ -97,12 +99,10 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center fs-1">게시물 삭제</h2>
-
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("msg"); %>
         </c:if>
-
         <form action="delete" method="post" class="mt-4">
             <input type="hidden" name="noticeId" value="${notice.noticeId}">
             <div class="form-group">
@@ -119,7 +119,7 @@
             </div>
             <div class="btn-group mt-1">
                 <button type="submit" class="btn btn-danger">삭제</button>
-                <a href="getNotices" class="btn btn-secondary ">취소</a>
+                <a href="${path}/notice/getNotices" class="btn btn-secondary">취소</a>
             </div>
         </form>
     </div>
