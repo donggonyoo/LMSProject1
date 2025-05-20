@@ -15,7 +15,7 @@
         background-color: #f8f9fa;
     }
     .content {
-        padding: 20px;
+        padding: 50px;
     }
     .card {
         border: none;
