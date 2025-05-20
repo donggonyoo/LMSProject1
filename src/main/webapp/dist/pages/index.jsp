@@ -190,33 +190,6 @@ body {
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-secondary card-outline">
-                            <div class="card-header">
-                                <h5 class="card-title">최근 활동</h5>
-                            </div>
-                            <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>활동</th>
-                                            <th>날짜</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="activity" items="${recentActivities}" begin="0" end="4">
-                                            <tr>
-                                                <td>${fn:escapeXml(activity.description)}</td>
-                                                <td><fmt:formatDate value="${activity.date}" pattern="yyyy-MM-dd HH:mm" /></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
