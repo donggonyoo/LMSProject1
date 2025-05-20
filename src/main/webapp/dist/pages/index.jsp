@@ -22,7 +22,8 @@ ul.timeline::before {
 
 /* 기본 배경 스타일 */
 body {
-    background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
+   background-image: url('${path}/dist/assets/picture/backWon${randomImageNumber}.jpg');
+   /* background-image: url('${path}/dist/assets/picture/back.jpg');*/
     background-size: 800px auto; /* 이미지 크기 고정 */
     background-position: 55% 25%; /* 중앙에서 살짝 오른쪽, 더 왼쪽으로 조정 */
     background-repeat: no-repeat;

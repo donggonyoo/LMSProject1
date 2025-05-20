@@ -94,7 +94,8 @@ public class MypageController  extends MskimRequestMapping{
 	//임시비밀번호를 만드는 알고리즘(비밀번호찾기 시에만 발급이 될것임)
 		public  String getTempPw() {
 			List<String> lowerList = Arrays.asList
-	("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" ,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t");
+		    ("a" ,"b" ,"c" ,"d" ,"e" ,"f" ,"g" ,"h" ,"i" ,"j" ,"k" 
+			,"l" ,"m" ,"n" ,"o" ,"p","q","r","s","t","z");
 					
 					List<String> upperList = new ArrayList<>();
 					for (String string : lowerList) {
@@ -102,22 +103,20 @@ public class MypageController  extends MskimRequestMapping{
 					}	
 					List<String> specialList = Arrays.asList("%","@","#","^","&","*","!");
 					
-
 					List<Object> combineList = new ArrayList<>();
-					
 					combineList.addAll(specialList);
 					combineList.addAll(lowerList);
 					combineList.addAll(upperList);
 					for (int i = 0; i < 15; i++) { //랜덤한0~9 숫자 10개집어넣기
 						 combineList.add(new Random().nextInt(10)); 
 					}
+					//무작위 섞기
 					Collections.shuffle(combineList);
 					String tempNum = "";
 					for (int i = 0; i < 6; i++) {
 						int num = new Random().nextInt(combineList.size());
 						tempNum += combineList.get(num);
 					}
-					
 					return tempNum;
 				}
 	
@@ -375,11 +374,10 @@ public class MypageController  extends MskimRequestMapping{
 				}
 			} //dbId,dbPw,dbName 꺼내기종료
 
-			//입력한비번과 DB의비번이일치하는가?
-			//pass.equalas(dbPw)
+			
 			//Bcrypt.checkpw(입력,검증) : 입력과 검증(암호화된비번) 을 비교할수있음
 			if(BCrypt.checkpw(pass, dbPw) ){
-				if(dbId.toLowerCase().contains("s")) { //학생 중 퇴학상태인 학생을 검증하는 단계
+				if(dbId.contains("S")) { //학생 중 퇴학상태인 학생을 검증하는 단계
 					if(new StudentDao().selectStatus(dbId)) { 
 						request.setAttribute("msg","퇴학한사람은 로그인할수없어요");
 						request.setAttribute("url","doLogin");
@@ -465,7 +463,8 @@ public class MypageController  extends MskimRequestMapping{
 	public String findPwProcess(HttpServletRequest request, HttpServletResponse response) {
 		String id = request.getParameter("id");
 		String email = request.getParameter("email");
-		String pw = new ProStuDao().findPw(id,email);//아이디와이메일이 일치 시 비밀번호를 반환
+		//아이디와이메일이 일치 시 비밀번호를 반환
+		String pw = new ProStuDao().findPw(id,email);
 		if(pw==null) {
 			request.setAttribute("msg", "입력된정보가없어요");			
 			return "mypage/close";
@@ -476,10 +475,9 @@ public class MypageController  extends MskimRequestMapping{
 			
 			if(new ProStuDao().updateTempPw(hashpw,id)) { //넘겨받은 id의 비밀번호를 임시비번으로 업데이트
 				EmailUtil.sendTempPw(email, id, tempPw);//임시비밀번호를 메일로발송
-				request.setAttribute("msg", "임시 비밀번호는"+tempPw+"입니다"); 
+				request.setAttribute("msg", "임시 비밀번호는이메일로 전송해드렸어요"); 
 				request.setAttribute("id", id);
 				request.setAttribute("email", email);
-
 				//알림창을 띄워주고 pwUpdate폼으로이동
 				return "mypage/alertPw";
 			}
@@ -487,8 +485,6 @@ public class MypageController  extends MskimRequestMapping{
 				request.setAttribute("msg", "오류발생");
 				return "mypage/close";
 			}
-
-
 		}
 	}
 

@@ -46,7 +46,7 @@ public class EmailUtil {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            message.setSubject("회원가입 ID 안내");
+            message.setSubject("ID 안내(LDB학사관리부)");
             message.setText(userName + "님, \n\n  ID: " + id + "\n\n로그인 페이지에서 사용하세요.\n \n "
             		+ "-LDB 학사관리부	-");
             
@@ -97,7 +97,7 @@ public class EmailUtil {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            message.setSubject("인증번호 안내");
+            message.setSubject("인증번호 안내(LDB학사관리부)");
             message.setText(userName+"님의 인증번호 : "+tempNum+"\n\n -LDB 학사관리부-");
             
 
@@ -145,7 +145,7 @@ public class EmailUtil {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-            message.setSubject("인증번호 안내");
+            message.setSubject("임시비밀번호 안내(LDB학사관리부)");
             message.setText(userName+"님의 임시비밀번호 : "+tempPw+"\n\n -LDB학사관리부-");
             
 
@@ -194,8 +194,9 @@ public class EmailUtil {
 	            MimeMessage message = new MimeMessage(session);
 	            message.setFrom(new InternetAddress(from));
 	            message.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-	            message.setSubject("자퇴 안내 메시지");
-	            message.setText(userName+"님이 자퇴를 하셨습니다 : \n 자퇴 시  해당페이지에 로그인이 제한됩니다");
+	            message.setSubject("자퇴 안내 메시지(LDB-학사관리부)");
+	            message.setText(userName+"님이 자퇴를 하셨습니다 : \n 자퇴 시  해당페이지에 로그인이 제한됩니다"
+	            		+ "	\n\n -LDB학사관리부-");
 	            
 
 	            Transport.send(message);
