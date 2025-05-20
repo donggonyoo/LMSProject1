@@ -248,7 +248,7 @@
             <div class="card p-4">
                 <h5 class="mb-3">강의 설명</h5>
                 <div class="mb-3">
-                    <textarea class="form-control form-control-sm" id="summernote" name="description" rows="5"></textarea>
+                    <textarea class="form-control form-control-sm" name="description" rows="5"></textarea>
                     <small class="form-text text-muted">강의 내용을 설명해주세요.</small>
                 </div>
                 <div class="d-flex justify-content-end">
@@ -259,9 +259,7 @@
             
         </div>
     </form>
-    
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
+
     <script>
         function validTimeInput() {
             var isValid = true;
@@ -385,7 +383,7 @@
         	} else if (paramError == 'DBERROR') {
         		alert('데이터 입력시 오류발생. 관리자에게 문의하세요.');
         	}
-	
+
             $('#courseTimeList').empty();
 
             $('.start-time-hour, .end-time-hour').on('focusout', function() {
@@ -407,39 +405,6 @@
                 $('#errorMsg').text('');
                 $('.start-time-hour, .end-time-hour, #courseDay, #majorName, #courseName, #professorName, #professorEmail, #score').removeClass('is-invalid');
             });
-            
-            // summernote
-            $("#summernote").summernote({
-                height: 300,
-                callbacks: {
-                    onImageUpload: function(files) {
-                        for (let i = 0; i < files.length; i++) {
-							console.log('files[i]', files[i]);
-                            sendFile(files[i]);
-                        }
-                    }
-                }
-            });
-            
-            function sendFile(file) {
-                let data = new FormData();
-                data.append("file", file);
-                $.ajax({
-                    url: "${path}/post/uploadImage",
-                    type: "POST",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function(url) {
-                        $('#summernote').summernote('insertImage', url);
-                    },
-                    error: function(e) {
-                        alert("이미지 업로드 실패: " + e.status);
-                        console.error("Error details: ", e);
-                    }
-                });
-            }
-            
         });
     </script>
 </body>
