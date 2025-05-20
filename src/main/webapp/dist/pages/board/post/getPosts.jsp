@@ -11,13 +11,12 @@
     <div class="container mt-5">
         <h2 class="text-center fs-1">문의게시판</h2>
 
-        <!-- 에러 메시지 -->
-        <c:if test="${not empty error}">
-            <div class="alert alert-danger">${error}</div>
-            <% session.removeAttribute("error"); %>
+        <c:if test="${not empty msg}">
+            <div class="alert alert-danger">${msg}</div>
+            <% request.removeAttribute("error"); %>
         </c:if>
 
-        <!-- 검색 페이지 링크 -->
+
         <div class="text-right mb-3">
             <a href="searchPost" class="btn btn-primary">문의게시판 검색</a>
         </div>
