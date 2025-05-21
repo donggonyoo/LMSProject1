@@ -269,7 +269,7 @@ $(document).ready(function() {
                 let timelineItem = '<li>' +
                 '<i class="' + randomIcon + ' ' + randomBg + '"></i>' +
                 '<div class="timeline-item">' +
-                    '<span class="time"><i class="fas fa-calendar"></i> ' + formattedDate + '</span>' + 
+                    '<span class="time"><i class="bi bi-clock"></i> ' + formattedDate + '</span>' + 
                     '<h3 class="timeline-header">' + schedule.scheduleTitle + '</h3>' +
                     '<div class="timeline-body">' + schedule.scheduleDescription + '</div>' +
                 '</div>' +
