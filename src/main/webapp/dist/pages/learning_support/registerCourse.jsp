@@ -386,14 +386,12 @@
                 data: params,
                 dataType: "json",
                 success: function(data) {
-                	timeSlots = [];
                     var courses = data.courses || [];
                     var pagination = data.pagination || { currentPage: 1, totalPages: 1 };
                     var $body = $("#courseBody");
                     $body.empty();
                     
                     $.each(courses, function(i, course) {
-                    	timeSlots.push(course.timeSlot);
                         var row = $("<tr>").append(
                             $("<td>").append(
                                 $("<form>").append(
@@ -497,9 +495,11 @@
                 type: "get",
                 dataType: "json",
                 success: function(data) {
+                	timeSlots = [];
                     var $body = $("#registrationBody");
                     $body.empty();
                     $.each(data, function(i, reg) {
+                    	timeSlots.push(reg.timeSlot);
                         var row = $("<tr>").append(
                             $("<td>").text(reg.creditCategory || "-"),
                             $("<td>").text(reg.courseId || "-"),
