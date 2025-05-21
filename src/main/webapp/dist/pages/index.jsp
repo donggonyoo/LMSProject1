@@ -14,7 +14,7 @@ pageContext.setAttribute("randomImageNumber", randomImageNumber);
 <html lang="en">
 <head>
 <title>메인화면</title>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 /* 기본 배경 스타일 */
 body {
@@ -211,28 +211,7 @@ body::before {
                                 <h5 class="card-title">학사 일정</h5>
                             </div>
                             <div class="card-body">
-                                <ul class="timeline timeline-inverse">
-                                    <li>
-                                        <i class="bi bi-calendar-event bg-primary"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="bi bi-clock"></i> 2025-03-01</span>
-                                            <h3 class="timeline-header">2025년 1학기 개강</h3>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="bi bi-calendar-event bg-warning"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="bi bi-clock"></i> 2025-03-10 ~ 2025-03-15</span>
-                                            <h3 class="timeline-header">수강정정 기간</h3>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <i class="bi bi-calendar-event bg-danger"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="bi bi-clock"></i> 2025-06-20 ~ 2025-06-30</span>
-                                            <h3 class="timeline-header">기말고사</h3>
-                                        </div>
-                                    </li>
+                                <ul class="timeline timeline-inverse" id="scheduleTimeline">
                                 </ul>
                             </div>
                         </div>
@@ -241,6 +220,72 @@ body::before {
             </div>
         </div>
     </div>
-</body>
+<script>
+$(document).ready(function() {
+    var path = "${pageContext.request.contextPath}";
 
+    const iconClasses = [
+        "bi bi-calendar-event",
+        "bi bi-bell",
+        "bi bi-bookmark",
+        "bi bi-check-circle",
+        "bi bi-star"
+    ];
+    
+    const bgClasses = [
+        "bg-primary",
+        "bg-success",
+        "bg-info",
+        "bg-warning",
+        "bg-danger"
+    ];
+    
+    function getRandomIndex(arr) {
+        return Math.floor(Math.random() * arr.length);
+    }
+    
+    $.ajax({
+        url: path + "/mypage/schedule",
+        type: "GET",
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            
+            let timeline = $("#scheduleTimeline");
+            timeline.empty();
+            
+            if (!data.success || !data.schedules || data.schedules.length === 0) {
+                console.log("No schedules found or success is false");
+                timeline.append('<li><div class="timeline-item">스케줄 데이터가 없습니다.</div></li>');
+                return;
+            }
+            
+            $.each(data.schedules, function(index, schedule) {
+                
+                let formattedDate = schedule.scheduleDateFormatted || "날짜 없음";
+                let randomIcon = iconClasses[getRandomIndex(iconClasses)];
+                let randomBg = bgClasses[getRandomIndex(bgClasses)];
+                
+                let timelineItem = '<li>' +
+                '<i class="' + randomIcon + ' ' + randomBg + '"></i>' +
+                '<div class="timeline-item">' +
+                    '<span class="time"><i class="fas fa-calendar"></i> ' + formattedDate + '</span>' + 
+                    '<h3 class="timeline-header">' + schedule.scheduleTitle + '</h3>' +
+                    '<div class="timeline-body">' + schedule.scheduleDescription + '</div>' +
+                '</div>' +
+            '</li>';
+                timeline.append(timelineItem);
+            });
+            timeline.append('<li><i class="fas fa-clock bg-gray"></i></li>');
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching schedule:", status, error);
+            console.error("Response Status:", xhr.status);
+            console.error("Full Response:", xhr.responseText);
+            $("#scheduleTimeline").html('<li><div class="timeline-item">데이터를 불러오는데 실패했습니다: ' + error + ' (Status: ' + xhr.status + ')</div></li>');
+        }
+    });
+});
+</script>
+</body>
 </html>

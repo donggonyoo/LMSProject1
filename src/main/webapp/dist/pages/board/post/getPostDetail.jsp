@@ -7,66 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>문의게시판 게시물 상세</title>
-    <script>
-        function showReplyForm(commentId) {
-            console.log('showReplyForm 호출됨: commentId=', commentId);
-            var replyForm = document.getElementById('replyForm-' + commentId);
-            if (replyForm) {
-                replyForm.style.display = 'block';
-            } else {
-                console.error('replyForm-' + commentId + ' 요소를 찾을 수 없습니다.');
-            }
-        }
-
-        function showEditForm(commentId) {
-            console.log('showEditForm 호출됨: commentId=', commentId);
-            var editForm = document.getElementById('editForm-' + commentId);
-            if (editForm) {
-                editForm.style.display = 'block';
-            } else {
-                console.error('editForm-' + commentId + ' 요소를 찾을 수 없습니다.');
-            }
-        }
-
-        function hideEditForm(commentId) {
-            console.log('hideEditForm 호출됨: commentId=', commentId);
-            var editForm = document.getElementById('editForm-' + commentId);
-            if (editForm) {
-                editForm.style.display = 'none';
-            } else {
-                console.error('editForm-' + commentId + ' 요소를 찾을 수 없습니다.');
-            }
-        }
-
-        function confirmDelete(commentId) {
-            if (confirm('댓글을 삭제하시겠습니까?')) {
-                const deleteButton = document.querySelector('[onclick="confirmDelete(\'' + commentId + '\')"]');
-                if (deleteButton) deleteButton.disabled = true;
-                $.ajax({
-                    url: '${path}/post/deleteComment',
-                    type: 'POST',
-                    data: { commentId: commentId, postId: '${post.postId}' },
-                    dataType: 'json',
-                    cache: false,
-                    success: function(data) {
-                        console.log('Server data:', data);
-                        if (data.status === 'success') {
-                            alert('댓글이 삭제되었습니다.');
-                            location.reload();
-                        } else {
-                            alert(data.message || '삭제 실패: 알 수 없는 오류');
-                        }
-                        if (deleteButton) deleteButton.disabled = false;
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', status, error, xhr.responseText);
-                        alert('삭제 중 오류가 발생했습니다: ' + xhr.status + ' ' + xhr.statusText);
-                        if (deleteButton) deleteButton.disabled = false;
-                    }
-                });
-            }
-        }
-    </script>
+    
 </head>
 <body>
     <div class="container mt-5">
@@ -213,5 +154,65 @@
             </form>
         </c:if>
     </div>
+    <script>
+        function showReplyForm(commentId) {
+            console.log('showReplyForm 호출됨: commentId=', commentId);
+            var replyForm = document.getElementById('replyForm-' + commentId);
+            if (replyForm) {
+                replyForm.style.display = 'block';
+            } else {
+                console.error('replyForm-' + commentId + ' 요소를 찾을 수 없습니다.');
+            }
+        }
+
+        function showEditForm(commentId) {
+            console.log('showEditForm 호출됨: commentId=', commentId);
+            var editForm = document.getElementById('editForm-' + commentId);
+            if (editForm) {
+                editForm.style.display = 'block';
+            } else {
+                console.error('editForm-' + commentId + ' 요소를 찾을 수 없습니다.');
+            }
+        }
+
+        function hideEditForm(commentId) {
+            console.log('hideEditForm 호출됨: commentId=', commentId);
+            var editForm = document.getElementById('editForm-' + commentId);
+            if (editForm) {
+                editForm.style.display = 'none';
+            } else {
+                console.error('editForm-' + commentId + ' 요소를 찾을 수 없습니다.');
+            }
+        }
+
+        function confirmDelete(commentId) {
+            if (confirm('댓글을 삭제하시겠습니까?')) {
+                const deleteButton = document.querySelector('[onclick="confirmDelete(\'' + commentId + '\')"]');
+                if (deleteButton) deleteButton.disabled = true;
+                $.ajax({
+                    url: '${path}/post/deleteComment',
+                    type: 'POST',
+                    data: { commentId: commentId, postId: '${post.postId}' },
+                    dataType: 'json',
+                    cache: false,
+                    success: function(data) {
+                        console.log('Server data:', data);
+                        if (data.status === 'success') {
+                            alert('댓글이 삭제되었습니다.');
+                            location.reload();
+                        } else {
+                            alert(data.message || '삭제 실패: 알 수 없는 오류');
+                        }
+                        if (deleteButton) deleteButton.disabled = false;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error, xhr.responseText);
+                        alert('삭제 중 오류가 발생했습니다: ' + xhr.status + ' ' + xhr.statusText);
+                        if (deleteButton) deleteButton.disabled = false;
+                    }
+                });
+            }
+        }
+    </script>
 </body>
 </html>

@@ -45,8 +45,10 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 				.addExcludedPath("/mypage/deleteUser*")
 				.addExcludedPath("/mypage/viewCourseTimetable*")
 				.addExcludedPath("/mypage/registerNumChk*")
+				.addExcludedPath("/mypage/schedule*")
 				
-		
+				
+				
 				.addExcludedPath("/post/deleteComment*");
 				
 				

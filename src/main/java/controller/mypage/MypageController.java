@@ -31,6 +31,7 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import domain.Dept;
 import domain.Notice;
 import domain.Professor;
+import domain.Schedule;
 import domain.Student;
 import gdu.mskim.MSLogin;
 import gdu.mskim.MskimRequestMapping;
@@ -41,6 +42,7 @@ import model.dao.mypage.DeptDao;
 import model.dao.mypage.GetScoreDao;
 import model.dao.mypage.ProStuDao;
 import model.dao.mypage.ProfessorDao;
+import model.dao.mypage.ScheduleDao;
 import model.dao.mypage.StudentDao;
 import model.dto.learning_support.AttendanceDto;
 import model.dto.mypage.GetScoresDto;
@@ -701,8 +703,50 @@ public class MypageController  extends MskimRequestMapping{
 
 		return "mypage/ajax_mypage_support";
 	}
+	
+	@RequestMapping("schedule")
+    public String schedule(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            ScheduleDao scheduleDao = new ScheduleDao();
+            List<Schedule> schedules = scheduleDao.listAll();
 
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            List<Map<String, Object>> formattedSchedules = new ArrayList<>();
+            for (Schedule item : schedules) {
+                Map<String, Object> scheduleMap = new HashMap<>();
+                scheduleMap.put("scheduleId", item.getScheduleId());
+                scheduleMap.put("scheduleDate", item.getScheduleDate().getTime());
+                scheduleMap.put("scheduleTitle", item.getScheduleTitle());
+                scheduleMap.put("scheduleDescription", item.getScheduleDescription());
+                if (item.getScheduleDate() != null) {
+                    scheduleMap.put("scheduleDateFormatted", dateFormat.format(item.getScheduleDate()));
+                } else {
+                    scheduleMap.put("scheduleDateFormatted", null);
+                }
+                formattedSchedules.add(scheduleMap);
+            }
 
-
-
+            ObjectMapper mapper = new ObjectMapper();
+            map.put("success", true);
+            map.put("schedules", formattedSchedules);
+            String json = mapper.writeValueAsString(map);
+            System.out.println("Generated JSON: " + json);
+            request.setAttribute("json", json);
+        } catch (Exception e) {
+            System.out.println("getScheduleList exception: " + e.getMessage());
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", "데이터 로드 실패: " + e.getMessage());
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                String json = mapper.writeValueAsString(map);
+                request.setAttribute("json", json);
+            } catch (IOException e2) {
+                e2.printStackTrace();
+                request.setAttribute("json", "{\"success\":false,\"message\":\"JSON 직렬화 오류\"}");
+            }
+        }
+        return "mypage/ajax_mypage_support";
+    }
 }
