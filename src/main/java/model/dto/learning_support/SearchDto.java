@@ -5,6 +5,7 @@ public class SearchDto {
 	private String deptId;
 	private String courseId;
     private String courseName;
+    private String studentId;
     
 	public String getCollege() {
 		return college;
@@ -31,10 +32,17 @@ public class SearchDto {
 		this.courseName = courseName;
 	}
 	
+	public String getStudentId() {
+		return studentId;
+	}
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
+	}
+	
 	@Override
 	public String toString() {
 		return "SearchDto [college=" + college + ", deptId=" + deptId + ", courseId=" + courseId + ", courseName="
-				+ courseName + "]";
+				+ courseName + ", studentId=" + studentId + "]";
 	}
     
 	

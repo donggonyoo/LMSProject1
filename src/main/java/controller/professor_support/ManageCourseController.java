@@ -77,6 +77,9 @@ public class ManageCourseController extends MskimRequestMapping {
 	
 	@RequestMapping("changeCourse")
 	public String changeCourse (HttpServletRequest request, HttpServletResponse response) {
+		// 강의 닫기 변환시 해당강의에 수강생이 신청한게 없어야됨. course테이블에서 수강인원을관리하고있으니
+		// 해당컬럼 확인하여 0 이 아닐시 닫기버튼 못하게 막아야 함 or 확실하게 registration 테이블 에서 course_id로 
+		// 찾아서 존재유무 확인하는것도 좋을듯
 		
 		//파라미터 세팅
 		Map<String, Object> paramMap = new HashMap<>();

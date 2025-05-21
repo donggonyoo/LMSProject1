@@ -119,6 +119,13 @@
         LIMIT #{offset}, #{itemsPerPage}
 	</select>
 	
+	
+    <select id="countEnrollments" resultType="int">
+        SELECT course_current_enrollment 
+		FROM   course
+		WHERE  course_id = #{courseId}
+    </select>
+	
 	<update id="changeCourse" parameterType="java.util.Map">
 		UPDATE course
 	    <set>

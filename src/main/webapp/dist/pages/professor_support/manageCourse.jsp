@@ -180,10 +180,12 @@
 										<c:out value="${course.creditCategory}" />
 									</c:otherwise>
 								</c:choose></td>
-							<td>${course.courseTimeYoil}/ ${course.courseTimeStart} -
-								${course.courseTimeEnd}</td>
-							<td>${course.courseCurrentEnrollment}/
-								${course.courseMaxCnt}</td>
+							<td>
+								${course.courseTimeYoil}/ ${course.courseTimeStart} - ${course.courseTimeEnd}
+							</td>
+							<td>
+								${course.courseCurrentEnrollment}/${course.courseMaxCnt}
+							</td>
 							<td>${course.courseScore}</td>
 							<td><span
 								class="badge ${fn:toUpperCase(course.courseStatus) == 'OPEN' ? 'text-bg-success' : 'text-bg-danger'}">
@@ -207,13 +209,15 @@
 								<c:if test="${fn:toUpperCase(course.courseStatus) == 'OPEN'}">
 									<button class="btn btn-danger btn-sm ms-1 chg-course"
 										data-course-id="${course.courseId}"
-										data-course-status="${fn:toUpperCase(course.courseStatus)}">
+										data-course-status="${fn:toUpperCase(course.courseStatus)}"
+										data-course-enrollment="${course.courseCurrentEnrollment}">
 										<i class="bi bi-x-circle"></i> 종료
 									</button>
 								</c:if> <c:if test="${fn:toUpperCase(course.courseStatus) == 'CLOSED'}">
 									<button class="btn btn-success btn-sm ms-1 chg-course"
 										data-course-id="${course.courseId}"
-										data-course-status="${fn:toUpperCase(course.courseStatus)}">
+										data-course-status="${fn:toUpperCase(course.courseStatus)}"
+										data-course-enrollment="${course.courseCurrentEnrollment}">
 										<i class="bi bi-check-circle"></i> 개설
 									</button>
 								</c:if>
@@ -439,9 +443,16 @@
 
 		// 강의 상태 변경 처리 함수
 		function handleCourseStatusChange(event) {
+
+			var courseEnrollment = $(event.currentTarget).attr("data-course-enrollment");
 			var courseId = $(event.currentTarget).attr("data-course-id");
 			var courseStatus = $(event.currentTarget).attr("data-course-status");
-
+			
+			if (courseEnrollment > 0) {
+				alert("수강생이 있는 강의는 종료 불가합니다.");
+				return;
+			} 
+	
 			if (confirm("강의를 개설or종료 하시겠습니까?")) {
 				$.ajax({
 					url : "${path}/professor_support/manage/changeCourse",

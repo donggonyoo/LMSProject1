@@ -136,14 +136,12 @@ public class ViewCourseController extends MskimRequestMapping{
 		HttpSession session = request.getSession();
 		String login  = (String)session.getAttribute("login");
 		if(login==null ) {
-			request.setAttribute("msg", "로그인하세요");
-			request.setAttribute("url", "doLogin");
-			return "alert";
+			request.setAttribute("error", "로그인하세요");			
+			return "/pages/error";
 		}
 		else if(login.contains("P")) {
-			request.setAttribute("msg", "교수는접근불가능합니다");
-			request.setAttribute("url", "index");
-			return "alert";
+			request.setAttribute("error", "교수는접근불가능합니다");
+			return "/pages/error";
 		}
 		return null; //정상인경우
 	}

@@ -22,11 +22,13 @@
 	
 	<!-- 강의목록 Row수 조회 -->
     <select id="countCourses" resultType="int">
-	    SELECT COUNT(*) 
-	    FROM course c
-	    JOIN professor p ON c.professor_id = p.professor_id
-	    JOIN dept d ON c.dept_id = d.dept_id
-	    WHERE c.course_status = 'OPEN'
+	    SELECT      COUNT(*) 
+        FROM 		course c
+	    JOIN        professor p ON c.professor_id = p.professor_id
+	    JOIN        dept d ON c.dept_id = d.dept_id
+	    LEFT JOIN   registration r ON c.course_id = r.course_id AND r.student_id = #{studentId}
+	    WHERE       c.course_status = 'OPEN'
+	    AND   	    r.registration_id IS NULL
 	    <if test="college != null and college != ''">
 	        AND d.college = #{college}
 	    </if>
@@ -60,7 +62,9 @@
 	    FROM  	 course c
 	    JOIN 	 professor p ON c.professor_id = p.professor_id
 	    JOIN 	 dept d ON c.dept_id = d.dept_id
+	    LEFT JOIN registration r ON c.course_id = r.course_id AND r.student_id = #{searchDto.studentId}
 	    WHERE 	 c.course_status = 'OPEN'
+	    AND   	 r.registration_id IS NULL
 	    <if test="searchDto.college != null and searchDto.college != ''">
 	        AND d.college = #{searchDto.college}
 	    </if>
