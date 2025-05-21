@@ -103,5 +103,3 @@
 - [ ] REST API 분리
 - [ ] JUnit 단위 테스트 / CI 환경 도입
 - [ ] Docker 기반 배포 자동화 구성
-
-## 동곤 깃헙:https://github.com/donggonyoo
