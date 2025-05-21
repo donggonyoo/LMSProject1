@@ -2,7 +2,6 @@ package controller.learning_support;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +98,7 @@ public class CourseController extends MskimRequestMapping {
 		
 		try {
 			BeanUtils.populate(searchDto, request.getParameterMap());
+			searchDto.setStudentId(studentId);
 			BeanUtils.populate(pageDto, request.getParameterMap());
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -119,20 +119,8 @@ public class CourseController extends MskimRequestMapping {
 
 		cpDto.setPaginationDto(pageDto);
 		cpDto.setSearchDto(searchDto);
-		
-		// 수강신청한 강의 목록에서 제외 
-		List<RegistrationDto> registrationCourses = courseDao.searchRegistrationCourses(studentId);
+
 		List<CourseDto> courses = courseDao.searchCourse(cpDto);
-		
-		Iterator<CourseDto> iter = courses.iterator();
-		while(iter.hasNext()) {
-			CourseDto c = iter.next();
-			for (RegistrationDto r : registrationCourses) {
-				if (c.getCourseId().equals(r.getCourseId())) {
-					iter.remove();
-				}
-			}
-		}
 		
 		ObjectMapper mapper = new ObjectMapper();
         

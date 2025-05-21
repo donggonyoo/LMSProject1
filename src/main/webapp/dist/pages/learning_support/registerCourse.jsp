@@ -414,7 +414,7 @@
                         );
                         $body.append(row);
                     });
-                    $("#courseCount").text(courses.length);
+                    $("#courseCount").text(pagination.totalRows);
                     renderPagination(pagination.currentPage, pagination.totalPages);
                 },
                 error: function(xhr) {

@@ -53,12 +53,19 @@ public class ManageCourseDao {
 		int result = 0;
 		
 		try {
-			 if (session.update("CourseByPro.changeCourse",paramMap) > 0) {
-				 session.commit();
-				 return result + 1;
-			 } else {
+			if ("OPEN".equals(((String) paramMap.get("courseStatus")).toUpperCase())) {
+				int rowCnt = session.selectOne("CourseByPro.countEnrollments", paramMap);
+			    if (rowCnt > 0) {
+			        throw new RuntimeException("course have enrollment");
+			    }
+			}
+			
+			if (session.update("CourseByPro.changeCourse",paramMap) > 0) {
+				session.commit();
+				return result + 1;
+			} else {
 				 throw new RuntimeException("chgCourseFail");
-			 }
+			}
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 			throw new RuntimeException("chgCourseFail", e);
