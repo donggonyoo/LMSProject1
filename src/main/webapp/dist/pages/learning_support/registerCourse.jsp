@@ -265,7 +265,10 @@
         // 페이징 처리 준비
         var currentPage = 1;
         var pageSize = 10;
-
+		
+        // 로드되는 강의목록 시간 배열
+        var timeSlots = [];
+        
         $(document).ready(function() {
             // 대학 목록 로드
             $.ajax({
@@ -305,6 +308,14 @@
 
             // 추가 버튼 클릭 이벤트
             $(document).on("click", ".add-course", function() {
+            	// 신청하는 강의시간과 신청한강의들의 시간 비교
+            	var courseTimeSlot = $(this).closest("tr").find("td:eq(6)").text();
+            	for(var i=0; i<timeSlots.length; i++) {
+					if (timeSlots[i] == courseTimeSlot) {
+						alert('기존수강내역에 같은요일,시간의 강의가 존재합니다.');
+						return;
+					}	
+            	}
                 var courseId = $(this).closest("form").find("input[name='courseId']").val();
                 var professorId = $(this).closest("form").find("input[name='professorId']").val();
                 addCourse(courseId, professorId);
@@ -375,13 +386,14 @@
                 data: params,
                 dataType: "json",
                 success: function(data) {
-
+                	timeSlots = [];
                     var courses = data.courses || [];
                     var pagination = data.pagination || { currentPage: 1, totalPages: 1 };
                     var $body = $("#courseBody");
                     $body.empty();
                     
                     $.each(courses, function(i, course) {
+                    	timeSlots.push(course.timeSlot);
                         var row = $("<tr>").append(
                             $("<td>").append(
                                 $("<form>").append(
@@ -416,6 +428,7 @@
                     });
                     $("#courseCount").text(pagination.totalRows);
                     renderPagination(pagination.currentPage, pagination.totalPages);
+                    
                 },
                 error: function(xhr) {
                     console.error("Course load error:", xhr);
