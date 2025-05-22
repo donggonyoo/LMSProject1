@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
 import com.oreilly.servlet.MultipartRequest;
 
 import domain.Notice;
@@ -164,7 +163,7 @@ public class NoticeController extends MskimRequestMapping {
         for (Notice notice : list) {
             System.out.println("searchNotice - Notice ID: " + notice.getNoticeId() + ", WriterName: " + notice.getWriterName());
         }
-        System.out.println("Board count: " + boardcount + ", List size: " + list.size());
+        
         int maxpage = (int) Math.ceil((double) boardcount / limit);
         int startpage = ((int) (pageNum / 10.0 + 0.9) - 1) * 10 + 1;
         int endpage = startpage + 9;
@@ -376,7 +375,11 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("url", "/LMSProject1/notice/getNotices");
             return "alert";
         }
-
+        if (!notice.getNoticePassword().equals(noticePassword)) {
+            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            request.setAttribute("url", "notice/updateNotice?noticeId=" + noticeId);
+            return "alert";
+        }
         
         if (newFile == null || newFile.isEmpty()) {
             newFile = originalFile;
@@ -465,7 +468,11 @@ public class NoticeController extends MskimRequestMapping {
             request.setAttribute("url", "/LMSProject1/notice/deleteNotice?noticeId=" + noticeId);
             return "alert";
         }
-
+        if (!notice.getNoticePassword().equals(pass)) {
+            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
+            request.setAttribute("url", "notice/deleteNotice?noticeId=" + noticeId);
+            return "alert";
+        }
 
 
         try {
