@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.mindrot.jbcrypt.BCrypt;
 
 import com.oreilly.servlet.MultipartRequest;
 
@@ -241,7 +240,7 @@ public class NoticeController extends MskimRequestMapping {
         notice.setNoticeId(noticeId);
         notice.setWriterId(login);
         notice.setWriterName(writerName);
-        notice.setNoticePassword(BCrypt.hashpw(pass, BCrypt.gensalt()));
+        notice.setNoticePassword(pass);
         notice.setNoticeTitle(noticeTitle);
         notice.setNoticeContent(noticeContent);
         notice.setNoticeFile(noticeFile);
@@ -378,12 +377,7 @@ public class NoticeController extends MskimRequestMapping {
             return "alert";
         }
 
-        if (!BCrypt.checkpw(noticePassword, notice.getNoticePassword())) {
-            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
-            request.setAttribute("url", "/LMSProject1/notice/updateNotice?noticeId=" + noticeId);
-            return "alert";
-        }
-
+        
         if (newFile == null || newFile.isEmpty()) {
             newFile = originalFile;
         } else {
@@ -472,11 +466,7 @@ public class NoticeController extends MskimRequestMapping {
             return "alert";
         }
 
-        if (!BCrypt.checkpw(pass, notice.getNoticePassword())) {
-            request.setAttribute("msg", "비밀번호가 일치하지 않습니다.");
-            request.setAttribute("url", "/LMSProject1/notice/deleteNotice?noticeId=" + noticeId);
-            return "alert";
-        }
+
 
         try {
             if (notice.getNoticeFile() != null && !notice.getNoticeFile().isEmpty()) {
