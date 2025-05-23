@@ -70,7 +70,7 @@
 | **프론트엔드** | HTML5, CSS3, JavaScript, Bootstrap 5, AdminLTE 4 |
 | **템플릿 엔진**| JSP (Java Server Pages) |
 | **데이터베이스** | MariaDB |
-| **라이브러리** | jackson, taglibs-standard, cos.jar, mail-1.4.7.jar |
+| **라이브러리** | jackson, taglibs-standard, cos.jar, javax.mail-1.6.2.jar ,activation-1.1.1.jar ,jbcrypt-0.4.jar , sitemesh-3.0.1.jar|
 | **아키텍처**    | Model2 (MVC 패턴) 방식 |
 
 ---
